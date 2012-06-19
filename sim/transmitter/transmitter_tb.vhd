@@ -3,11 +3,11 @@
 -- Project    : CBMIA, MIL1553 bus controller
 -- Website    : http://
 -------------------------------------------------------------------------------
--- File       : mil1553_tx_tb.vhd
+-- File       : transmitter_tb.vhd
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-09
--- Last update: 2012-03-09
+-- Last update: 2012-03-15
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -48,12 +48,12 @@ library work;
 use work.cbmia_pkg.all;
 
 
-entity mil1553_tx_tb is
+entity transmitter_tb is
 
-end mil1553_tx_tb;
+end transmitter_tb;
 
 
-architecture behavioral of mil1553_tx_tb is
+architecture behavioral of transmitter_tb is
 
   ----------------------------------------------------------------------------
   -- Components declaration
@@ -63,7 +63,7 @@ architecture behavioral of mil1553_tx_tb is
       sys_rst_n_i       : in  std_logic;          -- Synchronous system reset (active low)
       sys_clk_i         : in  std_logic;          -- System clock
       mil1553_txd_o     : out std_logic;          -- Serial data output
-      mil1553_tx_o      : out std_logic;          -- Serial data output enable
+      mil1553_tx_en_o   : out std_logic;          -- Serial data output enable
       tx_buffer_i       : in  t_tx_buffer_array;  -- Array of 16-bit word to transmit
                                                   -- tx_buffer_i(0) = command word
       tx_send_frame_p_i : in  std_logic;          -- Send frame
@@ -95,7 +95,7 @@ begin
       sys_rst_n_i       => sys_rst_n,
       sys_clk_i         => sys_clk,
       mil1553_txd_o     => mil1553_txd,
-      mil1553_tx_o      => mil1553_tx_en,
+      mil1553_tx_en_o   => mil1553_tx_en,
       tx_buffer_i       => tx_buffer,
       tx_send_frame_p_i => tx_send_frame_p,
       tx_done_p_o       => tx_done_p
@@ -117,7 +117,7 @@ begin
     wait for 100 ns;
     wait until rising_edge(sys_clk);
     sys_rst_n <= '1';
-    wait for 500 ns;
+    wait for 50 us;
     wait until rising_edge(sys_clk);
 
     -- Init command word
@@ -127,7 +127,7 @@ begin
     tx_buffer(0)(c_CMD_TR)                   <= '0';
 
     -- Init tx buffer (data words)
-    for I in 1 to c_TX_BUFFER_SIZE loop
+    for I in 1 to c_TX_BUFFER_SIZE-1 loop
       tx_buffer(I) <= std_logic_vector(to_unsigned(I, 16));
     end loop;
 
@@ -145,6 +145,44 @@ begin
     tx_send_frame_p <= '1';
     wait until rising_edge(sys_clk);
     tx_send_frame_p <= '0';
+
+    -- wait end of transmission
+    wait until rising_edge(tx_done_p);
+
+    -- Init command word
+    tx_buffer(0)(c_CMD_SA4 downto c_CMD_SA0) <= "00000";
+    tx_buffer(0)(c_CMD_WC4 downto c_CMD_WC0) <= "00000";
+    tx_buffer(0)(c_CMD_RT4 downto c_CMD_RT0) <= "00011";
+    tx_buffer(0)(c_CMD_TR)                   <= '1';
+
+    -- start transmition
+    wait for 50 us;
+    wait until rising_edge(sys_clk);
+    tx_send_frame_p <= '1';
+    wait until rising_edge(sys_clk);
+    tx_send_frame_p <= '0';
+
+    -- wait end of transmission
+    wait until rising_edge(tx_done_p);
+
+    -- Init command word
+    tx_buffer(0)(c_CMD_SA4 downto c_CMD_SA0) <= "00000";
+    tx_buffer(0)(c_CMD_WC4 downto c_CMD_WC0) <= "11111";
+    tx_buffer(0)(c_CMD_RT4 downto c_CMD_RT0) <= "00011";
+    tx_buffer(0)(c_CMD_TR)                   <= '0';
+
+    -- Init tx buffer (data words)
+    for I in 1 to c_TX_BUFFER_SIZE-1 loop
+      tx_buffer(I) <= std_logic_vector(to_unsigned(I, 16));
+    end loop;
+
+    -- start transmition
+    wait for 50 us;
+    wait until rising_edge(sys_clk);
+    tx_send_frame_p <= '1';
+    wait until rising_edge(sys_clk);
+    tx_send_frame_p <= '0';
+
 
     wait;
   end process p_stimulus;
