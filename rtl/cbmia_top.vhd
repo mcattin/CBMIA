@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-30
+-- Last update: 2012-04-04
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -51,6 +51,10 @@
 --                                      count).
 -- 2012-03-30  2.06     mcattin         Don't stop reception on Manchester error,
 --                                      only generate a error pulse.
+-- 2012-04-04  2.07     mcattin         Add a test to take the recepetion FSM out
+--                                      of reception state in case of Manchester
+--                                      error after a frame (e.g. spurious data
+--                                      sync pattern at the end of a frame).
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -67,7 +71,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0206"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0207"
     );
   port (
     -- description -> net name in schematics

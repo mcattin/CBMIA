@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-30
+-- Last update: 2012-04-04
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -91,7 +91,8 @@ end mil1553_rx_deserialiser;
 
 architecture rtl of mil1553_rx_deserialiser is
 
-  type t_rx_fsm_state is (RX_IDLE, RX_SYNC_DETECT, RX_GET_BITS, RX_MANCH_EDGE, RX_DATA_SYNC, RX_DONE, RX_ERROR);
+  type t_rx_fsm_state is (RX_IDLE, RX_SYNC_DETECT, RX_GET_BITS, RX_MANCH_EDGE,
+                          RX_DATA_SYNC, RX_DONE, RX_MANCH_ERROR);
 
   signal rx_fsm_state      : t_rx_fsm_state;
   signal rx_fsm_next_state : t_rx_fsm_state;
@@ -102,10 +103,11 @@ architecture rtl of mil1553_rx_deserialiser is
 
   signal detecting_stat_sync : std_logic;
   signal rx_is_idle          : std_logic;
+  signal rx_in_progress      : std_logic;
   signal receiving_word      : std_logic;
   signal detecting_data_sync : std_logic;
   signal rx_done_p           : std_logic;
-  signal manch_error         : std_logic;
+  signal manch_error_p       : std_logic;
 
   signal rxd_hist : std_logic_vector(63 downto 0);
 
@@ -195,8 +197,12 @@ begin
 
         if manch_edge_p = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
+        elsif sample_manch_bit_p_i = '1' and bit_cnt_is_zero = '1' then
+          -- This is to end the reception if a Manchester error is detected
+          -- after a frame (e.g. spurious data sync pattern at the end of a frame!).
+          rx_fsm_next_state <= RX_DONE;
         elsif sample_manch_bit_p_i = '1' then
-          rx_fsm_next_state <= RX_ERROR;
+          rx_fsm_next_state <= RX_MANCH_ERROR;
         else
           rx_fsm_next_state <= RX_MANCH_EDGE;
         end if;
@@ -218,7 +224,7 @@ begin
         rx_fsm_next_state <= RX_IDLE;
 
 
-      when RX_ERROR =>
+      when RX_MANCH_ERROR =>
         -- ERROR state only generates a Manchester error pulse
         rx_fsm_next_state <= RX_GET_BITS;
 
@@ -242,7 +248,8 @@ begin
         receiving_word      <= '0';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '0';
 
 
       when RX_SYNC_DETECT =>
@@ -252,7 +259,8 @@ begin
         receiving_word      <= '0';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '0';
 
 
       when RX_GET_BITS =>
@@ -262,7 +270,8 @@ begin
         receiving_word      <= '1';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '1';
 
 
       when RX_MANCH_EDGE =>
@@ -272,7 +281,8 @@ begin
         receiving_word      <= '1';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '1';
 
 
       when RX_DATA_SYNC =>
@@ -282,7 +292,8 @@ begin
         receiving_word      <= '0';
         detecting_data_sync <= '1';
         rx_done_p           <= '0';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '1';
 
 
       when RX_DONE =>
@@ -292,17 +303,19 @@ begin
         receiving_word      <= '0';
         detecting_data_sync <= '0';
         rx_done_p           <= '1';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '1';
 
 
-      when RX_ERROR =>
+      when RX_MANCH_ERROR =>
 
         detecting_stat_sync <= '0';
         rx_is_idle          <= '0';
         receiving_word      <= '1';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
-        manch_error         <= '1';
+        manch_error_p       <= '1';
+        rx_in_progress      <= '1';
 
 
       when others =>
@@ -312,7 +325,8 @@ begin
         receiving_word      <= '0';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
-        manch_error         <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '0';
 
 
     end case;
@@ -479,8 +493,8 @@ begin
   ------------------------------------------------------------------------------
   rx_clk_rst_o       <= rx_is_idle;
   rx_done_p_o        <= rx_done_p;
-  rx_in_progress_o   <= not(rx_is_idle);
-  rx_manch_error_p_o <= manch_error;
+  rx_in_progress_o   <= rx_in_progress;
+  rx_manch_error_p_o <= manch_error_p;
 
 
 end architecture rtl;

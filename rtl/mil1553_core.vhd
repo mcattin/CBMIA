@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-12
--- Last update: 2012-03-29
+-- Last update: 2012-04-04
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -358,8 +358,8 @@ begin
   begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
-        tx_word_cnt <= (others => '0');
-        tx_tr_flag  <= '0';
+        tx_word_cnt  <= (others => '0');
+        tx_tr_flag   <= '0';
         tx_mode_code <= '0';
       elsif tx_send_frame_p = '1' then
         tx_word_cnt <= tx_reg(c_CMD_WC4 downto c_CMD_WC0);
@@ -527,7 +527,7 @@ begin
       else
         if tx_send_frame_p = '1' then
           transaction_progress <= '1';
-        elsif resp_timeout_p = '1' or rx_done_p = '1' or rx_manch_error_p = '1' then
+        elsif resp_timeout_p = '1' or rx_done_p = '1' then
           transaction_progress <= '0';
         end if;
         transaction_progress_d <= transaction_progress;
@@ -629,7 +629,7 @@ begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
         rx_nb_word_error_p <= '0';
-      elsif ((rx_done_p = '1' or rx_manch_error_p = '1') and
+      elsif ((rx_done_p = '1') and
              tx_tr_flag = c_RT2BC and tx_mode_code = '0' and
              unsigned(rx_word_cnt_t) /= unsigned(tx_word_cnt)) then
         rx_nb_word_error_p <= '1';
@@ -770,7 +770,7 @@ begin
     port map(
       rst_n_i   => rst_n,
       clk_i     => sys_clk_i,
-      trigger_i => mil1553_tx_en,
+      trigger_i => tx_done_p,
       pulse_o   => led_o(0)
       );
 
@@ -798,7 +798,7 @@ begin
     port map(
       rst_n_i   => rst_n,
       clk_i     => sys_clk_i,
-      trigger_i => rx_in_progress,
+      trigger_i => rx_done_p,
       pulse_o   => led_o(2)
       );
 
