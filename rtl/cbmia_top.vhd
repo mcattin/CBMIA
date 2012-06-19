@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-02
+-- Last update: 2012-03-13
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -46,10 +46,14 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
+library work;
+use work.cbmia_pkg.all;
+use work.bus_interface_pkg.all;
+
 
 entity cbmia_top is
   generic(
-    HARDVERSION : std_logic_vector(15 downto 0) := X"0201";
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0201"
     );
   port (
     -- description -> net name in schematics
@@ -66,10 +70,10 @@ entity cbmia_top is
     -- MIL1553 interface
     ----------------------------------------------------------------------------
     -- Serial data input -> RXDATA3V
-    mil1553_rxd_a_i      : in  std_logic;
+    mil1553_rxd_a_i    : in  std_logic;
     -- Manchester decoder fault? -> MDFAULT3V (not connected in schematics)
     mil1553_md_fault_i : in  std_logic;
-    -- Low  = enable receiver and disable tranmitter
+    -- Low  = enable receiver and disable transmitter
     -- High = disable receiver and enable transmitter -> TX-RXN
     mil1553_tx_rx_n_o  : out std_logic;
     -- Low = enable transmitter -> TXN
@@ -85,7 +89,7 @@ entity cbmia_top is
 
     -- Test points -> X3 .. X0
     ----------------------------------------------------------------------------
-    test_point : out std_logic_vector (3 downto 0);
+    test_point_o : out std_logic_vector (3 downto 0);
 
     -- RS232 interface
     ----------------------------------------------------------------------------
@@ -156,12 +160,117 @@ entity cbmia_top is
     );
 end cbmia_top;
 
+
 architecture rtl of cbmia_top is
 
-  
+  ----------------------------------------------------------------------------
+  -- Signals declaration
+  ----------------------------------------------------------------------------
+  signal pwr_rst_sync_n : std_logic_vector(1 downto 0);
+  signal pwr_rst_n      : std_logic;
+
+  signal rd_to_mem     : std_logic;       -- Read strobe to memory interface
+  signal wr_to_mem     : std_logic;       -- Write strobe to memory interface
+  signal data_from_mem : IntDataType;     -- Data from memory interface
+  signal addr_to_mem   : IntAddrOutType;  -- Address to memory interface
+  signal data_to_mem   : IntDataType;     -- Data to memory interface
+  signal op_done       : std_logic;       -- Operation done from memory interface
+                                          -- Read or Write finished
+  signal irq_req       : std_logic_vector(1 downto 0);
+
 
 begin
 
-  
+  ----------------------------------------------------------------------------
+  -- Synchronises power-on reset to system clock
+  ----------------------------------------------------------------------------
+  p_rst : process (clk)
+  begin
+    if rising_edge(clk) then
+      pwr_rst_sync_n <= pwr_rst_sync_n(0) & pwr_reset_n_i;
+    end if;
+  end process p_rst;
+  pwr_rst_n <= pwr_rst_sync_n(1);
+
+  ----------------------------------------------------------------------------
+  -- Components instantiation
+  ----------------------------------------------------------------------------
+  cmp_plx_to_mem_interface : plx_to_mem_interface
+    generic map(
+      LALEFT  <= 2,
+      LARIGHT <= 23
+      )
+    port map(
+      LClk        <= clk_i,
+      RstN        <= pwr_rst_n,
+      LAdSN       <= l_ads_n_i,
+      LA          <= l_address_i,
+      LData       <= l_data_b,
+      LWrRdN      <= l_wr_rd_n_i,
+      LReadyN     <= l_ready_n_o,
+      AddrMem     <= addr_to_mem,
+      ReadMem     <= rd_to_mem,
+      WriteMem    <= wr_to_mem,
+      OpDone      <= op_done,
+      DataFromMem <= data_from_mem,
+      DataToMem   <= data_to_mem
+      );
+
+  cmp_mil1553_core : mil1553_core
+    generic map(
+      g_HW_VERSION <= g_HW_VERSION
+      )
+    port map(
+      pwr_reset_n_i     <= pwr_rst_n,
+      sys_clk_i         <= clk_i,
+      mil1553_rxd_a_i   <= mil1553_rxd_a_i,
+      mil1553_tx_rx_n_o <= mil1553_tx_rx_n_o,
+      mil1553_tx_n_o    <= mil1553_tx_n_o,
+      mil1553_txd_o     <= mil1553_txd_o,
+      mil1553_txd_n_o   <= mil1553_txd_n_o,
+      led_o             <= led_o,
+      test_point_o      <= test_point_o,
+      onewire_b         <= onewire_b,
+      rd_to_mem_i       <= rd_to_mem,
+      wr_to_mem_i       <= wr_to_mem,
+      data_from_mem_o   <= data_from_mem,
+      addr_to_mem_i     <= addr_to_mem,
+      data_to_mem_i     <= data_to_mem,
+      op_done_o         <= op_done,
+      irq_req_o         <= irq_req
+      );
+
+  l_int1_o <= irq_req(0);
+  l_int2_o <= irq_req(1);
+
+  ----------------------------------------------------------------------------
+  -- Unused output assigment
+  ----------------------------------------------------------------------------
+
+  -- PLX
+  l_btrem_n_o <= '1';
+  l_gpio_b    <= (others => 'Z');
+
+  -- RS232
+  rs232_o <= '0';
+
+  -- SRAM
+  ram_address_o <= (others => '0');
+  ram_data_b    <= (others => 'Z');
+  ram_par_o     <= (others => '0');
+  ram_zz_o      <= '1';
+  ram_oe_n_o    <= '1';
+  ram_lbo_n_o   <= '1';
+  ram_gw_n_o    <= '1';
+  ram_ce_n_o    <= '1';
+  ram_cs0_o     <= '0';
+  ram_cs1_n_o   <= '1';
+  ram_bwe_n_o   <= '1';
+  ram_bw_n_o    <= (others => '1');
+  ram_adv_n_o   <= '1';
+  ram_adsp_n_o  <= '1';
+  ram_adsc_n_o  <= '1';
+  ram_clk_o     <= '0';
+
 
 end architecture rtl;

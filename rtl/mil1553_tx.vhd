@@ -6,12 +6,14 @@
 -- File       : mil1553_tx.vhd
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
--- Created    : 2012-02-29
--- Last update: 2012-02-29
+-- Created    : 2012-03-08
+-- Last update: 2012-03-09
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: 
+-- Description: MIL1553 transmitter, only supports 1Mb/s bus speed.
+--              Adds odd parity, encodes in Manchester and transmits
+--              words from TX buffer.
 -------------------------------------------------------------------------------
 --
 -- Copyright (c) 2009 - 2010 CERN
@@ -35,7 +37,7 @@
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author          Description
--- 2012-02-29  1.0      mcattin         Created
+-- 2012-03-08  1.0      mcattin         Created
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -44,11 +46,11 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
+library work;
+use work.cbmia_pkg.all;
+
 
 entity mil1553_tx is
-  generic(
-
-    );
   port (
 
     -- Global ports
@@ -58,29 +60,49 @@ entity mil1553_tx is
 
     -- MIL1553 interface
     ----------------------------------------------------------------------------
-    mil1553_txd_o : out std_logic;
-    mil1553_tx_o  : out std_logic;
+    mil1553_txd_o : out std_logic;      -- Serial data output
+    mil1553_tx_o  : out std_logic;      -- Serial data output enable
 
     -- User interface
     ----------------------------------------------------------------------------
-    tx_word_i       : in  std_logic_vector(15 downto 0);  -- Word to transmit
-                                                          -- 15..0 : word data
-                                                          --    16 : word type flag, 0=data, 1=command
-    tx_word_valid_i : in  std_logic;                      -- Word valid input
-    tx_word_rd_o    : out std_logic;                      -- Word read request
-    tx_word_empty_i : in  std_logic;                      -- Word FIFO empty
-    tx_send_frame_i : in  std_logic;                      -- Send frame in FIFO
-    tx_done_o       : out std_logic                       -- Frame transmission finished
+    tx_buffer_i       : in  t_tx_buffer_array;  -- Array of 16-bit word to transmit
+                                                -- tx_buffer_i(0) = command word
+    tx_send_frame_p_i : in  std_logic;          -- Send frame
+    tx_done_p_o       : out std_logic           -- Frame transmission finished
 
     );
 end mil1553_tx;
 
+
 architecture rtl of mil1553_tx is
 
-
+  ----------------------------------------------------------------------------
+  -- Signals declaration
+  ----------------------------------------------------------------------------
+  signal tx_bit_rate : std_logic;
 
 begin
 
+  ----------------------------------------------------------------------------
+  -- Components instantiation
+  ----------------------------------------------------------------------------
+  cmp_mil1553_tx_clk : mil1553_tx_clk
+    port map(
+      sys_rst_n_i   => sys_rst_n_i,
+      sys_clk_i     => sys_clk_i,
+      tx_bit_rate_o => tx_bit_rate
+      );
 
+  cmp_mil1553_serialiser : mil1553_tx_serialiser
+    port map(
+      sys_rst_n_i       => sys_rst_n_i,
+      sys_clk_i         => sys_clk_i,
+      mil1553_txd_o     => mil1553_txd_o,
+      mil1553_tx_o      => mil1553_tx_o,
+      tx_bit_rate_p_i   => tx_bit_rate,
+      tx_buffer_i       => tx_buffer_i,
+      tx_send_frame_p_i => tx_send_frame_p_i,
+      tx_done_p_o       => tx_done_p_o
+      );
 
 end architecture rtl;

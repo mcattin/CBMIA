@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-02
--- Last update: 2012-03-02
+-- Last update: 2012-03-14
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -62,21 +62,21 @@ entity mil1553_rx_clk is
 
     -- Signals from deserialiser
     rx_clk_rst_i     : in  std_logic;   -- resets the clock recovery procedure
-    rx_manch_clk_p_o : out std_logic;   -- signal with uclk-wide pulses
+    rx_manch_clk_p_o : out std_logic;   -- signal with sys_clk-wide pulses
                                         --  o  on a significant edge 
                                         --  o  between adjacent bits
                                         --  ____|-|___|-|___|-|___
 
-    rx_bit_clk_p_o : out std_logic;     -- signal with uclk-wide pulses
+    rx_bit_clk_p_o : out std_logic;     -- signal with sys_clk-wide pulses
                                         --  o between adjacent bits
                                         --  __________|-|_________
 
     rx_signif_edge_window_o : out std_logic;  -- time window where a significant edge is expected
 
-    rx_adjac_bits_window_o : out std_logic);  -- time window where a transition between adjacent
-                                              -- bits is expected
+    rx_adjac_bits_window_o : out std_logic  -- time window where a transition between adjacent
+                                            -- bits is expected
 
-  );
+    );
 end mil1553_rx_clk;
 
 architecture rtl of mil1553_rx_clk is
@@ -110,8 +110,8 @@ begin
 ---------------------------------------------------------------------------------------------------
 
 --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-  --  # uclk ticks for a bit period, defined by the WorldFIP bit rate
-  s_period      <= c_BIT_RATE_UCLK_TICKS(to_integer(unsigned(rate_i)));
+  --  # sys_clk ticks for a bit period, defined by the WorldFIP bit rate
+  s_period      <= c_BIT_RATE_SYS_CLK_TICKS(to_integer(unsigned(rate_i)));
   s_half_period <= s_period srl 1;      -- 1/2 s_period
   s_margin      <= s_period srl 3;      -- margin for jitter defined as 1/8 of the period
 
@@ -127,15 +127,18 @@ begin
 -- If that first falling edge of FD_RXD is finally proven not to belong to a valid PRE the counter
 -- is reinitialialized through the rx_osc_rst_i signal from the wf_rx_deserializer.
 
-  rx_periods_count : wf_incr_counter
-    generic map(g_counter_lgth => c_PERIODS_COUNTER_LGTH)
+  rx_periods_count : incr_counter
+    generic map(
+      g_counter_lgth => c_PERIODS_COUNTER_LGTH
+      )
     port map(
-      uclk_i            => uclk_i,
+      sys_clk_i         => sys_clk_i,
       counter_reinit_i  => s_period_c_reinit,
       counter_incr_i    => '1',
       counter_is_full_o => open,
       ------------------------------------------
-      counter_o         => s_period_c);
+      counter_o         => s_period_c
+      );
   ------------------------------------------
 
   s_period_c_is_full <= '1' when s_period_c = s_period -1 else '0';  -- counter full indicator
@@ -152,17 +155,17 @@ begin
 --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
 -- Concurrent signal assignments: creation of the windows where
 -- "significant edges" and "adjacent bits transitions" are expected on the input signal.
---   o s_signif_edge_window: extends s_margin uclk ticks before and s_margin uclk ticks after
+--   o s_signif_edge_window: extends s_margin sys_clk ticks before and s_margin sys_clk ticks after
 --     the completion of a period, where significant edges are expected.
---   o s_adjac_bits_window : extends s_margin uclk ticks before and s_margin uclk ticks after
+--   o s_adjac_bits_window : extends s_margin sys_clk ticks before and s_margin sys_clk ticks after
 --     the middle of a period, where transitions between adjacent bits are expected.
 
   s_signif_edge_window <= '1' when ((s_period_c < s_margin) or
-                                       (s_period_c > s_period-1 - s_margin-1)) else '0';
+                                    (s_period_c > s_period-1 - s_margin-1)) else '0';
 
 
   s_adjac_bits_window <= '1' when ((s_period_c >= s_half_period-s_margin-1) and
-                                       (s_period_c < s_half_period+s_margin)) else '0';
+                                   (s_period_c < s_half_period+s_margin)) else '0';
 
 
 
@@ -183,10 +186,10 @@ begin
 -- Edges between adjacent bits are expected inside the adjac_bits_window; if they do not arrive
 -- the rx_manch_clk and rx_bit_clk are inverted right after the end of the adjac_bits_window.
 
-  rx_clks : process (uclk_i)
+  rx_clks : process (sys_clk_i)
 
   begin
-    if rising_edge (uclk_i) then
+    if rising_edge (sys_clk_i) then
       if (nfip_rst_i = '1') then
         s_manch_clk             <= '0';
         s_bit_clk               <= '0';
@@ -259,12 +262,12 @@ begin
 --                                 Concurrent signal assignments                                 --
 ---------------------------------------------------------------------------------------------------
 
-  rx_manch_clk_p_o <= s_manch_clk_d1 xor s_manch_clk;  -- a 1 uclk-wide pulse, after
+  rx_manch_clk_p_o <= s_manch_clk_d1 xor s_manch_clk;  -- a 1 sys_clk-wide pulse, after
                                                        --  o a significant edge and
                                                        --  o a new bit
                                                        -- ___|-|___|-|___|-|___
 
-  rx_bit_clk_p_o <= s_bit_clk xor s_bit_clk_d1;  -- a 1 uclk-wide pulse, after
+  rx_bit_clk_p_o <= s_bit_clk xor s_bit_clk_d1;  -- a 1 sys_clk-wide pulse, after
                                                  --  o a new bit
                                                  -- _________|-|_________
 

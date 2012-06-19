@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Title      : 
+-- Title      : Increment counter
 -- Project    : CBMIA, MIL1553 bus controller
 -- Website    : http://
 -------------------------------------------------------------------------------
@@ -7,11 +7,11 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-02
--- Last update: 2012-03-02
+-- Last update: 2012-03-14
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: 
+-- Description: Increment counter
 -------------------------------------------------------------------------------
 --
 -- Copyright (c) 2009 - 2010 CERN
@@ -47,9 +47,11 @@ use IEEE.NUMERIC_STD.all;
 
 
 entity incr_cnt is
+
   generic(
     g_COUNTER_WIDTH : natural := 4       -- default counter width
     );
+
   port(
 
     sys_clk_i : in std_logic;
@@ -61,7 +63,8 @@ entity incr_cnt is
     counter_is_full_o : out std_logic                              -- counter full indication
                                                                    -- (all bits to '1')
     );
-end entity wf_incr_counter;
+
+end entity incr_cnt;
 
 
 architecture rtl of incr_cnt is
@@ -69,17 +72,13 @@ architecture rtl of incr_cnt is
   constant c_COUNTER_FULL : unsigned (g_COUNTER_WIDTH-1 downto 0) := (others => '1');
   signal   s_counter      : unsigned (g_COUNTER_WIDTH-1 downto 0);
 
-
---=================================================================================================
---                                       architecture begin
---=================================================================================================
 begin
 
 
----------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   -- Synchronous process Incr_Counter
-
-  Incr_Counter : process (uclk_i)
+  ------------------------------------------------------------------------------
+  p_incr_cnt : process (uclk_i)
   begin
     if rising_edge (uclk_i) then
       if counter_reinit_i = '1' then
@@ -90,9 +89,7 @@ begin
 
       end if;
     end if;
-  end process;
-
-  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+  end process p_incr_cnt;
 
   counter_o         <= s_counter;
   counter_is_full_o <= '1' when s_counter = c_COUNTER_FULL else '0';

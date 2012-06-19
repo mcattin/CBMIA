@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-02
+-- Last update: 2012-03-14
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -44,11 +44,12 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
+library work;
+use work.cbmia_pkg.all;
+
 
 entity mil1553_rx is
-  generic(
 
-    );
   port (
 
     -- Global ports
@@ -63,75 +64,79 @@ entity mil1553_rx is
 
     -- User interface
     ----------------------------------------------------------------------------
-    rx_word_o          : out std_logic_vector(19 downto 0);  -- Received word
-                                                             -- 15..0 : word data
-                                                             --    16 : word type flag, 0=data, 1=status
-                                                             --    17 : error flag, 0=no error, 1=word contains error
-                                                             --    18 : parity error flag, 0=no error, 1=error
-                                                             --    19 : Manchester code violation flag, 0=no error, 1=error
-    rx_word_wr_o       : out std_logic;                      -- Received word write strobe
-    rx_done_o          : out std_logic;                      -- End of frame reception
-    rx_glitch_detect_o : out std_logic;                      -- Glitch detected in serial data
-    rx_word_error_o    : out std_logic                       -- Received word contains error (parity error, code violation)
+    rx_word_o          : out t_tx_buffer_array;  -- Receive buffer
+    rx_in_progress_o   : out std_logic;          -- Frame reception in progress
+    rx_done_p_o        : out std_logic;          -- End of frame reception
+    rx_glitch_detect_o : out std_logic;          -- Glitch detected in serial data
+    rx_word_error_o    : out std_logic           -- Received word contains error (parity error, code violation)
 
     );
+
 end mil1553_rx;
+
 
 architecture rtl of mil1553_rx is
 
-  type t_rx_fsm_state is (IDLE, SYNC_DETECT, GET_BITS, DATA_SYNC);
-
-  signal rx_fsm_state      : t_rx_fsm_state;
-  signal rx_fsm_next_state : t_rx_fsm_state;
+  ----------------------------------------------------------------------------
+  -- Signals declaration
+  ----------------------------------------------------------------------------
+  signal rxd_edge_p : std_logic;
+  signal rx_clk_rst : std_logic;
+  signal sample_manch_bit_p : std_logic;
+  signal sample_bit_p : std_logic;
+  signal signif_edge_window : std_logic;
+  signal adjac_bits_window : std_logic;
+  signal rxd_filt : std_logic;
+  signal rxd_filt_f_edge_p : std_logic;
+  signal rxd_filt_r_edge_p : std_logic;
+  signal rxd_filt_edge_p : std_logic;
 
 begin
 
   ------------------------------------------------------------------------------
-  -- Receiver FSM
+  -- Components instantiation
   ------------------------------------------------------------------------------
-  p_rx_fsm_sync : process (sys_clk_i)
-  begin
-    if rising_edge (sys_clk_i) then
-      if sys_rst_n_i = '0' then
-        rx_fsm_state <= IDLE;
-      else
-        rx_fsm_state <= rx_fsm_next_state;
-      end if;
-    end if;
-  end process p_rx_fsm_sync;
+  cmp_mil1553_rx_clk : mil1553_rx_clk
+    port map(
+      sys_rst_n_i             <= sys_rst_n_i,
+      sys_clk_i               <= sys_clk_i,
+      rxd_edge_p_i            <= rxd_edge_p,
+      rx_clk_rst_i            <= rx_clk_rst,
+      rx_manch_clk_p_o        <= sample_manch_bit_p,
+      rx_bit_clk_p_o          <= sample_bit_p,
+      rx_signif_edge_window_o <= signif_edge_window,
+      rx_adjac_bits_window_o  <= adjac_bits_window
+      );
 
-  p_rx_fsm_transitions : process
-  begin
-    case rx_fsm_state is
+  cmp_mil1553_rx_deglitcher : mil1553_rx_deglitcher
+    port map(
+      sys_rst_n_i         <= sys_rst_n_i,
+      sys_clk_i           <= sys_clk_i,
+      rxd_a_i             <= mil1553_rxd_i,
+      rxd_filt_o          <= rxd_filt,
+      rxd_filt_edge_p_o   <= rxd_filt_edge_p,
+      rxd_filt_f_edge_p_o <= rxd_filt_f_edge_p,
+      rxd_filt_r_edge_p_o <= rxd_filt_r_edge_p
+      );
 
-      when IDLE =>;
+  cmp_mil1553_rx_deserialiser : mil1553_rx_deserialiser
+    port map(
+      sys_rst_n_i          <= sys_rst_n_i,
+      sys_clk_i            <= sys_clk_i,
+      rxd_i                <= rxd_filt,
+      rxd_f_edge_p_i       <= rxd_filt_f_edge_p,
+      rxd_r_edge_p_i       <= rxd_filt_r_edge_p,
+      sample_bit_p_i       <= sample_bit_p,
+      sample_manch_bit_p_i <= sample_manch_bit_p,
+      signif_edge_window_i <= signif_edge_window,
+      adjac_bits_window_i  <= adjac_bits_window,
+      rx_clk_rst_o         <= rx_clk_rst,
+      rx_word_o            <= rx_word_o,
+      rx_in_progress_o     <= rx_in_progress_o,
+      rx_done_p_o          <= rx_done_p_o,
+      rx_glitch_detect_o   <= rx_glitch_detect_o,
+      rx_word_error_o      <= rx_word_error_o
+      );
 
-      when SYNC_DETECT =>;
-
-      when GET_BITS =>;
-
-      when DATA_SYNC =>;
-
-      when others => null;
-
-    end case;
-  end process p_rx_fsm_transitions;
-
-  p_rx_fsm_outputs : process
-  begin
-    case rx_fsm_state is
-
-      when IDLE =>;
-
-      when SYNC_DETECT =>;
-
-      when GET_BITS =>;
-
-      when DATA_SYNC =>;
-
-      when others => null;
-
-    end case;
-  end process p_rx_fsm_outputs;
 
 end architecture rtl;

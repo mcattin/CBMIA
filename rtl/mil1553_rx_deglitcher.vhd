@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-02
--- Last update: 2012-03-02
+-- Last update: 2012-03-14
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -64,10 +64,12 @@ entity mil1553_rx_deglitcher is
     ----------------------------------------------------------------------------
     rxd_filt_o          : out std_logic;  -- filtered output signal
     rxd_filt_edge_p_o   : out std_logic;  -- indicates an edge on the filtered signal
-    rxd_filt_f_edge_p_o : out std_logic   -- indicates a falling edge on the filtered signal
+    rxd_filt_f_edge_p_o : out std_logic;  -- indicates a falling edge on the filtered signal
+    rxd_filt_r_edge_p_o : out std_logic   -- indicates a rising edge on the filtered signal
 
     );
 end mil1553_rx_deglitcher;
+
 
 architecture rtl of mil1553_rx_deglitcher is
 
@@ -148,6 +150,7 @@ begin
   ------------------------------------------------------------------------------
   rxd_filt_edge_p_o   <= rxd_filt_f_edge_p or rxd_filt_r_edge_p;
   rxd_filt_f_edge_p_o <= rxd_filt_f_edge_p;
+  rxd_filt_r_edge_p_o <= rxd_filt_r_edge_p;
   rxd_filt_o          <= rxd_filt;
 
 end architecture rtl;

@@ -50,7 +50,7 @@ use IEEE.NUMERIC_STD.all;
 entity decr_cnt is
 
   generic(
-    g_counter_lgth : natural := 4       -- default length
+    g_COUNTER_WIDTH : natural := 4      -- default counter width
     );
 
   port(

@@ -44,6 +44,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
+library work;
+use work.cbmia_pkg.all;
 
 
 entity mil1553_rx_deserialiser is
@@ -58,10 +60,10 @@ entity mil1553_rx_deserialiser is
     -- MIL1553 interface
     ----------------------------------------------------------------------------
     rxd_i                : in  std_logic;  -- Serial data input
-    rxd_f_edge_i         : in  std_logic;  -- Indicates a falling edge on serial input
-    rxd_r_edge_i         : in  std_logic;  -- Indicates a rising edge on serial input
-    sample_bit_i         : in  std_logic;  -- Pulse indicating the sampling of a bit
-    sample_manch_bit_i   : in  std_logic;  -- Pulse indicating the sampling of a Manchester bit
+    rxd_f_edge_p_i       : in  std_logic;  -- Indicates a falling edge on serial input
+    rxd_r_edge_p_i       : in  std_logic;  -- Indicates a rising edge on serial input
+    sample_bit_p_i       : in  std_logic;  -- Pulse indicating the sampling of a bit
+    sample_manch_bit_p_i : in  std_logic;  -- Pulse indicating the sampling of a Manchester bit
     signif_edge_window_i : in  std_logic;  -- Time window where a significant edge is expected
     adjac_bits_window_i  : in  std_logic;  -- Time window where a transition between adjacent
                                            -- bits is expected
@@ -71,7 +73,7 @@ entity mil1553_rx_deserialiser is
     ----------------------------------------------------------------------------
     rx_word_o          : out t_tx_buffer_array;  -- Receive buffer
     rx_in_progress_o   : out std_logic;          -- Frame reception in progress
-    rx_done_o          : out std_logic;          -- End of frame reception
+    rx_done_p_o        : out std_logic;          -- End of frame reception
     rx_glitch_detect_o : out std_logic;          -- Glitch detected in serial data
     rx_word_error_o    : out std_logic           -- Received word contains error (parity error, code violation)
 
@@ -95,6 +97,12 @@ begin
 
 
   ------------------------------------------------------------------------------
+  -- Edges in windows
+  ------------------------------------------------------------------------------
+  manch_r_edge_p <= rxd_r_edge_p_i and signif_edge_window_i;
+  manch_f_edge_p <= rxd_f_edge_p_i and signif_edge_window_i;
+
+  ------------------------------------------------------------------------------
   -- Receiver FSM
   ------------------------------------------------------------------------------
   p_rx_fsm_sync : process (sys_clk_i)
@@ -114,7 +122,7 @@ begin
 
       when RX_IDLE =>
 
-        if rxd_f_edge_i = '1' then
+        if rxd_f_edge_p_i = '1' then
           rx_fsm_next_state <= RX_SYNC_DETECT;
         else
           rx_fsm_next_state <= RX_IDLE;
@@ -123,7 +131,7 @@ begin
 
       when RX_SYNC_DETECT =>
 
-        if rxd_f_edge_i = '1' or rxd_r_edge_i = '1' then
+        if rxd_f_edge_p_i = '1' or rxd_r_edge_p_i = '1' then
           rx_fsm_next_state <= RX_ERROR;
         elsif sync_detected = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
@@ -134,10 +142,10 @@ begin
 
       when RX_GET_BITS =>
 
-        if bit_cnt_is_zero = '1' and sample_manch_bit_i = '1' then
+        if bit_cnt_is_zero = '1' and sample_manch_bit_p_i = '1' then
           rx_fsm_next_state <= RX_DATA_SYNC;
-        elsif edge outside windows then
-          rx_fsm_next_state <= RX_ERROR;
+          --elsif edge outside windows then
+          --  rx_fsm_next_state <= RX_ERROR;
         else
           rx_fsm_next_state <= RX_GET_BITS;
         end if;
@@ -145,7 +153,15 @@ begin
 
       when RX_DATA_SYNC =>
 
-        
+        if data_sync_detected = '1' then
+          rx_fsm_next_state <= RX_GET_BITS;
+          --elsif edge outside signif window then
+          --  rx_fsm_next_state <= RX_ERROR;
+        elsif bit_cnt_is_zero = '1' and sample_bit_p_i = '1' then
+          rx_fsm_next_state <= RX_IDLE;
+        else
+          rx_fsm_next_state <= RX_DATA_SYNC;
+        end if;
 
 
       when RX_ERROR =>
@@ -167,48 +183,48 @@ begin
 
       when RX_IDLE =>
 
-        detecting_sync      <= '0';
-        rx_idle             <= '1';
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '1';
         receiving_word      <= '0';
         detecting_data_sync <= '0';
 
 
       when RX_SYNC_DETECT =>
 
-        detecting_sync      <= '1';
-        rx_idle             <= '0';
+        detecting_stat_sync <= '1';
+        rx_is_idle          <= '0';
         receiving_word      <= '0';
         detecting_data_sync <= '0';
 
 
       when RX_GET_BITS =>
 
-        detecting_sync      <= '0';
-        rx_idle             <= '0';
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '0';
         receiving_word      <= '1';
         detecting_data_sync <= '0';
 
 
       when RX_DATA_SYNC =>
 
-        detecting_sync      <= '0';
-        rx_idle             <= '0';
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '0';
         receiving_word      <= '0';
         detecting_data_sync <= '1';
 
 
       when RX_ERROR =>
 
-        detecting_sync      <= '0';
-        rx_idle             <= '0';
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '0';
         receiving_word      <= '0';
         detecting_data_sync <= '0';
 
 
       when others =>
 
-        detecting_sync      <= '0';
-        rx_idle             <= '0';
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '0';
         receiving_word      <= '0';
         detecting_data_sync <= '0';
 
@@ -217,20 +233,45 @@ begin
   end process p_rx_fsm_outputs;
 
   ------------------------------------------------------------------------------
-  -- Sync pattern detection
+  -- Store serial input state for sync pattern detection
   ------------------------------------------------------------------------------
-  p_sync_detect : process (sys_clk_i)
+  p_rxd_store : process (sys_clk_i)
   begin
     if rising_edge (sys_clk_i) then
       if sys_rst_n_i = '0' then
-        arriving_sync <= (others => '0');
-      elsif detecting_sync = '1' and sample_manch_bit_i = '1' then
-        arriving_sync <= arriving_sync(0) & rxd_i;
+        rxd_hist   <= (others => '0');
+        rxd_stored <= (others => '0');
+      else
+        rxd_hist <= rxd_hist(62 downto 0) & rxd_i;
+
+        if rx_is_idle = '1' and rxd_f_edge_p_i = '1' then
+          rxd_stored <= rxd_hist;
+        elsif detecting_data_sync = '1' and manch_r_edge_p = '1' then
+          rxd_stored <= rxd_hist;
+        end if;
       end if;
     end if;
-  end process p_sync_detect;
+  end process p_rxd_store;
 
-  sync_detected <= '1' when arriving_sync = c_STAT_SYNC_FIELD else '0';
+  ------------------------------------------------------------------------------
+  -- Status word sync pattern detection
+  ------------------------------------------------------------------------------
+  p_stat_sync_detect : process (sys_clk_i)
+  begin
+    if rising_edge (sys_clk_i) then
+      if sys_rst_n_i = '0' then
+        arriving_stat_sync <= (others => '1');
+      else
+        if detecting_stat_sync = '0' then
+          arriving_stat_sync <= (others => '1');
+        elsif detecting_stat_sync = '1' and sample_manch_bit_p_i = '1' then
+          arriving_stat_sync <= arriving_stat_sync(0) & rxd_i;
+        end if;
+      end if;
+    end if;
+  end process p_stat_sync_detect;
+
+  stat_sync_detected <= '1' when arriving_stat_sync = c_STAT_SYNC_FIELD else '0';
 
 
   ------------------------------------------------------------------------------
@@ -241,18 +282,20 @@ begin
     if rising_edge (sys_clk_i) then
       if sys_rst_n_i = '0' then
         received_word <= (others => '0');
-      elsif receiving_word = '1' and sample_bit_i = '1' then
+      elsif receiving_word = '1' and sample_bit_p_i = '1' then
         receiving_word <= receiving_word(30 downto 0) & rxd_i;
       end if;
     end if;
   end process p_data_shift_reg;
 
+  word_ready_p <= receiving_word and bit_cnt_is_zero and sample_manch_bit_p_i;
+
   ------------------------------------------------------------------------------
-  -- 
+  -- Bit counter
   ------------------------------------------------------------------------------
   cmp_bit_cnt : decr_cnt
     generic map(
-      g_counter_lgth => 4
+      g_COUNTER_WIDTH => 4
       )
     port map(
       sys_clk_i         => sys_clk_i,
@@ -264,17 +307,40 @@ begin
       counter_is_zero_o => bit_cnt_is_zero
       );
 
-  bit_cnt_top <= std_logic_vector(to_unsigned(18, bit_cnt_top'length))
+  bit_cnt_top <= std_logic_vector(to_unsigned(3, bit_cnt_top'length)) when receiving_word = '1' and bit_cnt_is_zero = '1' else
+                 std_logic_vector(to_unsigned(18, bit_cnt_top'length));
 
-  bit_cnt_load_p <= '1' when receiving_word = '0' else '0';
+  bit_cnt_load_p <= '1' when detecting_stat_sync = '1' else
+                    sample_manch_bit_p_i when (receiving_word = '1' or detecting_data_sync = '1') and bit_cnt_is_zero = '1' else
+                    '0';
 
-  bit_cnt_decr_p <= sample_bit_i when receiving_word = '1' else '0';
+  bit_cnt_decr_p <= sample_bit_p_i;
+
+  ------------------------------------------------------------------------------
+  -- Data word sync pattern detection
+  ------------------------------------------------------------------------------
+  p_data_sync_detect : process (sys_clk_i)
+  begin
+    if rising_edge (sys_clk_i) then
+      if sys_rst_n_i = '0' then
+        arriving_data_sync <= (others => '1');
+      else
+        if detecting_data_sync = '0' then
+          arriving_data_sync <= (others => '1');
+        elsif detecting_data_sync = '1' and sample_manch_bit_p_i = '1' then
+          arriving_data_sync <= arriving_data_sync(0) & rxd_i;
+        end if;
+      end if;
+    end if;
+  end process p_sync_detect;
+
+  data_sync_detected <= '1' when arriving_data_sync = c_DATA_SYNC_FIELD else '0';
 
   ------------------------------------------------------------------------------
   -- 
   ------------------------------------------------------------------------------
 
-  rx_clk_rst_o <= rx_idle;
+  rx_clk_rst_o <= rx_is_idle;
 
 
 end architecture rtl;
