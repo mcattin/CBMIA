@@ -73,7 +73,7 @@ class CMil1553Tx;
       // After measuring the output of the differential receiver (75173) on the CBMIA
       // it seems to stay at '1' when the input diff voltage is close to 0V.
       for(i=0;i<gap_ticks;i++)
-        waveform.push_back(1'b0);
+        waveform.push_back(1'b1);
    endtask // gap
 
    task add_glitches_edge(ref logic waveform[$], input int prob);
@@ -184,7 +184,7 @@ module main;
 
       sent.push_back(2);
       phy_obj.send(1, 2);
-      for(i=0;i<5;i++)
+      for(i=1;i<33;i++)
         begin
            sent.push_back(i);
            phy_obj.send(0, i);
@@ -198,11 +198,12 @@ module main;
 */
    end
 
-   wire rx_buffer[0:33][15:0];
+   wire rx_buffer[0:32][15:0];
    wire rx_in_progress;
    wire rx_done;
-   wire rx_glitch_detect;
-   wire rx_word_error;
+   wire rx_parity_error;
+   wire rx_manch_error;
+   wire rx_word_cnt[4:0];
 
    int         rx_xfer = 0;
 
@@ -231,10 +232,11 @@ module main;
         .mil1553_rxd_i (tx),
         .mil1553_rx_en_i (1'b1),
         .rx_buffer_o (rx_buffer),
+        .rx_word_cnt_o (rx_word_cnt),
         .rx_in_progress_o (rx_in_progress),
         .rx_done_p_o (rx_done),
-        .rx_glitch_detect_o (rx_glitch_detect),
-        .rx_word_error_o (rx_word_error)
+        .rx_parity_error_p_o (rx_parity_error),
+        .rx_manch_error_p_o (rx_manch_error)
         );
 
 

@@ -9,7 +9,7 @@ do receiver_wave.do
 view wave
 view transcript
 
-run 2 ms
+run 3 ms
 
 
 
