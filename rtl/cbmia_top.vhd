@@ -65,6 +65,8 @@
 --                                      Internal word counters are now 6-bit.
 --                                      Additional reg, reception error counter.
 -- 2012-04-16  2.09     mcattin         Add response timeout event counter.
+-- 2012-04-16  2.10     mcattin         Change RX FSM to always pass to DONE
+--                                      state before going back to IDLE state.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -81,7 +83,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0209"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0210"
     );
   port (
     -- description -> net name in schematics

@@ -29,7 +29,7 @@ Address       | R/W | Register name    | Description
    46         | RO  | MANCH_ERR_CNT    | Manchester error counter
    47         | RO  | NB_WORD_ERR_CNT  | Number of word received error counter
    48         | RO  | TX_ERR_CNT       | Sent request during transaction error counter
-   49         | RO  | NB_WORD          | Number of word expected and received
+   49         | RO  | NB_WORD          | Number of word transmitted, expected and received
    50         | RO  | RESP_TIME        | RT response time
    51         | RO  | RX_ERROR_CNT     | Reception error counter
    52         | RO  | RESP_TIMEOUT_CNT | Response timeout counter

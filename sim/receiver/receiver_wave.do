@@ -70,6 +70,7 @@ add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/sample_manch_bit_p_i
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/sample_bit_p_i
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/rx_fsm_state
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/rx_fsm_next_state
+add wave -noupdate -radix unsigned /main/UUT/cmp_mil1553_rx_deserialiser/rx_fsm_watchdog_cnt
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/rx_is_idle
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/detecting_stat_sync
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/receiving_word
@@ -98,7 +99,7 @@ add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/rx_error_p_o
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/rx_parity_error_p_o
 add wave -noupdate /main/UUT/cmp_mil1553_rx_deserialiser/rx_manch_error_p_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {150225000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {7342911845 ps} 0}
 configure wave -namecolwidth 450
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -113,4 +114,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {139026337 ps} {155942557 ps}
+WaveRestoreZoom {0 ps} {10500 us}

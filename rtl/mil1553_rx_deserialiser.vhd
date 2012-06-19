@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-04-12
+-- Last update: 2012-04-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -180,10 +180,8 @@ begin
 
       when RX_STAT_SYNC =>
 
-        if rx_fsm_watchdog_cnt = 0 then
+        if rx_fsm_watchdog_cnt = 0 or rxd_f_edge_p_i = '1' or rxd_r_edge_p_i = '1' then
           rx_fsm_next_state <= RX_ERROR;
-        elsif rxd_f_edge_p_i = '1' or rxd_r_edge_p_i = '1' then
-          rx_fsm_next_state <= RX_IDLE;
         elsif stat_sync_detected = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
         else
@@ -247,7 +245,7 @@ begin
 
 
       when RX_ERROR =>
-        rx_fsm_next_state <= RX_DONE;
+          rx_fsm_next_state <= RX_WAIT_END;
 
 
       when others =>
@@ -350,7 +348,7 @@ begin
 
         detecting_stat_sync <= '0';
         rx_is_idle          <= '0';
-        receiving_word      <= '1';
+        receiving_word      <= '0';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
         manch_error_p       <= '1';
@@ -366,7 +364,7 @@ begin
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
         manch_error_p       <= '0';
-        rx_in_progress      <= '0';
+        rx_in_progress      <= '1';
         rx_error_p          <= '1';
 
 
