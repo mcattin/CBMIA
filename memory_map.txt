@@ -8,29 +8,31 @@
 = Registers overview
 ================================================================================
 
-Address       | R/W | Register name   | Description
-(32-bit word) |     |                 |
+Address       | R/W | Register name    | Description
+(32-bit word) |     |                  |
 ---------------------------------------------------------------
-   00         | CR  | IRQ_SRC         | Interrupt source
-   01         | RW  | IRQ_EN          | Interrupt enable mask
-   02         | RO  | TEMP            | Temperature
-   03         | RO  | STAT            | Status register
-   04         | RW  | CMD             | Command register
-   05         | RW  | FRU             | Reserved
-   06         | RO  | ID_MSB          | Unique ID (MSBs)
-   07         | RO  | ID_LSB          | Unique ID (LSBs)
-   08         | RW  | TX_REG          | Transmit register
-   09         | RO  | RX_REG          | Receive register
-   10 -> 26   | RO  | RX_BUF          | Receive buffer
-   27 -> 42   | RW  | TX_BUF          | Transmit buffer
-   43         | RO  | TX_FRAME_CNT    | Transmitted frame counter
-   44         | RO  | RX_FRAME_CNT    | Reveived frame counter
-   45         | RO  | PARITY_ERR_CNT  | Parity error counter
-   46         | RO  | MANCH_ERR_CNT   | Manchester error counter
-   47         | RO  | NB_WORD_ERR_CNT | Number of word received error counter
-   48         | RO  | TX_ERR_CNT      | Sent request during transaction error counter
-   49         | RO  | NB_WORD         | Number of word expected and received
-   50         | RO  | RESP_TIMEOUT    | Response timeout counter
+   00         | CR  | IRQ_SRC          | Interrupt source
+   01         | RW  | IRQ_EN           | Interrupt enable mask
+   02         | RO  | TEMP             | Temperature
+   03         | RO  | STAT             | Status register
+   04         | RW  | CMD              | Command register
+   05         | RW  | FRU              | Reserved
+   06         | RO  | ID_MSB           | Unique ID (MSBs)
+   07         | RO  | ID_LSB           | Unique ID (LSBs)
+   08         | RW  | TX_REG           | Transmit register
+   09         | RO  | RX_REG           | Receive register
+   10 -> 26   | RO  | RX_BUF           | Receive buffer
+   27 -> 42   | RW  | TX_BUF           | Transmit buffer
+   43         | RO  | TX_FRAME_CNT     | Transmitted frame counter
+   44         | RO  | RX_FRAME_CNT     | Reveived frame counter
+   45         | RO  | PARITY_ERR_CNT   | Parity error counter
+   46         | RO  | MANCH_ERR_CNT    | Manchester error counter
+   47         | RO  | NB_WORD_ERR_CNT  | Number of word received error counter
+   48         | RO  | TX_ERR_CNT       | Sent request during transaction error counter
+   49         | RO  | NB_WORD          | Number of word expected and received
+   50         | RO  | RESP_TIME        | RT response time
+   51         | RO  | RX_ERROR_CNT     | Reception error counter
+   52         | RO  | RESP_TIMEOUT_CNT | Response timeout counter
 
 
 ================================================================================
@@ -41,13 +43,14 @@ Address       | R/W | Register name   | Description
 00 - IRQ_SRC (Clear on read)
 --------------------------------------------------------------------------------
 bit [0]     : End of transaction IRQ.
-bit [16:1]  : Unused. Ignore on read.
-bit [17]    : Response timeout (no reply from RT).
-bit [18]    : Number of received word differs from number of expected word (in the frame causing this IRQ).
-bit [19]    : Manchester error (in the frame causing this IRQ).
-bit [20]    : Parity error (in the frame causing this IRQ).
-bit [21]    : T/R flag, 0 = BC->RT transaction, 1 = RT->BC transaction.
-bit [26:22] : Word count. If T/R flag = 1, countains the number of word present in the receive buffer.
+bit [14:1]  : Unused. Ignore on read.
+bit [15]    : Reception error (FSM watchdog).
+bit [16]    : Response timeout (no reply from RT).
+bit [17]    : Number of received word differs from number of expected word (in the frame causing this IRQ).
+bit [18]    : Manchester error (in the frame causing this IRQ).
+bit [19]    : Parity error (in the frame causing this IRQ).
+bit [20]    : T/R flag, 0 = BC->RT transaction, 1 = RT->BC transaction.
+bit [26:21] : Word count. If T/R flag = 1, countains the number of word present in the receive buffer.
 bit [31:27] : RT number, 0 = response timeout or truncated/corrupted frame.
 
 
@@ -86,7 +89,9 @@ Range: -55 -> +125 degree C.
 --------------------------------------------------------------------------------
 bit [15:0]  : BCD encoded HDL version (e.g. 0203 => v2.03).
 bit [30:16] : Unused. Ignore on read.
-bit [31]    : Transaction flag. 0 = MIL1553 bus is idle, 1 = Transaction in progress on MIL1553 bus
+bit [31]    : Transaction flag.
+              0 = MIL1553 bus is idle,
+              1 = Transaction in progress on MIL1553 bus
 
 
 04 - CMD (Read/write)
@@ -114,7 +119,7 @@ Mux correspondance table:
   "1100" = Send frame request
   "1101" = MIL1553 TXD
   "1110" = Transaction end
-  "1111" = Software reset
+  "1111" = RX error
 
 
 05 - RFU (Read only)
@@ -197,10 +202,11 @@ bit [31:0]  : Transmission error counter. Incremented when a transmission reques
 
 49 - NB_WORD (Read only)
 --------------------------------------------------------------------------------
-bit [4:0]   : Word count transmitted (for BC->RT) or expected (for RT->BC).
-bit [15:5]  : Unused. Ignore on read.
-bit [20:16] : Word count received (for RT->BC only).
-bit [26:21] : Unused. Ignore on read.
+bit [5:0]   : Word count transmitted (for BC->RT and RT->BC).
+bit [11:6]  : Word count received (for RT->BC only).
+bit [17:12] : Expected number of word (for BC->RT and RT->BC).
+bit [25:18] : Unused. Ignore on read.
+bit [26]    : Reception error (FSM watchdog).
 bit [27]    : Response timeout (no reply from RT).
 bit [28]    : Number of received word differs from number of expected word (in the frame causing this IRQ).
 bit [29]    : Manchester error (in the frame causing this IRQ).
@@ -208,7 +214,7 @@ bit [30]    : Parity error (in the frame causing this IRQ).
 bit [31]    : T/R flag, 0 = BC->RT transaction, 1 = RT->BC transaction.
 
 
-50 - RESP_TIMEOUT (Read only)
+50 - RESP_TIME (Read only)
 --------------------------------------------------------------------------------
 bit [9:0]   : Response timeout counter value. Can be used to measure the RT response time.
 bit [31:10] : Unused. Ignore on read.
@@ -217,3 +223,12 @@ Response time [s] = (1023 - counter_value) / 40E6
 
 If Response timeout counter value is 1023, it means that a the RT didn't reply and a timeout occured.
 
+51 - RX_ERROR_CNT (Read only)
+--------------------------------------------------------------------------------
+bit [31:0]  : Reception error counter. Incremented if the bus is idle for more
+              than 3.2us during a frame reception (-> FSM watchdog). Cleared on reset.
+
+52 - RESP_TIMEOUT_CNT (Read only)
+--------------------------------------------------------------------------------
+bit [31:0]  : Response timeout counter. Incremented on RT response timeout.
+              Cleared on reset.

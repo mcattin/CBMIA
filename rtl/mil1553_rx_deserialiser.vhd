@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-04-04
+-- Last update: 2012-04-12
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -77,12 +77,14 @@ entity mil1553_rx_deserialiser is
 
     -- User interface
     ----------------------------------------------------------------------------
+    expected_nb_word_i  : in  std_logic_vector(5 downto 0);  -- Expected nb of word from RT (including the status word)
     rx_buffer_o         : out t_rx_buffer_array;             -- Receive buffer
-    rx_word_cnt_o       : out std_logic_vector(4 downto 0);  -- Number of words in the receive buffer
+    rx_word_cnt_o       : out std_logic_vector(5 downto 0);  -- Number of words in the receive buffer
     rx_in_progress_o    : out std_logic;                     -- Frame reception in progress
     rx_done_p_o         : out std_logic;                     -- End of frame reception
     rx_parity_error_p_o : out std_logic;                     -- Parity error detected
-    rx_manch_error_p_o  : out std_logic                      -- Manchester code violation detected
+    rx_manch_error_p_o  : out std_logic;                     -- Manchester code violation detected
+    rx_error_p_o        : out std_logic                      -- Reception error (watchdog timout)
 
     );
 
@@ -91,11 +93,12 @@ end mil1553_rx_deserialiser;
 
 architecture rtl of mil1553_rx_deserialiser is
 
-  type t_rx_fsm_state is (RX_IDLE, RX_SYNC_DETECT, RX_GET_BITS, RX_MANCH_EDGE,
-                          RX_DATA_SYNC, RX_DONE, RX_MANCH_ERROR);
+  type t_rx_fsm_state is (RX_IDLE, RX_STAT_SYNC, RX_GET_BITS, RX_MANCH_EDGE, RX_WAIT_END,
+                          RX_DATA_SYNC, RX_DONE, RX_MANCH_ERROR, RX_ERROR);
 
-  signal rx_fsm_state      : t_rx_fsm_state;
-  signal rx_fsm_next_state : t_rx_fsm_state;
+  signal rx_fsm_state        : t_rx_fsm_state;
+  signal rx_fsm_next_state   : t_rx_fsm_state;
+  signal rx_fsm_watchdog_cnt : unsigned(6 downto 0);
 
   signal manch_r_edge_p : std_logic;
   signal manch_f_edge_p : std_logic;
@@ -108,8 +111,9 @@ architecture rtl of mil1553_rx_deserialiser is
   signal detecting_data_sync : std_logic;
   signal rx_done_p           : std_logic;
   signal manch_error_p       : std_logic;
+  signal rx_error_p          : std_logic;
 
-  signal rxd_hist : std_logic_vector(63 downto 0);
+  signal rxd_hist : std_logic_vector(59 downto 0);
 
   signal stat_sync_detected : std_logic;
   signal arriving_stat_sync : std_logic_vector(1 downto 0);
@@ -122,6 +126,8 @@ architecture rtl of mil1553_rx_deserialiser is
 
   signal data_sync_detected : std_logic;
   signal arriving_data_sync : std_logic_vector(5 downto 0);
+
+  signal rxd_idle : std_logic;
 
   signal received_word : std_logic_vector(16 downto 0);
   signal word_ready_p  : std_logic;
@@ -157,7 +163,8 @@ begin
                                  stat_sync_detected, bit_cnt_is_zero,
                                  sample_manch_bit_p_i, sample_bit_p_i,
                                  data_sync_detected, manch_edge_p,
-                                 rxd_hist, rx_en_i)
+                                 rxd_hist, rx_en_i, rx_fsm_watchdog_cnt,
+                                 expected_nb_word_i, word_cnt)
   begin
     case rx_fsm_state is
 
@@ -165,26 +172,30 @@ begin
 
         if (rx_en_i = '1' and rxd_f_edge_p_i = '1' and
             rxd_hist(59 downto 0) = X"FFFFFFFFFFFFFFF") then
-          rx_fsm_next_state <= RX_SYNC_DETECT;
+          rx_fsm_next_state <= RX_STAT_SYNC;
         else
           rx_fsm_next_state <= RX_IDLE;
         end if;
 
 
-      when RX_SYNC_DETECT =>
+      when RX_STAT_SYNC =>
 
-        if rxd_f_edge_p_i = '1' or rxd_r_edge_p_i = '1' then
+        if rx_fsm_watchdog_cnt = 0 then
+          rx_fsm_next_state <= RX_ERROR;
+        elsif rxd_f_edge_p_i = '1' or rxd_r_edge_p_i = '1' then
           rx_fsm_next_state <= RX_IDLE;
         elsif stat_sync_detected = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
         else
-          rx_fsm_next_state <= RX_SYNC_DETECT;
+          rx_fsm_next_state <= RX_STAT_SYNC;
         end if;
 
 
       when RX_GET_BITS =>
 
-        if bit_cnt_is_zero = '1' and sample_manch_bit_p_i = '1' then
+        if rx_fsm_watchdog_cnt = 0 then
+          rx_fsm_next_state <= RX_ERROR;
+        elsif bit_cnt_is_zero = '1' and sample_manch_bit_p_i = '1' then
           rx_fsm_next_state <= RX_DATA_SYNC;
         elsif sample_bit_p_i = '1' then
           rx_fsm_next_state <= RX_MANCH_EDGE;
@@ -195,12 +206,10 @@ begin
 
       when RX_MANCH_EDGE =>
 
-        if manch_edge_p = '1' then
+        if rx_fsm_watchdog_cnt = 0 then
+          rx_fsm_next_state <= RX_ERROR;
+        elsif manch_edge_p = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
-        elsif sample_manch_bit_p_i = '1' and bit_cnt_is_zero = '1' then
-          -- This is to end the reception if a Manchester error is detected
-          -- after a frame (e.g. spurious data sync pattern at the end of a frame!).
-          rx_fsm_next_state <= RX_DONE;
         elsif sample_manch_bit_p_i = '1' then
           rx_fsm_next_state <= RX_MANCH_ERROR;
         else
@@ -210,28 +219,40 @@ begin
 
       when RX_DATA_SYNC =>
 
-        if data_sync_detected = '1' then
+        if rx_fsm_watchdog_cnt = 0 then
+          rx_fsm_next_state <= RX_ERROR;
+        elsif unsigned(expected_nb_word_i) = word_cnt then
+          rx_fsm_next_state <= RX_WAIT_END;
+        elsif data_sync_detected = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
-        elsif bit_cnt_is_zero = '1' and sample_bit_p_i = '1' then
-          rx_fsm_next_state <= RX_DONE;
         else
           rx_fsm_next_state <= RX_DATA_SYNC;
         end if;
 
 
-      when RX_DONE =>
+      when RX_WAIT_END =>
+        if rx_fsm_watchdog_cnt = 0 then
+          rx_fsm_next_state <= RX_DONE;
+        else
+          rx_fsm_next_state <= RX_WAIT_END;
+        end if;
 
+
+      when RX_DONE =>
         rx_fsm_next_state <= RX_IDLE;
 
 
       when RX_MANCH_ERROR =>
-        -- ERROR state only generates a Manchester error pulse
-        rx_fsm_next_state <= RX_GET_BITS;
+        rx_fsm_next_state <= RX_WAIT_END;
+
+
+      when RX_ERROR =>
+        rx_fsm_next_state <= RX_DONE;
 
 
       when others =>
 
-        rx_fsm_next_state <= RX_IDLE;
+        rx_fsm_next_state <= RX_ERROR;
 
 
     end case;
@@ -250,9 +271,10 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '0';
         rx_in_progress      <= '0';
+        rx_error_p          <= '0';
 
 
-      when RX_SYNC_DETECT =>
+      when RX_STAT_SYNC =>
 
         detecting_stat_sync <= '1';
         rx_is_idle          <= '0';
@@ -261,6 +283,7 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '0';
         rx_in_progress      <= '0';
+        rx_error_p          <= '0';
 
 
       when RX_GET_BITS =>
@@ -272,6 +295,7 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '0';
         rx_in_progress      <= '1';
+        rx_error_p          <= '0';
 
 
       when RX_MANCH_EDGE =>
@@ -283,6 +307,7 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '0';
         rx_in_progress      <= '1';
+        rx_error_p          <= '0';
 
 
       when RX_DATA_SYNC =>
@@ -294,6 +319,19 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '0';
         rx_in_progress      <= '1';
+        rx_error_p          <= '0';
+
+
+      when RX_WAIT_END =>
+
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '0';
+        receiving_word      <= '0';
+        detecting_data_sync <= '0';
+        rx_done_p           <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '1';
+        rx_error_p          <= '0';
 
 
       when RX_DONE =>
@@ -305,6 +343,7 @@ begin
         rx_done_p           <= '1';
         manch_error_p       <= '0';
         rx_in_progress      <= '1';
+        rx_error_p          <= '0';
 
 
       when RX_MANCH_ERROR =>
@@ -316,6 +355,19 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '1';
         rx_in_progress      <= '1';
+        rx_error_p          <= '0';
+
+
+      when RX_ERROR =>
+
+        detecting_stat_sync <= '0';
+        rx_is_idle          <= '0';
+        receiving_word      <= '0';
+        detecting_data_sync <= '0';
+        rx_done_p           <= '0';
+        manch_error_p       <= '0';
+        rx_in_progress      <= '0';
+        rx_error_p          <= '1';
 
 
       when others =>
@@ -327,13 +379,32 @@ begin
         rx_done_p           <= '0';
         manch_error_p       <= '0';
         rx_in_progress      <= '0';
+        rx_error_p          <= '0';
 
 
     end case;
   end process p_rx_fsm_outputs;
 
   ------------------------------------------------------------------------------
-  -- Store serial input state history for sync pattern detection
+  -- FSM watchdog
+  -- Resets the FSM if not IDLE and no egde is detected for more than 3.2us
+  ------------------------------------------------------------------------------
+  p_fsm_watchdog : process (sys_clk_i)
+  begin
+    if rising_edge (sys_clk_i) then
+      if sys_rst_n_i = '0' or rx_is_idle = '1' then
+        rx_fsm_watchdog_cnt <= (others => '1');
+      elsif rxd_f_edge_p_i = '1' or rxd_r_edge_p_i = '1' then
+        rx_fsm_watchdog_cnt <= (others => '1');
+      elsif rx_fsm_watchdog_cnt /= 0 then
+        rx_fsm_watchdog_cnt <= rx_fsm_watchdog_cnt - 1;
+      end if;
+    end if;
+  end process p_fsm_watchdog;
+
+  ------------------------------------------------------------------------------
+  -- Store serial input state history (2.5us) for sync pattern detection and
+  -- end of frame detection (idle bus).
   ------------------------------------------------------------------------------
   p_rxd_hist : process (sys_clk_i)
   begin
@@ -341,7 +412,7 @@ begin
       if sys_rst_n_i = '0' then
         rxd_hist <= (others => '0');
       else
-        rxd_hist <= rxd_hist(62 downto 0) & rxd_i;
+        rxd_hist <= rxd_hist(58 downto 0) & rxd_i;
       end if;
     end if;
   end process p_rxd_hist;
@@ -446,7 +517,7 @@ begin
         word_cnt <= (others => '0');
       elsif detecting_stat_sync = '1' then
         word_cnt <= (others => '0');
-      elsif word_ready_p = '1' and word_cnt /= to_unsigned(32, word_cnt'length) then
+      elsif word_ready_p = '1' then
         word_cnt <= word_cnt + 1;
       end if;
     end if;
@@ -476,14 +547,10 @@ begin
     if rising_edge (sys_clk_i) then
       if sys_rst_n_i = '0' then
         rx_word_cnt_o <= (others => '0');
-      elsif detecting_stat_sync = '1' or rx_done_p = '1' then
+      elsif detecting_stat_sync = '1' then
         rx_word_cnt_o <= (others => '0');
-      elsif word_ready_p = '1' then
-        if word_cnt = to_unsigned(32, word_cnt'length) then
-          rx_word_cnt_o <= "00000";
-        else
-          rx_word_cnt_o <= std_logic_vector(word_cnt(4 downto 0));
-        end if;
+      elsif receiving_word = '0' then
+        rx_word_cnt_o <= std_logic_vector(word_cnt);
       end if;
     end if;
   end process p_rx_word_cnt;
@@ -495,6 +562,7 @@ begin
   rx_done_p_o        <= rx_done_p;
   rx_in_progress_o   <= rx_in_progress;
   rx_manch_error_p_o <= manch_error_p;
+  rx_error_p_o       <= rx_error_p;
 
 
 end architecture rtl;

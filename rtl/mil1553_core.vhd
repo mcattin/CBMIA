@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-12
--- Last update: 2012-04-04
+-- Last update: 2012-04-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -133,8 +133,8 @@ architecture rtl of mil1553_core is
   signal mil1553_txd           : std_logic;
   signal mil1553_tx_en         : std_logic;
   signal mil1553_rx_en         : std_logic;
-  signal rx_word_cnt           : std_logic_vector(4 downto 0);
-  signal rx_word_cnt_t         : std_logic_vector(4 downto 0);
+  signal rx_word_cnt           : std_logic_vector(5 downto 0);
+  signal rx_word_cnt_t         : std_logic_vector(5 downto 0);
   signal rx_in_progress        : std_logic;
   signal rx_done_p             : std_logic;
   signal rx_parity_error_p     : std_logic;
@@ -145,16 +145,20 @@ architecture rtl of mil1553_core is
   signal rx_manch_error_cnt    : unsigned(31 downto 0);
   signal rx_nb_word_error_p    : std_logic;
   signal rx_nb_word_error_flag : std_logic;
-  signal tx_word_cnt           : std_logic_vector(4 downto 0);
+  signal tx_word_cnt           : std_logic_vector(5 downto 0);
   signal tx_tr_flag            : std_logic;
-  signal tx_mode_code          : std_logic;
   signal rx_nb_word_error_cnt  : unsigned(31 downto 0);
   signal tx_done_p             : std_logic;
+  signal expected_nb_word      : std_logic_vector(5 downto 0);  -- expected nb of word from RT (including the status word)
+  signal rx_error_p            : std_logic;
+  signal rx_error_cnt          : unsigned(31 downto 0);
+  signal rx_error_flag         : std_logic;
 
-  signal resp_timeout_cnt    : unsigned(9 downto 0);
-  signal resp_timeout_cnt_en : std_logic;
-  signal resp_timeout_p      : std_logic;
-  signal resp_timeout_flag   : std_logic;
+  signal resp_time_cnt     : unsigned(9 downto 0);
+  signal resp_time_cnt_en  : std_logic;
+  signal resp_timeout_p    : std_logic;
+  signal resp_timeout_flag : std_logic;
+  signal resp_timeout_cnt  : unsigned(31 downto 0);
 
   signal transaction_progress   : std_logic;
   signal transaction_progress_d : std_logic;
@@ -255,11 +259,12 @@ begin
   p_reg_rd : process(irq_en_msk_reg, irq_src_reg, cmd_reg, tx_reg, rx_reg,
                      rx_rti, tx_word_cnt, rx_word_cnt, transaction_progress,
                      sent_frame_cnt, received_frame_cnt, rx_nb_word_error_cnt,
-                     req_during_trans_cnt, resp_timeout_cnt,
+                     req_during_trans_cnt, resp_time_cnt, resp_timeout_cnt,
                      rx_buffer, tx_buffer, temp, tx_tr_flag, unique_id,
                      rx_parity_error_cnt, rx_manch_error_cnt,
                      rx_parity_error_flag, rx_manch_error_flag,
-                     rx_nb_word_error_flag, resp_timeout_flag)
+                     rx_nb_word_error_flag, resp_timeout_flag,
+                     rx_error_flag, rx_error_cnt, expected_nb_word)
   begin
 
     l_rd_done : for I in from_regs'range loop
@@ -271,7 +276,8 @@ begin
     from_regs(c_IRQ_SRC_POS).data <= rx_rti & rx_word_cnt & tx_tr_flag
                                      & rx_parity_error_flag & rx_manch_error_flag
                                      & rx_nb_word_error_flag & resp_timeout_flag
-                                     & irq_src_reg(16 downto 0);
+                                     & rx_error_flag
+                                     & irq_src_reg(14 downto 0);
 
     -- Command and status
     from_regs(c_CMD_POS).data  <= cmd_reg;
@@ -296,9 +302,11 @@ begin
     from_regs(c_NB_WORD_ERR_CNT_POS).data <= std_logic_vector(rx_nb_word_error_cnt);
     from_regs(c_TX_ERR_CNT_POS).data      <= std_logic_vector(req_during_trans_cnt);
     from_regs(c_NB_WORD_POS).data         <= tx_tr_flag & rx_parity_error_flag & rx_manch_error_flag
-                                             & rx_nb_word_error_flag & resp_timeout_flag
-                                             & "000000" & rx_word_cnt & X"00" & "000" & tx_word_cnt;
-    from_regs(c_RESP_TIMEOUT_POS).data <= X"0000" & "000000" & std_logic_vector(resp_timeout_cnt);
+                                             & rx_nb_word_error_flag & resp_timeout_flag & rx_error_flag
+                                             & X"00" & expected_nb_word & rx_word_cnt & tx_word_cnt;
+    from_regs(c_RESP_TIME_POS).data        <= X"0000" & "000000" & std_logic_vector(resp_time_cnt);
+    from_regs(c_RX_ERROR_CNT_POS).data     <= std_logic_vector(rx_error_cnt);
+    from_regs(c_RESP_TIMEOUT_CNT_POS).data <= std_logic_vector(resp_timeout_cnt);
 
     -- Reserved for future use
     from_regs(c_RFU_POS).data <= X"00000000";
@@ -350,25 +358,40 @@ begin
   tx_send_frame_p <= send_frame_req_p when transaction_progress = '0' else '0';
 
   ------------------------------------------------------------------------------
-  -- Stores the number of word to send/receive, the TR flag and the mode code
-  -- flag. The mode code flag if set when the Sub-addres/Mode field (SA) is
-  -- either 0 or 31.
+  -- Stores the number of word to send/receive, the expected number of word to
+  -- reveive and the TR flag.
   ------------------------------------------------------------------------------
   p_tx_word_cnt : process(sys_clk_i)
   begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
-        tx_word_cnt  <= (others => '0');
-        tx_tr_flag   <= '0';
-        tx_mode_code <= '0';
+        expected_nb_word <= (others => '0');
+        tx_word_cnt      <= (others => '0');
+        tx_tr_flag       <= '0';
       elsif tx_send_frame_p = '1' then
-        tx_word_cnt <= tx_reg(c_CMD_WC4 downto c_CMD_WC0);
-        tx_tr_flag  <= tx_reg(c_CMD_TR);
+        tx_tr_flag <= tx_reg(c_CMD_TR);
         if (tx_reg(c_CMD_SA4 downto c_CMD_SA0) = "00000" or
-            tx_reg(c_CMD_SA4 downto c_CMD_SA0) = "11111") then
-          tx_mode_code <= '1';
-        else
-          tx_mode_code <= '0';
+            tx_reg(c_CMD_SA4 downto c_CMD_SA0) = "11111") then  -- WC field countains a Mode Code
+          tx_word_cnt      <= (others => '0');
+          expected_nb_word <= std_logic_vector(to_unsigned(1, expected_nb_word'length));
+        else                                                    -- WC field contains the number of word to send/receive
+          if tx_reg(c_CMD_WC4 downto c_CMD_WC0) = "00000" then
+            if tx_reg(c_CMD_TR) = c_BC2RT then
+              tx_word_cnt      <= std_logic_vector(to_unsigned(32, tx_word_cnt'length));
+              expected_nb_word <= std_logic_vector(to_unsigned(1, expected_nb_word'length));
+            else                                                -- c_RT2BC
+              tx_word_cnt      <= (others => '0');
+              expected_nb_word <= std_logic_vector(to_unsigned(33, expected_nb_word'length));
+            end if;
+          else
+            if tx_reg(c_CMD_TR) = c_BC2RT then
+              tx_word_cnt      <= '0' & tx_reg(c_CMD_WC4 downto c_CMD_WC0);
+              expected_nb_word <= std_logic_vector(to_unsigned(1, expected_nb_word'length));
+            else                                                -- c_RT2BC
+              tx_word_cnt      <= (others => '0');
+              expected_nb_word <= std_logic_vector(unsigned('0' & tx_reg(c_CMD_WC4 downto c_CMD_WC0)) + 1);
+            end if;
+          end if;
         end if;
       end if;
     end if;
@@ -450,12 +473,14 @@ begin
       sys_clk_i           => sys_clk_i,
       mil1553_rxd_i       => mil1553_rxd_a_i,
       mil1553_rx_en_i     => mil1553_rx_en,
+      expected_nb_word_i  => expected_nb_word,
       rx_buffer_o         => rx_buffer_t,
       rx_word_cnt_o       => rx_word_cnt_t,
       rx_in_progress_o    => rx_in_progress,
       rx_done_p_o         => rx_done_p,
       rx_parity_error_p_o => rx_parity_error_p,
-      rx_manch_error_p_o  => rx_manch_error_p
+      rx_manch_error_p_o  => rx_manch_error_p,
+      rx_error_p_o        => rx_error_p
       );
 
   ------------------------------------------------------------------------------
@@ -540,38 +565,38 @@ begin
   ------------------------------------------------------------------------------
   -- RT response timeout
   ------------------------------------------------------------------------------
-  p_resp_timeout_cnt_en : process (sys_clk_i)
+  p_resp_time_cnt_en : process (sys_clk_i)
   begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
-        resp_timeout_cnt_en <= '0';
+        resp_time_cnt_en <= '0';
       elsif tx_done_p = '1' then
-        resp_timeout_cnt_en <= '1';
-      elsif resp_timeout_cnt = 0 or rx_in_progress = '1' then
-        resp_timeout_cnt_en <= '0';
+        resp_time_cnt_en <= '1';
+      elsif resp_time_cnt = 0 or rx_in_progress = '1' then
+        resp_time_cnt_en <= '0';
       end if;
     end if;
-  end process p_resp_timeout_cnt_en;
+  end process p_resp_time_cnt_en;
 
-  p_resp_timeout_cnt : process (sys_clk_i)
+  p_resp_time_cnt : process (sys_clk_i)
   begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
-        resp_timeout_cnt <= (others => '1');
-      elsif tx_done_p = '1' or resp_timeout_cnt = 0 then
-        resp_timeout_cnt <= (others => '1');
-      elsif resp_timeout_cnt_en = '1' then
-        resp_timeout_cnt <= resp_timeout_cnt - 1;
+        resp_time_cnt <= (others => '1');
+      elsif tx_done_p = '1' or resp_time_cnt = 0 then
+        resp_time_cnt <= (others => '1');
+      elsif resp_time_cnt_en = '1' then
+        resp_time_cnt <= resp_time_cnt - 1;
       end if;
     end if;
-  end process p_resp_timeout_cnt;
+  end process p_resp_time_cnt;
 
   p_resp_timeout : process (sys_clk_i)
   begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
         resp_timeout_p <= '0';
-      elsif resp_timeout_cnt = 0 then
+      elsif resp_time_cnt = 0 then
         resp_timeout_p <= '1';
       else
         resp_timeout_p <= '0';
@@ -591,6 +616,17 @@ begin
       end if;
     end if;
   end process p_resp_timeout_flag;
+
+  p_resp_timeout_cnt : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        resp_timeout_cnt <= (others => '0');
+      elsif resp_timeout_p = '1' then
+        resp_timeout_cnt <= resp_timeout_cnt + 1;
+      end if;
+    end if;
+  end process p_resp_timeout_cnt;
 
   ------------------------------------------------------------------------------
   -- Transmitted frame counter
@@ -629,9 +665,7 @@ begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
         rx_nb_word_error_p <= '0';
-      elsif ((rx_done_p = '1') and
-             tx_tr_flag = c_RT2BC and tx_mode_code = '0' and
-             unsigned(rx_word_cnt_t) /= unsigned(tx_word_cnt)) then
+      elsif (rx_done_p = '1' and unsigned(rx_word_cnt_t) /= unsigned(expected_nb_word)) then
         rx_nb_word_error_p <= '1';
       else
         rx_nb_word_error_p <= '0';
@@ -745,6 +779,36 @@ begin
       end if;
     end if;
   end process p_manch_error_flag;
+
+  ------------------------------------------------------------------------------
+  -- Reception errors counter
+  ------------------------------------------------------------------------------
+  p_rx_error_cnt : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_error_cnt <= (others => '0');
+      elsif rx_error_p = '1' then
+        rx_error_cnt <= rx_error_cnt + 1;
+      end if;
+    end if;
+  end process p_rx_error_cnt;
+
+  ------------------------------------------------------------------------------
+  -- Reception error flag, indicates an error in the last reveived frame
+  ------------------------------------------------------------------------------
+  p_rx_error_flag : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_error_flag <= '0';
+      elsif tx_send_frame_p = '1' then
+        rx_error_flag <= '0';
+      elsif rx_error_p = '1' then
+        rx_error_flag <= '1';
+      end if;
+    end if;
+  end process p_rx_error_flag;
 
   ------------------------------------------------------------------------------
   -- LEDs
@@ -880,7 +944,7 @@ begin
       when "1100" => test_point_o(0) <= send_frame_req_p;
       when "1101" => test_point_o(0) <= mil1553_txd;
       when "1110" => test_point_o(0) <= transaction_end_p;
-      when "1111" => test_point_o(0) <= sw_rst_p;
+      when "1111" => test_point_o(0) <= rx_error_p;
       when others => test_point_o(0) <= transaction_progress;
     end case;
   end process p_tp0_mux;
@@ -903,7 +967,7 @@ begin
       when "1100" => test_point_o(1) <= send_frame_req_p;
       when "1101" => test_point_o(1) <= mil1553_txd;
       when "1110" => test_point_o(1) <= transaction_end_p;
-      when "1111" => test_point_o(1) <= sw_rst_p;
+      when "1111" => test_point_o(1) <= rx_error_p;
       when others => test_point_o(1) <= mil1553_tx_en;
     end case;
   end process p_tp1_mux;
@@ -926,7 +990,7 @@ begin
       when "1100" => test_point_o(2) <= send_frame_req_p;
       when "1101" => test_point_o(2) <= mil1553_txd;
       when "1110" => test_point_o(2) <= transaction_end_p;
-      when "1111" => test_point_o(2) <= sw_rst_p;
+      when "1111" => test_point_o(2) <= rx_error_p;
       when others => test_point_o(2) <= rx_in_progress;
     end case;
   end process p_tp2_mux;
@@ -949,7 +1013,7 @@ begin
       when "1100" => test_point_o(3) <= send_frame_req_p;
       when "1101" => test_point_o(3) <= mil1553_txd;
       when "1110" => test_point_o(3) <= transaction_end_p;
-      when "1111" => test_point_o(3) <= sw_rst_p;
+      when "1111" => test_point_o(3) <= rx_error_p;
       when others => test_point_o(3) <= mil1553_rxd_a_i;
     end case;
   end process p_tp3_mux;

@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-04-04
+-- Last update: 2012-04-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -41,7 +41,7 @@
 -- 2012-03-19  2.02     mcattin         Doesn't start RX FSM when transmitting,
 --                                      add temperature readout.
 -- 2012-03-21  2.03     mcattin         Add TR flag in the interrupt source reg
--- 2012-03-22  2.04     mcattin         Add error flags in interrupt sourde reg,
+-- 2012-03-22  2.04     mcattin         Add error flags in interrupt source reg,
 --                                      add more status registers at the end
 --                                      of the memory map, add test point mux.
 -- 2012-03-29  2.05     mcattin         Fix a bug in word count comparator.
@@ -55,6 +55,16 @@
 --                                      of reception state in case of Manchester
 --                                      error after a frame (e.g. spurious data
 --                                      sync pattern at the end of a frame).
+-- 2012-04-12  2.08     mcattin         Frame reception ends either when expected
+--                                      nb of words is received or when the bus
+--                                      is quiet ( = no transitions are detected
+--                                      on the bus for 3.2us).
+--                                      When a Manchester error is detected, the
+--                                      reception is stopped and waits for the
+--                                      bus to be quiet to give the IRQ.
+--                                      Internal word counters are now 6-bit.
+--                                      Additional reg, reception error counter.
+-- 2012-04-16  2.09     mcattin         Add response timeout event counter.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -71,7 +81,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0207"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0209"
     );
   port (
     -- description -> net name in schematics

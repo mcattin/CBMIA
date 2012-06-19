@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-04-04
+-- Last update: 2012-04-12
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -67,12 +67,14 @@ entity mil1553_rx is
 
     -- User interface
     ----------------------------------------------------------------------------
+    expected_nb_word_i  : in  std_logic_vector(5 downto 0);  -- Expected nb of word from RT (including the status word)
     rx_buffer_o         : out t_rx_buffer_array;             -- Receive buffer
-    rx_word_cnt_o       : out std_logic_vector(4 downto 0);  -- Number of words in the receive buffer
+    rx_word_cnt_o       : out std_logic_vector(5 downto 0);  -- Number of words in the receive buffer
     rx_in_progress_o    : out std_logic;                     -- Frame reception in progress
     rx_done_p_o         : out std_logic;                     -- End of frame reception
     rx_parity_error_p_o : out std_logic;                     -- Parity error detected
-    rx_manch_error_p_o  : out std_logic                      -- Manchester code violation detected
+    rx_manch_error_p_o  : out std_logic;                     -- Manchester code violation detected
+    rx_error_p_o        : out std_logic                      -- Reception error (watchdog timout)
 
     );
 
@@ -147,12 +149,14 @@ begin
       adjac_bits_window_i  => adjac_bits_window,
       rx_en_i              => mil1553_rx_en_i,
       rx_clk_rst_o         => rx_clk_rst,
+      expected_nb_word_i   => expected_nb_word_i,
       rx_buffer_o          => rx_buffer_o,
       rx_word_cnt_o        => rx_word_cnt_o,
       rx_in_progress_o     => rx_in_progress_o,
       rx_done_p_o          => rx_done_p_o,
       rx_parity_error_p_o  => rx_parity_error_p_o,
-      rx_manch_error_p_o   => rx_manch_error_p_o
+      rx_manch_error_p_o   => rx_manch_error_p_o,
+      rx_error_p_o         => rx_error_p_o
       );
 
 
