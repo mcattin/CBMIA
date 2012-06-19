@@ -48,7 +48,7 @@ bit [19]    : Manchester error (in the frame causing this IRQ).
 bit [20]    : Parity error (in the frame causing this IRQ).
 bit [21]    : T/R flag, 0 = BC->RT transaction, 1 = RT->BC transaction.
 bit [26:22] : Word count. If T/R flag = 1, countains the number of word present in the receive buffer.
-bit [31:27] : RT number, 0 = response timeout.
+bit [31:27] : RT number, 0 = response timeout or truncated/corrupted frame.
 
 
 01 - IRQ_EN (Read/write)
@@ -78,6 +78,8 @@ bit   |   7  |   6  |   5  |   4  |   3  |   2  |   1  |   0  |
       +------+------+------+------+------+------+------+------+
 Descr |  2^3 |  2^2 |  2^1 |  2^0 | 2^-1 | 2^-2 | 2^-3 | 2^-4 |
       +------+------+------+------+------+------+------+------+
+
+Range: -55 -> +125 degree C.
 
 
 03 - STAT (Read only)
@@ -210,3 +212,8 @@ bit [31]    : T/R flag, 0 = BC->RT transaction, 1 = RT->BC transaction.
 --------------------------------------------------------------------------------
 bit [9:0]   : Response timeout counter value. Can be used to measure the RT response time.
 bit [31:10] : Unused. Ignore on read.
+
+Response time [s] = (1023 - counter_value) / 40E6
+
+If Response timeout counter value is 1023, it means that a the RT didn't reply and a timeout occured.
+

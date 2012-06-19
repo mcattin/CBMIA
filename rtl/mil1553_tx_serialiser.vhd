@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-23
+-- Last update: 2012-03-29
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ begin
 
       when TX_COMMAND =>
         if bit_cnt = 0 and tx_bit_rate_p_i = '1' then
-          if tr_flag = c_TR_WRITE then
+          if tr_flag = c_BC2RT then
             tx_fsm_next_state <= TX_WORD;
           else
             tx_fsm_next_state <= TX_DONE;

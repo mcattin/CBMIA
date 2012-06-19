@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-23
+-- Last update: 2012-03-29
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -44,6 +44,11 @@
 -- 2012-03-22  2.04     mcattin         Add error flags in interrupt sourde reg,
 --                                      add more status registers at the end
 --                                      of the memory map, add test point mux.
+-- 2012-03-29  2.05     mcattin         Fix a bug in word count comparator.
+--                                      When sub-address/mode field of a command
+--                                      word is either 0 or 31, the word count
+--                                      field indicates a mode code (not a word
+--                                      count).
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -60,7 +65,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0204"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0205"
     );
   port (
     -- description -> net name in schematics

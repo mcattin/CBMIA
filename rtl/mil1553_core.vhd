@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-12
--- Last update: 2012-03-23
+-- Last update: 2012-03-29
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -147,6 +147,7 @@ architecture rtl of mil1553_core is
   signal rx_nb_word_error_flag : std_logic;
   signal tx_word_cnt           : std_logic_vector(4 downto 0);
   signal tx_tr_flag            : std_logic;
+  signal tx_mode_code          : std_logic;
   signal rx_nb_word_error_cnt  : unsigned(31 downto 0);
   signal tx_done_p             : std_logic;
 
@@ -297,7 +298,7 @@ begin
     from_regs(c_NB_WORD_POS).data         <= tx_tr_flag & rx_parity_error_flag & rx_manch_error_flag
                                              & rx_nb_word_error_flag & resp_timeout_flag
                                              & "000000" & rx_word_cnt & X"00" & "000" & tx_word_cnt;
-    from_regs(c_RESP_TIMEOUT_POS).data    <= X"0000" & "000000" & std_logic_vector(resp_timeout_cnt);
+    from_regs(c_RESP_TIMEOUT_POS).data <= X"0000" & "000000" & std_logic_vector(resp_timeout_cnt);
 
     -- Reserved for future use
     from_regs(c_RFU_POS).data <= X"00000000";
@@ -349,7 +350,9 @@ begin
   tx_send_frame_p <= send_frame_req_p when transaction_progress = '0' else '0';
 
   ------------------------------------------------------------------------------
-  -- Stores the number of word to send/receive and the TR flag
+  -- Stores the number of word to send/receive, the TR flag and the mode code
+  -- flag. The mode code flag if set when the Sub-addres/Mode field (SA) is
+  -- either 0 or 31.
   ------------------------------------------------------------------------------
   p_tx_word_cnt : process(sys_clk_i)
   begin
@@ -357,9 +360,16 @@ begin
       if rst_n = '0' then
         tx_word_cnt <= (others => '0');
         tx_tr_flag  <= '0';
+        tx_mode_code <= '0';
       elsif tx_send_frame_p = '1' then
         tx_word_cnt <= tx_reg(c_CMD_WC4 downto c_CMD_WC0);
         tx_tr_flag  <= tx_reg(c_CMD_TR);
+        if (tx_reg(c_CMD_SA4 downto c_CMD_SA0) = "00000" or
+            tx_reg(c_CMD_SA4 downto c_CMD_SA0) = "11111") then
+          tx_mode_code <= '1';
+        else
+          tx_mode_code <= '0';
+        end if;
       end if;
     end if;
   end process p_tx_word_cnt;
@@ -611,15 +621,16 @@ begin
   end process p_received_frame_cnt;
 
   ------------------------------------------------------------------------------
-  -- Check number of word(s) received against number of word(s) requested
-  -- Only for reads from RTs
+  -- Check number of word(s) received against number of word(s) requested.
+  -- Only for reads from RTs and when the mode code flag is cleared.
   ------------------------------------------------------------------------------
   p_check_nb_word : process(sys_clk_i)
   begin
     if rising_edge(sys_clk_i) then
       if rst_n = '0' then
         rx_nb_word_error_p <= '0';
-      elsif ((rx_done_p = '1' or rx_manch_error_p = '1') and tx_tr_flag = c_TR_READ and
+      elsif ((rx_done_p = '1' or rx_manch_error_p = '1') and
+             tx_tr_flag = c_RT2BC and tx_mode_code = '0' and
              unsigned(rx_word_cnt_t) /= unsigned(tx_word_cnt)) then
         rx_nb_word_error_p <= '1';
       else

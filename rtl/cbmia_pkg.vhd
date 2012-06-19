@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-23
+-- Last update: 2012-03-29
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -101,8 +101,8 @@ package cbmia_pkg is
   constant c_STA_RT4 : integer := 15;   -- RT address bit 4
 
   -- Transmit/receive bit meaning
-  constant c_TR_WRITE : std_logic := '0';  -- BC writes to RT
-  constant c_TR_READ  : std_logic := '1';  -- BC reads from RT
+  constant c_BC2RT : std_logic := '0';  -- BC writes to RT
+  constant c_RT2BC : std_logic := '1';  -- BC reads from RT
 
   -- MIL1553 data encoding
   constant c_MANCH_ZERO      : std_logic_vector(1 downto 0) := "01";      -- Manchester encoded zero
