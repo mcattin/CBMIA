@@ -1,0 +1,214 @@
+################################################################################
+# CBMIA constrains file
+################################################################################
+
+# Placement constraints
+#===============================================================================
+
+# System clock
+#-------------------------------------------------------------------------------
+NET "clk_i"              LOC = "b11" |IOSTANDARD = LVCMOS33 ;
+
+# Power-ON reset
+#-------------------------------------------------------------------------------
+NET "pwr_reset_n_i"      LOC = "ab19" |IOSTANDARD = LVCMOS33 ;
+
+# One wire interface for unique ID and temperature sensor
+#-------------------------------------------------------------------------------
+NET "onewire_b"          LOC = "aa18" |DRIVE = 12  |PULLUP  |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+
+# PLX PCI9030 interface
+#-------------------------------------------------------------------------------
+NET "l_ads_n_i"          LOC = "b5" |IOSTANDARD = LVCMOS33 ;
+NET "l_ale_i"            LOC = "aa9" |IOSTANDARD = LVCMOS33 ;
+NET "l_be_i<0>"          LOC = "ab16" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_be_i<1>"          LOC = "aa16" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_be_i<2>"          LOC = "aa17" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_be_i<3>"          LOC = "ab18" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_blast_n_i"        LOC = "a5" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_btrem_n_o"        LOC = "b8" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_cs_n_i<0>"        LOC = "a9" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_cs_n_i<1>"        LOC = "b9" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_int1_o"           LOC = "b10" |IOSTANDARD = LVCMOS33 ;
+NET "l_int2_o"           LOC = "a11" |IOSTANDARD = LVCMOS33 ;
+NET "l_rd_n_i"           LOC = "a7" |IOSTANDARD = LVCMOS33 ;
+NET "l_ready_n_o"        LOC = "a8" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_reset_n_i"        LOC = "a10" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_wr_n_i"           LOC = "b6" |IOSTANDARD = LVCMOS33 ;
+NET "l_wr_rd_n_i"        LOC = "b7" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<2>"     LOC = "p2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<3>"     LOC = "p1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<4>"     LOC = "n2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<5>"     LOC = "n1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<6>"     LOC = "m2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<7>"     LOC = "m1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<8>"     LOC = "l1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<9>"     LOC = "l2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<10>"    LOC = "k1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<11>"    LOC = "k2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<12>"    LOC = "j1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<13>"    LOC = "j2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<14>"    LOC = "h1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<15>"    LOC = "h2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<16>"    LOC = "g1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<17>"    LOC = "g2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<18>"    LOC = "f2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<19>"    LOC = "e1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<20>"    LOC = "e2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<21>"    LOC = "d1" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<22>"    LOC = "d2" |IOSTANDARD = LVCMOS33 ;
+NET "l_address_i<23>"    LOC = "c1" |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<0>"        LOC = "r1" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<1>"        LOC = "r2" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<2>"        LOC = "t1" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<3>"        LOC = "t2" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<4>"        LOC = "u2" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<5>"        LOC = "v1" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<6>"        LOC = "v2" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<7>"        LOC = "w2" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<8>"        LOC = "y1" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<9>"        LOC = "y2" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<10>"       LOC = "aa3" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<11>"       LOC = "ab4" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<12>"       LOC = "aa4" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<13>"       LOC = "ab5" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<14>"       LOC = "aa5" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<15>"       LOC = "aa6" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<16>"       LOC = "ab7" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<17>"       LOC = "aa7" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<18>"       LOC = "ab8" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<19>"       LOC = "aa8" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<20>"       LOC = "ab9" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<21>"       LOC = "ab10" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<22>"       LOC = "aa10" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<23>"       LOC = "ab11" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<24>"       LOC = "aa11" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<25>"       LOC = "ab12" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<26>"       LOC = "aa12" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<27>"       LOC = "ab13" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<28>"       LOC = "aa13" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<29>"       LOC = "ab14" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<30>"       LOC = "ab15" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_data_b<31>"       LOC = "aa15" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "l_gpio_b<4>"        LOC = "a4" |IOSTANDARD = LVCMOS33 ;
+NET "l_gpio_b<5>"        LOC = "b4" |IOSTANDARD = LVCMOS33 ;
+NET "l_gpio_b<6>"        LOC = "a3" |IOSTANDARD = LVCMOS33 ;
+NET "l_gpio_b<7>"        LOC = "c2" |IOSTANDARD = LVCMOS33 ;
+NET "l_gpio_b<8>"        LOC = "w1" |IOSTANDARD = LVCMOS33 ;
+
+# MIL1553 interface
+#-------------------------------------------------------------------------------
+NET "mil1553_md_fault_i" LOC = "f3" |IOSTANDARD = LVCMOS33 ;
+NET "mil1553_rxd_i"      LOC = "e3" |IOSTANDARD = LVCMOS33 ;
+NET "mil1553_tx_rx_n_o"  LOC = "d3" |IOSTANDARD = LVCMOS33 ;
+NET "mil1553_txd_o"      LOC = "c3" |IOSTANDARD = LVCMOS33 ;
+NET "mil1553_txd_n_o"    LOC = "l4" |IOSTANDARD = LVCMOS33 ;
+NET "mil1553_tx_n_o"     LOC = "l3" |IOSTANDARD = LVCMOS33 ;
+
+# SRAM interface
+#-------------------------------------------------------------------------------
+NET "ram_address_o<0>"   LOC = "aa20" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<1>"   LOC = "y21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<2>"   LOC = "y22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<3>"   LOC = "w21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<4>"   LOC = "w22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<5>"   LOC = "v21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<6>"   LOC = "u21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<7>"   LOC = "t21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<8>"   LOC = "j21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<9>"   LOC = "h22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<10>"  LOC = "a12" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<11>"  LOC = "b12" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<12>"  LOC = "a13" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<13>"  LOC = "b13" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<14>"  LOC = "a14" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<15>"  LOC = "b14" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<16>"  LOC = "a15" |IOSTANDARD = LVCMOS33 ;
+NET "ram_address_o<17>"  LOC = "ab20" |IOSTANDARD = LVCMOS33 ;
+NET "ram_adsc_n_o"       LOC = "k22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_adsp_n_o"       LOC = "k21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_adv_n_o"        LOC = "j22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_bwe_n_o"        LOC = "l22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_bw_n_o<1>"      LOC = "n21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_bw_n_o<2>"      LOC = "p22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_bw_n_o<3>"      LOC = "p21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_bw_n_o<4>"      LOC = "r22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_ce_n_o"         LOC = "t22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_cs0_o"          LOC = "r21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_cs1_n_o"        LOC = "n22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<0>"      LOC = "a16" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<1>"      LOC = "b16" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<2>"      LOC = "b17" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<3>"      LOC = "a18" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<4>"      LOC = "b18" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<5>"      LOC = "a19" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<6>"      LOC = "b19" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<7>"      LOC = "b20" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<8>"      LOC = "c22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<9>"      LOC = "d21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<10>"     LOC = "d22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<11>"     LOC = "e21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<12>"     LOC = "e22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<13>"     LOC = "f21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<14>"     LOC = "g21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<15>"     LOC = "g22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<16>"     LOC = "c20" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<17>"     LOC = "d19" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<18>"     LOC = "c19" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<19>"     LOC = "d18" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<20>"     LOC = "c18" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<21>"     LOC = "d17" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<22>"     LOC = "c17" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<23>"     LOC = "c16" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<24>"     LOC = "d16" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<25>"     LOC = "d15" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<26>"     LOC = "d14" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<27>"     LOC = "c13" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<28>"     LOC = "d13" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<29>"     LOC = "c12" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<30>"     LOC = "d12" |IOSTANDARD = LVCMOS33 ;
+NET "ram_data_b<31>"     LOC = "c11" |IOSTANDARD = LVCMOS33 ;
+NET "ram_gw_n_o"         LOC = "m22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_lbo_n_o"        LOC = "v22" |IOSTANDARD = LVCMOS33 ;
+NET "ram_oe_n_o"         LOC = "l21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_par_o<1>"       LOC = "b15" |IOSTANDARD = LVCMOS33 ;
+NET "ram_par_o<2>"       LOC = "h21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_par_o<3>"       LOC = "d20" |IOSTANDARD = LVCMOS33 ;
+NET "ram_par_o<4>"       LOC = "d11" |IOSTANDARD = LVCMOS33 ;
+NET "ram_zz_o"           LOC = "c21" |IOSTANDARD = LVCMOS33 ;
+NET "ram_clk_o"          LOC = "m21" |IOSTANDARD = LVCMOS33 ;
+
+# RS232 interface
+#-------------------------------------------------------------------------------
+NET "rs232_i"            LOC = "g3" |IOSTANDARD = LVCMOS33 ;
+NET "rs232_o"            LOC = "k3" |IOSTANDARD = LVCMOS33 ;
+
+
+# Front panel LEDs
+#-------------------------------------------------------------------------------
+NET "led_o<0>"           LOC = "c5" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<1>"           LOC = "c4" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<2>"           LOC = "c7" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<3>"           LOC = "d8" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<4>"           LOC = "d9" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<5>"           LOC = "c6" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<6>"           LOC = "c10" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "led_o<7>"           LOC = "d10" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+
+# Test points
+#-------------------------------------------------------------------------------
+NET "test_point<0>"      LOC = "u20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point<1>"      LOC = "v20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point<2>"      LOC = "w20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point<3>"      LOC = "y20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+
+# Prohibited pins
+#-------------------------------------------------------------------------------
+CONFIG PROHIBIT = Y12;
+CONFIG PROHIBIT = W12;
+CONFIG PROHIBIT = AA14;
+
+# Timing constraints
+#===============================================================================
+NET "clk_i" TNM_NET = clk_i;
+TIMESPEC TS_clk_i = PERIOD "clk_i" 25 ns HIGH 50%;

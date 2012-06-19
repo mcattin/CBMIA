@@ -1,0 +1,169 @@
+-- -*- Mode: LUA; tab-width: 2 -*-
+
+-------------------------------------------------------------------------------
+-- Title      : CBMIA wishbone registers block
+-- Project    : CBMIA, MIL1553 bus controller
+-- Website    : http://
+-------------------------------------------------------------------------------
+-- File       : cbmia_regs.wb
+-- Author     : Matthieu Cattin
+-- Company    : CERN (BE-CO-HT)
+-- Created    : 2012-02-29
+-- Last update: 2012-02-29
+-- Platform   : FPGA-generic
+-- Standard   : VHDL '87
+-------------------------------------------------------------------------------
+-- Description: CBMIA wishbone registers description to be used with wbgen2
+-------------------------------------------------------------------------------
+--
+-- Copyright (c) 2009 - 2010 CERN
+--
+-- This source file is free software; you can redistribute it
+-- and/or modify it under the terms of the GNU Lesser General
+-- Public License as published by the Free Software Foundation;
+-- either version 2.1 of the License, or (at your option) any
+-- later version.
+--
+-- This source is distributed in the hope that it will be
+-- useful, but WITHOUT ANY WARRANTY; without even the implied
+-- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+-- PURPOSE.  See the GNU Lesser General Public License for more
+-- details.
+--
+-- You should have received a copy of the GNU Lesser General
+-- Public License along with this source; if not, download it
+-- from http://www.gnu.org/licenses/lgpl-2.1.html
+--
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author          Description
+-- 2012-02-29  1.0      mcattin         Created
+-------------------------------------------------------------------------------
+-- TODO: - 
+--       - 
+-------------------------------------------------------------------------------
+
+peripheral {
+  name ="CBMIA ";
+  prefix="cbmia";
+  hdl_entity="cbmia_regs";
+
+
+  reg {
+    name = "Control register.";
+    prefix = "ctrl";
+
+    field {
+      name = "Software reset.";
+      description = "Software controlled reset of the logic.\nWrite 0 = no effect\nWrite 1 = resets the logic";
+      prefix = "sw_rst";
+      type = MONOSTABLE;
+    };
+
+    field {
+      name = "Send frame.";
+      description = "Sends the frame in tx FIFO.\nWrite 0 = no effect\nWrite 1 = sends frame";
+      prefix = "send_frame";
+      type = MONOSTABLE;
+    };
+  };
+
+
+  reg {
+    name = "Global status register.";
+    prefix = "stat";
+
+    field {
+      name = "";
+      description = "";
+      prefix = "";
+      type = BIT;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "";
+      description = "";
+      prefix = "";
+      type = BIT;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  fifo_reg {
+    size = 33;
+    direction = BUS_TO_CORE;
+    prefix = "tx_fifo";
+    name = "mil1553 transmitter FIFO";
+    description = "This FIFO holds the words to be transmitted in the next mil1553 frame.";
+    flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+    flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+
+    field {
+      name = "mil1553 word to transmit";
+      prefix = "word";
+      type = SLV;
+      size = 16;
+    };
+
+    field {
+      name = "mil1553 word type flag.\n0 = data\n1 = command";
+      prefix = "word_type";
+      type = BIT;
+    };
+  };
+
+
+  fifo_reg {
+    size = 33;
+    direction = CORE_TO_BUS;
+    prefix = "rx_fifo";
+    name = "mil1553 receiver FIFO";
+    description = "This FIFO holds the words reveived in the last mil1553 frame.";
+    flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+    flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
+
+    field {
+      name = "mil1553 word received";
+      prefix = "word";
+      type = SLV;
+      size = 16;
+    };
+
+    field {
+      name = "mil1553 word type flag.\n0 = data\n1 = status";
+      prefix = "word_type";
+      type = BIT;
+    };
+
+    field {
+      name = "mil1553 word error flag.\n0 = no error\n1 = word contains error";
+      prefix = "word_error";
+      type = BIT;
+    };
+
+    field {
+      name = "Parity error flag.\n0 = no error\n1 = parity error";
+      prefix = "parity_error";
+      type = BIT;
+    };
+
+    field {
+      name = "Manchester code violation flag.\n0 = no violation\n1 = code violation";
+      prefix = "code_violation";
+      type = BIT;
+    };
+  };
+
+
+  irq {
+    name = "mil1553 frame received.";
+    trigger = LEVEL_0;
+    prefix = "rx_done";
+  };
+
+
+};
