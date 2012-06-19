@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-22
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ begin
       );
 
   ----------------------------------------------------------------------------
-  -- Synchronises power-on reset to system clock
+  -- Synchronises power-on reset with system clock
   ----------------------------------------------------------------------------
   p_rst : process (sys_clk)
   begin

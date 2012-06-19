@@ -7,11 +7,16 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-19
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: 
+-- Description: Deserialise MIL1553 serial data stream. It first waits for a
+--              valid sync pattern, then decode a word (16 bits + parity) and
+--              then waits for a valid data sync pattern. If no valid data sync
+--              pattern is detects, it ends the reception.
+--              It a Manchester violation is detected while decoding a word, it
+--              ends the reception with an error.
 -------------------------------------------------------------------------------
 --
 -- Copyright (c) 2009 - 2010 CERN
@@ -318,7 +323,7 @@ begin
   end process p_rx_fsm_outputs;
 
   ------------------------------------------------------------------------------
-  -- Store serial input state for sync pattern detection
+  -- Store serial input state history for sync pattern detection
   ------------------------------------------------------------------------------
   p_rxd_hist : process (sys_clk_i)
   begin
@@ -454,7 +459,7 @@ begin
   end process p_rx_buffer;
 
   ------------------------------------------------------------------------------
-  -- Received word counter
+  -- Number of word(s) received
   ------------------------------------------------------------------------------
   p_rx_word_cnt : process (sys_clk_i)
   begin

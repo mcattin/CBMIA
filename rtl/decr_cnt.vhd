@@ -1,17 +1,17 @@
 -------------------------------------------------------------------------------
--- Title      : 
+-- Title      : Decrement counter
 -- Project    : CBMIA, MIL1553 bus controller
 -- Website    : http://
 -------------------------------------------------------------------------------
--- File       : incr_cnt.vhd
+-- File       : decr_cnt.vhd
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-02
--- Last update: 2012-03-14
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: 
+-- Description: Decrement counter
 -------------------------------------------------------------------------------
 --
 -- Copyright (c) 2009 - 2010 CERN

@@ -3,11 +3,11 @@
 -- Project    : CBMIA, MIL1553 bus controller
 -- Website    : http://
 -------------------------------------------------------------------------------
--- File       : mil1553_rx.vhd
+-- File       : mil1553_rx_deglitcher.vhd
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-02
--- Last update: 2012-03-14
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------

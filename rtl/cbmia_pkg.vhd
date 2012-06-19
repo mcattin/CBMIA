@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-19
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -300,9 +300,9 @@ package cbmia_pkg is
 
   component mil1553_tx_clk
     port (
-      sys_rst_n_i   : in  std_logic;    -- Synchronous system reset (active low)
-      sys_clk_i     : in  std_logic;    -- System clock
-      tx_bit_rate_o : out std_logic     -- Bit rate for serialiser
+      sys_rst_n_i     : in  std_logic;  -- Synchronous system reset (active low)
+      sys_clk_i       : in  std_logic;  -- System clock
+      tx_bit_rate_p_o : out std_logic   -- Bit rate for serialiser
       );
   end component mil1553_tx_clk;
 

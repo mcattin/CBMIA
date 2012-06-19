@@ -3,11 +3,11 @@
 -- Project    : CBMIA, MIL1553 bus controller
 -- Website    : http://
 -------------------------------------------------------------------------------
--- File       : bus_interface.vhd
+-- File       : mem_interface.vhd
 -- Author     : Pablo Antonio Alvarez Sanchez
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2002-09-30
--- Last update: 2012-03-16
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------

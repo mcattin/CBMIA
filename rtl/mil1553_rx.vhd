@@ -7,11 +7,14 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-19
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: 
+-- Description: MIL1553 receiver. The MIL1553 serial input is first filtered
+--              through a deglitcher block, then the data are deserialised.
+--              A clock recovery block allows to sample the serial data stream
+--              and decode the Manchester encoding.
 -------------------------------------------------------------------------------
 --
 -- Copyright (c) 2009 - 2010 CERN

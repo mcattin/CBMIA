@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-16
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -79,27 +79,30 @@ architecture rtl of mil1553_tx is
   ----------------------------------------------------------------------------
   -- Signals declaration
   ----------------------------------------------------------------------------
-  signal tx_bit_rate : std_logic;
+  signal tx_bit_rate_p : std_logic;
 
 begin
 
   ----------------------------------------------------------------------------
-  -- Components instantiation
+  -- Clock generator for 1Mb/s from 40MHz
   ----------------------------------------------------------------------------
   cmp_mil1553_tx_clk : mil1553_tx_clk
     port map(
-      sys_rst_n_i   => sys_rst_n_i,
-      sys_clk_i     => sys_clk_i,
-      tx_bit_rate_o => tx_bit_rate
+      sys_rst_n_i     => sys_rst_n_i,
+      sys_clk_i       => sys_clk_i,
+      tx_bit_rate_p_o => tx_bit_rate_p
       );
 
+  ----------------------------------------------------------------------------
+  -- MIL1553 serialiser
+  ----------------------------------------------------------------------------
   cmp_mil1553_serialiser : mil1553_tx_serialiser
     port map(
       sys_rst_n_i       => sys_rst_n_i,
       sys_clk_i         => sys_clk_i,
       mil1553_txd_o     => mil1553_txd_o,
       mil1553_tx_en_o   => mil1553_tx_en_o,
-      tx_bit_rate_p_i   => tx_bit_rate,
+      tx_bit_rate_p_i   => tx_bit_rate_p,
       tx_buffer_i       => tx_buffer_i,
       tx_send_frame_p_i => tx_send_frame_p_i,
       tx_done_p_o       => tx_done_p_o

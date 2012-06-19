@@ -7,11 +7,11 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-12
--- Last update: 2012-03-22
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: MIL1553 bus controller. In this design, the
+-- Description: MIL1553 bus controller core. In this design, the
 --              MIL1553 bus speed is fixed at 1Mbit/s.
 -------------------------------------------------------------------------------
 --
@@ -107,7 +107,7 @@ architecture rtl of mil1553_core is
   signal rst_n    : std_logic;
 
   signal to_regs   : t_cont_to_mem;     -- Data going from Control to the Registers
-  -- This consists of Data + Enable + Read + Write
+                                        -- This consists of Data + Enable + Read + Write
   signal from_regs : t_mem_to_cont(0 to c_NB_MEM_POS - 1);
 
   signal irq_src        : std_logic_vector(31 downto 0);
@@ -168,12 +168,12 @@ architecture rtl of mil1553_core is
 begin
 
   ------------------------------------------------------------------------------
-  -- synchronous system reset (power-on and PCI command)
+  -- Synchronous system reset (power-on and PCI command)
   ------------------------------------------------------------------------------
   rst_n <= pwr_reset_n_i and not(sw_rst_p);
 
   ------------------------------------------------------------------------------
-  -- Memory interface
+  -- Memory interface (address decoder, data mux)
   ------------------------------------------------------------------------------
   cmp_mem_interface : mem_interface
     port map(
@@ -265,27 +265,29 @@ begin
       from_regs(I).rddone <= '0';
     end loop;
 
+    -- Interrupts
     from_regs(c_IRQ_EN_POS).data  <= irq_en_msk_reg;
     from_regs(c_IRQ_SRC_POS).data <= rx_rti & rx_word_cnt & tx_tr_flag
                                      & rx_parity_error_flag & rx_manch_error_flag
                                      & rx_nb_word_error_flag & resp_timeout_flag
                                      & irq_src_reg(16 downto 0);
 
+    -- Command and status
     from_regs(c_CMD_POS).data  <= cmd_reg;
     from_regs(c_STAT_POS).data <= transaction_progress & "000" & X"000" & g_HW_VERSION;
-    -- Status bits to be added:
-    --  - Manchester error (in the last received frame)
-    --  - Parity error (in the last received frame)
-    --  - Response timeout (in the last transaction)
 
+    -- TX and RX registers
     from_regs(c_TX_REG_POS).data <= tx_reg;
     from_regs(c_RX_REG_POS).data <= rx_reg;
 
+    -- Unique ID
     from_regs(c_ID_MSB_POS).data <= unique_id(63 downto 32);
     from_regs(c_ID_LSB_POS).data <= unique_id(31 downto 0);
 
+    -- Temperature
     from_regs(c_TEMP_POS).data <= X"0000" & temp;
 
+    -- Statistics and debug
     from_regs(c_TX_FRAME_CNT_POS).data    <= std_logic_vector(sent_frame_cnt);
     from_regs(c_RX_FRAME_CNT_POS).data    <= std_logic_vector(received_frame_cnt);
     from_regs(c_PARITY_ERR_CNT_POS).data  <= std_logic_vector(rx_parity_error_cnt);
@@ -293,14 +295,14 @@ begin
     from_regs(c_NB_WORD_ERR_CNT_POS).data <= std_logic_vector(rx_nb_word_error_cnt);
     from_regs(c_TX_ERR_CNT_POS).data      <= std_logic_vector(req_during_trans_cnt);
     from_regs(c_NB_WORD_POS).data         <= X"00" & "000" & rx_word_cnt & X"00" & "000" & tx_word_cnt;
-    from_regs(c_RESP_TIMEOUT_POS).data    <= X"0000"
-                                             & "000000"
-                                             & std_logic_vector(resp_timeout_cnt);
+    from_regs(c_RESP_TIMEOUT_POS).data    <= X"0000" & "000000" & std_logic_vector(resp_timeout_cnt);
 
-    from_regs(c_RFU_POS).data <= X"00000000";  -- Reserved for future use
+    -- Reserved for future use
+    from_regs(c_RFU_POS).data <= X"00000000";
 
-    from_regs(c_FAULT_ADDR_LOW_POS).data <= x"12345678";  -- in case of outside address range
-    from_regs(c_FAULT_ADDR_POS).data     <= x"87654321";  -- in case of outside address range
+    -- Outside of range access
+    from_regs(c_FAULT_ADDR_LOW_POS).data <= x"12345678";
+    from_regs(c_FAULT_ADDR_POS).data     <= x"87654321";
 
     -- RX buffer read
     l_rx_buffer_rd : for I in 0 to 16 loop
@@ -318,8 +320,10 @@ begin
   end process;
 
   ------------------------------------------------------------------------------
-  -- TX register (TXREG)
+  -- TX register (TX_REG)
   -- Contains the command word to be send to the RT
+  -- A transaction is started every time this register is written and no
+  -- transaction is in progress.
   ------------------------------------------------------------------------------
   p_tx_reg : process (sys_clk_i)
   begin
@@ -360,7 +364,7 @@ begin
 
   ------------------------------------------------------------------------------
   -- TX buffer write
-  -- Note: tx_buffer(0) corresponds to TX register (TXREG)
+  -- Note: tx_buffer(0) corresponds to TX register (TX_REG)
   ------------------------------------------------------------------------------
   l_tx_buffer_wr : for I in 0 to 15 generate
     process(sys_clk_i)
@@ -379,6 +383,7 @@ begin
 
   ------------------------------------------------------------------------------
   -- Command register
+  -- Software reset generation
   ------------------------------------------------------------------------------
   p_cmd_reg : process(sys_clk_i)
   begin
@@ -456,8 +461,8 @@ begin
   end process p_rx_buffer_wr;
 
   ------------------------------------------------------------------------------
-  -- RX register (RXREG)
-  -- Contains the RT status word and the first received word, if any
+  -- RX register (RX_REG)
+  -- Contains the RT status word and the first received word, if any.
   -- rx_buffer_t(0) = RT status
   ------------------------------------------------------------------------------
   p_rx_reg_wr : process(sys_clk_i)
@@ -475,7 +480,7 @@ begin
 
   ------------------------------------------------------------------------------
   -- Extract RT number from received status word
-  -- rx_rti will be 0 if there is no response from the RT
+  -- rx_rti will be 0 if there is no response from the RT (timeout)
   ------------------------------------------------------------------------------
   rx_rti <= rx_reg(c_STA_RT4 downto c_STA_RT0);
 
@@ -496,59 +501,10 @@ begin
   end process p_rx_word_cnt;
 
   ------------------------------------------------------------------------------
-  -- Check number of word(s) received against number of word(s) requested
-  -- Only for reads from RTs
-  ------------------------------------------------------------------------------
-  p_check_nb_word : process(sys_clk_i)
-  begin
-    if rising_edge(sys_clk_i) then
-      if rst_n = '0' then
-        rx_nb_word_error_p <= '0';
-      elsif ((rx_done_p = '1' or rx_manch_error_p = '1') and tx_tr_flag = c_TR_READ and
-             unsigned(rx_word_cnt_t) /= unsigned(tx_word_cnt)) then
-        rx_nb_word_error_p <= '1';
-      else
-        rx_nb_word_error_p <= '0';
-      end if;
-    end if;
-  end process p_check_nb_word;
-
-  ------------------------------------------------------------------------------
-  -- Number of received word error counter
-  ------------------------------------------------------------------------------
-  p_nb_word_error_cnt : process(sys_clk_i)
-  begin
-    if rising_edge(sys_clk_i) then
-      if rst_n = '0' then
-        rx_nb_word_error_cnt <= (others => '0');
-      elsif rx_nb_word_error_p = '1' then
-        rx_nb_word_error_cnt <= rx_nb_word_error_cnt + 1;
-      end if;
-    end if;
-  end process p_nb_word_error_cnt;
-
-  ------------------------------------------------------------------------------
-  -- Number of received word error flag,
-  -- indicates an error in the number of received word in the last reveived frame
-  ------------------------------------------------------------------------------
-  p_nb_word_error_flag : process (sys_clk_i)
-  begin
-    if rising_edge(sys_clk_i) then
-      if rst_n = '0' then
-        rx_nb_word_error_flag <= '0';
-      elsif tx_send_frame_p = '1' then
-        rx_nb_word_error_flag <= '0';
-      elsif rx_nb_word_error_p = '1' then
-        rx_nb_word_error_flag <= '1';
-      end if;
-    end if;
-  end process p_nb_word_error_flag;
-
-  ------------------------------------------------------------------------------
   -- Transaction in progess flag
-  -- Starts when a command is written to the tx register (TXREG)
+  -- Starts when a command word is written to the tx register (TX_REG)
   -- Stops at the end of a frame reception OR in case of Manchester error OR
-  -- if there is no reply from the RT, when the response timeout occurs
+  -- if there is no reply from the RT, when a response timeout occurs.
   ------------------------------------------------------------------------------
   p_transaction_progress : process (sys_clk_i)
   begin
@@ -570,7 +526,7 @@ begin
   transaction_end_p <= not(transaction_progress) and transaction_progress_d;
 
   ------------------------------------------------------------------------------
-  -- RT response timout
+  -- RT response timeout
   ------------------------------------------------------------------------------
   p_resp_timeout_cnt_en : process (sys_clk_i)
   begin
@@ -625,7 +581,7 @@ begin
   end process p_resp_timeout_flag;
 
   ------------------------------------------------------------------------------
-  -- Sent frame counter
+  -- Transmitted frame counter
   ------------------------------------------------------------------------------
   p_sent_frame_cnt : process (sys_clk_i)
   begin
@@ -653,7 +609,56 @@ begin
   end process p_received_frame_cnt;
 
   ------------------------------------------------------------------------------
-  -- Send request while in transaction counter
+  -- Check number of word(s) received against number of word(s) requested
+  -- Only for reads from RTs
+  ------------------------------------------------------------------------------
+  p_check_nb_word : process(sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_nb_word_error_p <= '0';
+      elsif ((rx_done_p = '1' or rx_manch_error_p = '1') and tx_tr_flag = c_TR_READ and
+             unsigned(rx_word_cnt_t) /= unsigned(tx_word_cnt)) then
+        rx_nb_word_error_p <= '1';
+      else
+        rx_nb_word_error_p <= '0';
+      end if;
+    end if;
+  end process p_check_nb_word;
+
+  ------------------------------------------------------------------------------
+  -- Number of received word error counter
+  ------------------------------------------------------------------------------
+  p_nb_word_error_cnt : process(sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_nb_word_error_cnt <= (others => '0');
+      elsif rx_nb_word_error_p = '1' then
+        rx_nb_word_error_cnt <= rx_nb_word_error_cnt + 1;
+      end if;
+    end if;
+  end process p_nb_word_error_cnt;
+
+  ------------------------------------------------------------------------------
+  -- Number of received word error flag,
+  -- different number of word than expected in the last received frame.
+  ------------------------------------------------------------------------------
+  p_nb_word_error_flag : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_nb_word_error_flag <= '0';
+      elsif tx_send_frame_p = '1' then
+        rx_nb_word_error_flag <= '0';
+      elsif rx_nb_word_error_p = '1' then
+        rx_nb_word_error_flag <= '1';
+      end if;
+    end if;
+  end process p_nb_word_error_flag;
+
+  ------------------------------------------------------------------------------
+  -- Transmit request while in transaction counter
   ------------------------------------------------------------------------------
   p_req_during_trans_cnt : process (sys_clk_i)
   begin
@@ -732,6 +737,15 @@ begin
   -- LEDs
   -- Odd numbers  = orange LEDs
   -- Even numbers = green LEDs
+  --
+  -- LED 0 = Transmitting
+  -- LED 2 = Receiving
+  -- LED 4 = Response timeout
+  -- LED 6 = PCI access (in cbmia_top.vhd)
+  -- LED 1 = Parity error
+  -- LED 3 = Manchester error
+  -- LED 5 = Number of word error
+  -- LED 7 = Transmission request during transaction
   ------------------------------------------------------------------------------
   cmp_monostable_led0 : monostable
     generic map(
@@ -832,7 +846,8 @@ begin
       );
 
   ------------------------------------------------------------------------------
-  -- Test points
+  -- Test points mux
+  -- The signal to output on a test point is defined in the command register.
   ------------------------------------------------------------------------------
   p_tp0_mux : process (cmd_reg)
   begin

@@ -7,12 +7,11 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-16
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
--- Description: MIL1553 serialiser, only supports 1Mb/s bus speed.
---              Adds odd parity, encodes in Manchester and transmits
+-- Description: Adds odd parity, encodes in Manchester and transmits
 --              words from TX buffer.
 -------------------------------------------------------------------------------
 --

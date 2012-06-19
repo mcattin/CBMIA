@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-09
+-- Last update: 2012-03-23
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ entity mil1553_tx_clk is
 
     -- Pulse train output
     ----------------------------------------------------------------------------
-    tx_bit_rate_o : out std_logic       -- Bit rate for serialiser
+    tx_bit_rate_p_o : out std_logic     -- Bit rate for serialiser
 
     );
 end mil1553_tx_clk;
@@ -82,14 +82,14 @@ begin
   begin
     if rising_edge(sys_clk_i) then
       if sys_rst_n_i = '0' then
-        clk_div_cnt   <= (others => '0');
-        tx_bit_rate_o <= '0';
+        clk_div_cnt     <= (others => '0');
+        tx_bit_rate_p_o <= '0';
       elsif clk_div_cnt = 0 then
-        clk_div_cnt   <= to_unsigned(19, clk_div_cnt'length);
-        tx_bit_rate_o <= '1';
+        clk_div_cnt     <= to_unsigned(19, clk_div_cnt'length);
+        tx_bit_rate_p_o <= '1';
       else
-        clk_div_cnt   <= clk_div_cnt - 1;
-        tx_bit_rate_o <= '0';
+        clk_div_cnt     <= clk_div_cnt - 1;
+        tx_bit_rate_p_o <= '0';
       end if;
     end if;
   end process p_clk_div;
