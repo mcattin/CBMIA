@@ -1,0 +1,27 @@
+\contentsline {section}{\numberline {1}Overview}{4}
+\contentsline {section}{\numberline {2}Front panel LEDs}{5}
+\contentsline {section}{\numberline {3}Glossary}{5}
+\contentsline {section}{\numberline {4}Memory Map}{6}
+\contentsline {section}{\numberline {5}Registers detailed description}{7}
+\contentsline {subsection}{\numberline {5.1}Interrupt source}{7}
+\contentsline {subsection}{\numberline {5.2}Interrupt enable mask}{7}
+\contentsline {subsection}{\numberline {5.3}Temperature}{7}
+\contentsline {subsection}{\numberline {5.4}Status register}{8}
+\contentsline {subsection}{\numberline {5.5}Command register}{8}
+\contentsline {subsection}{\numberline {5.6}Reserved}{8}
+\contentsline {subsection}{\numberline {5.7}Unique ID (MSBs)}{9}
+\contentsline {subsection}{\numberline {5.8}Unique ID (LSBs)}{9}
+\contentsline {subsection}{\numberline {5.9}Transmit register}{9}
+\contentsline {subsection}{\numberline {5.10}Receive register}{9}
+\contentsline {subsection}{\numberline {5.11}Receive buffer}{10}
+\contentsline {subsection}{\numberline {5.12}Transmit buffer}{10}
+\contentsline {subsection}{\numberline {5.13}Transmitted frame counter}{10}
+\contentsline {subsection}{\numberline {5.14}Reveived frame counter}{11}
+\contentsline {subsection}{\numberline {5.15}Parity error counter}{11}
+\contentsline {subsection}{\numberline {5.16}Manchester error counter}{11}
+\contentsline {subsection}{\numberline {5.17}Number of word received error counter}{11}
+\contentsline {subsection}{\numberline {5.18}Sent request during transaction error counter}{12}
+\contentsline {subsection}{\numberline {5.19}Number of word transmitted, expected and received}{12}
+\contentsline {subsection}{\numberline {5.20}RT response time}{12}
+\contentsline {subsection}{\numberline {5.21}Reception error counter}{13}
+\contentsline {subsection}{\numberline {5.22}Response timeout counter}{13}
