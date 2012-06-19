@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-21
+-- Last update: 2012-03-22
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -40,7 +40,10 @@
 -- 2012-02-29  2.01     mcattin         Created from original CBMIA design.
 -- 2012-03-19  2.02     mcattin         Doesn't start RX FSM when transmitting,
 --                                      add temperature readout.
--- 2012-03-21  2.03     mcattin         Add TR flag in the interrupt source reg.
+-- 2012-03-21  2.03     mcattin         Add TR flag in the interrupt source reg
+-- 2012-03-22  2.04     mcattin         Add error flags in interrupt sourde reg,
+--                                      add more status registers at the end
+--                                      of the memory map, add test point mux.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -57,7 +60,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0203"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0204"
     );
   port (
     -- description -> net name in schematics

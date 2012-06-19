@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-12
--- Last update: 2012-03-21
+-- Last update: 2012-03-22
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -38,8 +38,8 @@
 -- Date        Version  Author          Description
 -- 2012-03-12  1.0      mcattin         Created
 -------------------------------------------------------------------------------
--- TODO: - 
---       - 
+-- TODO: -
+--       -
 -------------------------------------------------------------------------------
 
 library IEEE;
@@ -130,26 +130,30 @@ architecture rtl of mil1553_core is
   signal send_frame_req_p : std_logic;
   signal tx_send_frame_p  : std_logic;
 
-  signal mil1553_txd          : std_logic;
-  signal mil1553_tx_en        : std_logic;
-  signal mil1553_rx_en        : std_logic;
-  signal rx_word_cnt          : std_logic_vector(4 downto 0);
-  signal rx_word_cnt_t        : std_logic_vector(4 downto 0);
-  signal rx_in_progress       : std_logic;
-  signal rx_done_p            : std_logic;
-  signal rx_parity_error_p    : std_logic;
-  signal rx_parity_error_cnt  : unsigned(31 downto 0);
-  signal rx_manch_error_p     : std_logic;
-  signal rx_manch_error_cnt   : unsigned(31 downto 0);
-  signal rx_nb_word_error_p   : std_logic;
-  signal tx_word_cnt          : std_logic_vector(4 downto 0);
-  signal tx_tr_flag           : std_logic;
-  signal rx_nb_word_error_cnt : unsigned(15 downto 0);
-  signal tx_done_p            : std_logic;
+  signal mil1553_txd           : std_logic;
+  signal mil1553_tx_en         : std_logic;
+  signal mil1553_rx_en         : std_logic;
+  signal rx_word_cnt           : std_logic_vector(4 downto 0);
+  signal rx_word_cnt_t         : std_logic_vector(4 downto 0);
+  signal rx_in_progress        : std_logic;
+  signal rx_done_p             : std_logic;
+  signal rx_parity_error_p     : std_logic;
+  signal rx_parity_error_flag  : std_logic;
+  signal rx_parity_error_cnt   : unsigned(31 downto 0);
+  signal rx_manch_error_p      : std_logic;
+  signal rx_manch_error_flag   : std_logic;
+  signal rx_manch_error_cnt    : unsigned(31 downto 0);
+  signal rx_nb_word_error_p    : std_logic;
+  signal rx_nb_word_error_flag : std_logic;
+  signal tx_word_cnt           : std_logic_vector(4 downto 0);
+  signal tx_tr_flag            : std_logic;
+  signal rx_nb_word_error_cnt  : unsigned(31 downto 0);
+  signal tx_done_p             : std_logic;
 
   signal resp_timeout_cnt    : unsigned(9 downto 0);
   signal resp_timeout_cnt_en : std_logic;
   signal resp_timeout_p      : std_logic;
+  signal resp_timeout_flag   : std_logic;
 
   signal transaction_progress   : std_logic;
   signal transaction_progress_d : std_logic;
@@ -157,8 +161,9 @@ architecture rtl of mil1553_core is
 
   signal sent_frame_cnt       : unsigned(31 downto 0);
   signal received_frame_cnt   : unsigned(31 downto 0);
-  signal req_during_trans_cnt : unsigned(15 downto 0);
+  signal req_during_trans_cnt : unsigned(31 downto 0);
   signal req_during_trans_p   : std_logic;
+
 
 begin
 
@@ -247,10 +252,13 @@ begin
   -- Registers readback
   ------------------------------------------------------------------------------
   p_reg_rd : process(irq_en_msk_reg, irq_src_reg, cmd_reg, tx_reg, rx_reg,
-                     rx_rti, rx_word_cnt, transaction_progress,
+                     rx_rti, tx_word_cnt, rx_word_cnt, transaction_progress,
                      sent_frame_cnt, received_frame_cnt, rx_nb_word_error_cnt,
                      req_during_trans_cnt, resp_timeout_cnt,
-                     rx_buffer, tx_buffer, temp, tx_tr_flag)
+                     rx_buffer, tx_buffer, temp, tx_tr_flag, unique_id,
+                     rx_parity_error_cnt, rx_manch_error_cnt,
+                     rx_parity_error_flag, rx_manch_error_flag,
+                     rx_nb_word_error_flag, resp_timeout_flag)
   begin
 
     l_rd_done : for I in from_regs'range loop
@@ -258,7 +266,10 @@ begin
     end loop;
 
     from_regs(c_IRQ_EN_POS).data  <= irq_en_msk_reg;
-    from_regs(c_IRQ_SRC_POS).data <= rx_rti & rx_word_cnt & tx_tr_flag & irq_src_reg(20 downto 0);
+    from_regs(c_IRQ_SRC_POS).data <= rx_rti & rx_word_cnt & tx_tr_flag
+                                     & rx_parity_error_flag & rx_manch_error_flag
+                                     & rx_nb_word_error_flag & resp_timeout_flag
+                                     & irq_src_reg(16 downto 0);
 
     from_regs(c_CMD_POS).data  <= cmd_reg;
     from_regs(c_STAT_POS).data <= transaction_progress & "000" & X"000" & g_HW_VERSION;
@@ -270,22 +281,23 @@ begin
     from_regs(c_TX_REG_POS).data <= tx_reg;
     from_regs(c_RX_REG_POS).data <= rx_reg;
 
-    from_regs(c_ID_MSB_POS).data <= std_logic_vector(sent_frame_cnt);
-    from_regs(c_ID_LSB_POS).data <= std_logic_vector(received_frame_cnt);
+    from_regs(c_ID_MSB_POS).data <= unique_id(63 downto 32);
+    from_regs(c_ID_LSB_POS).data <= unique_id(31 downto 0);
 
-    from_regs(c_DBG0_POS).data <= temp & std_logic_vector(rx_nb_word_error_cnt);
-    from_regs(c_DBG1_POS).data <= std_logic_vector(req_during_trans_cnt)
-                                  & "000000"
-                                  & std_logic_vector(resp_timeout_cnt);
+    from_regs(c_TEMP_POS).data <= X"0000" & temp;
 
-    -- Registers to be added:
-    --  - Send frame counter
-    --  - Received frame counter
-    --  - Temperature
-    --  - Number of words received (in the last frame) + number of expected words
-    --  - Number of words received error counter + send request during transaction error counter
-    --  - Parity error counter + Manchester error counter
-    --  - Response timeout counter value
+    from_regs(c_TX_FRAME_CNT_POS).data    <= std_logic_vector(sent_frame_cnt);
+    from_regs(c_RX_FRAME_CNT_POS).data    <= std_logic_vector(received_frame_cnt);
+    from_regs(c_PARITY_ERR_CNT_POS).data  <= std_logic_vector(rx_parity_error_cnt);
+    from_regs(c_MANCH_ERR_CNT_POS).data   <= std_logic_vector(rx_manch_error_cnt);
+    from_regs(c_NB_WORD_ERR_CNT_POS).data <= std_logic_vector(rx_nb_word_error_cnt);
+    from_regs(c_TX_ERR_CNT_POS).data      <= std_logic_vector(req_during_trans_cnt);
+    from_regs(c_NB_WORD_POS).data         <= X"00" & "000" & rx_word_cnt & X"00" & "000" & tx_word_cnt;
+    from_regs(c_RESP_TIMEOUT_POS).data    <= X"0000"
+                                             & "000000"
+                                             & std_logic_vector(resp_timeout_cnt);
+
+    from_regs(c_RFU_POS).data <= X"00000000";  -- Reserved for future use
 
     from_regs(c_FAULT_ADDR_LOW_POS).data <= x"12345678";  -- in case of outside address range
     from_regs(c_FAULT_ADDR_POS).data     <= x"87654321";  -- in case of outside address range
@@ -516,6 +528,23 @@ begin
   end process p_nb_word_error_cnt;
 
   ------------------------------------------------------------------------------
+  -- Number of received word error flag,
+  -- indicates an error in the number of received word in the last reveived frame
+  ------------------------------------------------------------------------------
+  p_nb_word_error_flag : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_nb_word_error_flag <= '0';
+      elsif tx_send_frame_p = '1' then
+        rx_nb_word_error_flag <= '0';
+      elsif rx_nb_word_error_p = '1' then
+        rx_nb_word_error_flag <= '1';
+      end if;
+    end if;
+  end process p_nb_word_error_flag;
+
+  ------------------------------------------------------------------------------
   -- Transaction in progess flag
   -- Starts when a command is written to the tx register (TXREG)
   -- Stops at the end of a frame reception OR in case of Manchester error OR
@@ -582,6 +611,19 @@ begin
     end if;
   end process p_resp_timeout;
 
+  p_resp_timeout_flag : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        resp_timeout_flag <= '0';
+      elsif tx_send_frame_p = '1' then
+        resp_timeout_flag <= '0';
+      elsif resp_timeout_p = '1' then
+        resp_timeout_flag <= '1';
+      end if;
+    end if;
+  end process p_resp_timeout_flag;
+
   ------------------------------------------------------------------------------
   -- Sent frame counter
   ------------------------------------------------------------------------------
@@ -641,6 +683,22 @@ begin
   end process p_parity_error_cnt;
 
   ------------------------------------------------------------------------------
+  -- Parity error flag, indicates a parity error in the last reveived frame
+  ------------------------------------------------------------------------------
+  p_parity_error_flag : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_parity_error_flag <= '0';
+      elsif tx_send_frame_p = '1' then
+        rx_parity_error_flag <= '0';
+      elsif rx_parity_error_p = '1' then
+        rx_parity_error_flag <= '1';
+      end if;
+    end if;
+  end process p_parity_error_flag;
+
+  ------------------------------------------------------------------------------
   -- Manchester code errors counter
   ------------------------------------------------------------------------------
   p_manch_error_cnt : process (sys_clk_i)
@@ -653,6 +711,22 @@ begin
       end if;
     end if;
   end process p_manch_error_cnt;
+
+  ------------------------------------------------------------------------------
+  -- Manchester error flag, indicates a Manchester error in the last reveived frame
+  ------------------------------------------------------------------------------
+  p_manch_error_flag : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        rx_manch_error_flag <= '0';
+      elsif tx_send_frame_p = '1' then
+        rx_manch_error_flag <= '0';
+      elsif rx_manch_error_p = '1' then
+        rx_manch_error_flag <= '1';
+      end if;
+    end if;
+  end process p_manch_error_flag;
 
   ------------------------------------------------------------------------------
   -- LEDs
@@ -760,10 +834,97 @@ begin
   ------------------------------------------------------------------------------
   -- Test points
   ------------------------------------------------------------------------------
-  test_point_o(0) <= transaction_progress;
-  test_point_o(1) <= mil1553_tx_en;
-  test_point_o(2) <= rx_in_progress;
-  test_point_o(3) <= mil1553_rxd_a_i;
+  p_tp0_mux : process (cmd_reg)
+  begin
+    case cmd_reg(19 downto 16) is
+      when "0000" => test_point_o(0) <= transaction_progress;
+      when "0001" => test_point_o(0) <= mil1553_tx_en;
+      when "0010" => test_point_o(0) <= rx_in_progress;
+      when "0011" => test_point_o(0) <= mil1553_rxd_a_i;
+      when "0100" => test_point_o(0) <= tx_done_p;
+      when "0101" => test_point_o(0) <= rx_done_p;
+      when "0110" => test_point_o(0) <= rx_manch_error_p;
+      when "0111" => test_point_o(0) <= rx_parity_error_p;
+      when "1000" => test_point_o(0) <= rx_nb_word_error_p;
+      when "1001" => test_point_o(0) <= resp_timeout_p;
+      when "1010" => test_point_o(0) <= req_during_trans_p;
+      when "1011" => test_point_o(0) <= tx_send_frame_p;
+      when "1100" => test_point_o(0) <= send_frame_req_p;
+      when "1101" => test_point_o(0) <= mil1553_txd;
+      when "1110" => test_point_o(0) <= transaction_end_p;
+      when "1111" => test_point_o(0) <= sw_rst_p;
+      when others => test_point_o(0) <= transaction_progress;
+    end case;
+  end process p_tp0_mux;
+
+  p_tp1_mux : process (cmd_reg)
+  begin
+    case cmd_reg(23 downto 20) is
+      when "0000" => test_point_o(1) <= mil1553_tx_en;
+      when "0001" => test_point_o(1) <= transaction_progress;
+      when "0010" => test_point_o(1) <= rx_in_progress;
+      when "0011" => test_point_o(1) <= mil1553_rxd_a_i;
+      when "0100" => test_point_o(1) <= tx_done_p;
+      when "0101" => test_point_o(1) <= rx_done_p;
+      when "0110" => test_point_o(1) <= rx_manch_error_p;
+      when "0111" => test_point_o(1) <= rx_parity_error_p;
+      when "1000" => test_point_o(1) <= rx_nb_word_error_p;
+      when "1001" => test_point_o(1) <= resp_timeout_p;
+      when "1010" => test_point_o(1) <= req_during_trans_p;
+      when "1011" => test_point_o(1) <= tx_send_frame_p;
+      when "1100" => test_point_o(1) <= send_frame_req_p;
+      when "1101" => test_point_o(1) <= mil1553_txd;
+      when "1110" => test_point_o(1) <= transaction_end_p;
+      when "1111" => test_point_o(1) <= sw_rst_p;
+      when others => test_point_o(1) <= mil1553_tx_en;
+    end case;
+  end process p_tp1_mux;
+
+  p_tp2_mux : process (cmd_reg)
+  begin
+    case cmd_reg(27 downto 24) is
+      when "0000" => test_point_o(2) <= rx_in_progress;
+      when "0001" => test_point_o(2) <= mil1553_tx_en;
+      when "0010" => test_point_o(2) <= transaction_progress;
+      when "0011" => test_point_o(2) <= mil1553_rxd_a_i;
+      when "0100" => test_point_o(2) <= tx_done_p;
+      when "0101" => test_point_o(2) <= rx_done_p;
+      when "0110" => test_point_o(2) <= rx_manch_error_p;
+      when "0111" => test_point_o(2) <= rx_parity_error_p;
+      when "1000" => test_point_o(2) <= rx_nb_word_error_p;
+      when "1001" => test_point_o(2) <= resp_timeout_p;
+      when "1010" => test_point_o(2) <= req_during_trans_p;
+      when "1011" => test_point_o(2) <= tx_send_frame_p;
+      when "1100" => test_point_o(2) <= send_frame_req_p;
+      when "1101" => test_point_o(2) <= mil1553_txd;
+      when "1110" => test_point_o(2) <= transaction_end_p;
+      when "1111" => test_point_o(2) <= sw_rst_p;
+      when others => test_point_o(2) <= rx_in_progress;
+    end case;
+  end process p_tp2_mux;
+
+  p_tp3_mux : process (cmd_reg)
+  begin
+    case cmd_reg(31 downto 28) is
+      when "0000" => test_point_o(3) <= mil1553_rxd_a_i;
+      when "0001" => test_point_o(3) <= mil1553_tx_en;
+      when "0010" => test_point_o(3) <= rx_in_progress;
+      when "0011" => test_point_o(3) <= transaction_progress;
+      when "0100" => test_point_o(3) <= tx_done_p;
+      when "0101" => test_point_o(3) <= rx_done_p;
+      when "0110" => test_point_o(3) <= rx_manch_error_p;
+      when "0111" => test_point_o(3) <= rx_parity_error_p;
+      when "1000" => test_point_o(3) <= rx_nb_word_error_p;
+      when "1001" => test_point_o(3) <= resp_timeout_p;
+      when "1010" => test_point_o(3) <= req_during_trans_p;
+      when "1011" => test_point_o(3) <= tx_send_frame_p;
+      when "1100" => test_point_o(3) <= send_frame_req_p;
+      when "1101" => test_point_o(3) <= mil1553_txd;
+      when "1110" => test_point_o(3) <= transaction_end_p;
+      when "1111" => test_point_o(3) <= sw_rst_p;
+      when others => test_point_o(3) <= mil1553_rxd_a_i;
+    end case;
+  end process p_tp3_mux;
 
 
 end architecture rtl;
