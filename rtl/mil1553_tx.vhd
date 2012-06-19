@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-09
+-- Last update: 2012-03-15
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -60,14 +60,15 @@ entity mil1553_tx is
 
     -- MIL1553 interface
     ----------------------------------------------------------------------------
-    mil1553_txd_o : out std_logic;      -- Serial data output
-    mil1553_tx_o  : out std_logic;      -- Serial data output enable
+    mil1553_txd_o   : out std_logic;    -- Serial data output
+    mil1553_tx_en_o : out std_logic;    -- Serial data output enable
 
     -- User interface
     ----------------------------------------------------------------------------
     tx_buffer_i       : in  t_tx_buffer_array;  -- Array of 16-bit word to transmit
                                                 -- tx_buffer_i(0) = command word
     tx_send_frame_p_i : in  std_logic;          -- Send frame
+    tx_in_progress_o  : out std_logic;          -- Frame transmission in progress
     tx_done_p_o       : out std_logic           -- Frame transmission finished
 
     );
@@ -98,11 +99,12 @@ begin
       sys_rst_n_i       => sys_rst_n_i,
       sys_clk_i         => sys_clk_i,
       mil1553_txd_o     => mil1553_txd_o,
-      mil1553_tx_o      => mil1553_tx_o,
+      mil1553_tx_en_o   => mil1553_tx_en_o,
       tx_bit_rate_p_i   => tx_bit_rate,
       tx_buffer_i       => tx_buffer_i,
       tx_send_frame_p_i => tx_send_frame_p_i,
       tx_done_p_o       => tx_done_p_o
       );
+
 
 end architecture rtl;

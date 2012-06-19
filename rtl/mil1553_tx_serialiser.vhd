@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-09
+-- Last update: 2012-03-15
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ entity mil1553_tx_serialiser is
 
     -- MIL1553 interface
     ----------------------------------------------------------------------------
-    mil1553_txd_o : out std_logic;      -- Serial data output
-    mil1553_tx_o  : out std_logic;      -- Serial data output enable
+    mil1553_txd_o   : out std_logic;    -- Serial data output
+    mil1553_tx_en_o : out std_logic;    -- Serial data output enable (transmission in progress)
 
     -- User interface
     ----------------------------------------------------------------------------
@@ -151,7 +151,7 @@ begin
         -- Encode command word
         tx_buffer_encoded(0) <= c_CMD_SYNC_FIELD & f_manch_encoder(tx_buffer_i(0));
         -- Encode data words
-        l_data_encode : for I in 1 to c_TX_BUFFER_SIZE loop
+        l_data_encode : for I in 1 to c_TX_BUFFER_SIZE-1 loop
           tx_buffer_encoded(I) <= c_DATA_SYNC_FIELD & f_manch_encoder(tx_buffer_i(I));
         end loop;
       end if;
@@ -313,8 +313,8 @@ begin
   ----------------------------------------------------------------------------
   -- Output assignment
   ----------------------------------------------------------------------------
-  mil1553_tx_o  <= mil1553_tx_en;
-  mil1553_txd_o <= mil1553_txd and mil1553_tx_en;
+  mil1553_tx_en_o <= mil1553_tx_en;
+  mil1553_txd_o   <= mil1553_txd and mil1553_tx_en;
 
 
 end architecture rtl;
