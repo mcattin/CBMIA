@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-14
+-- Last update: 2012-03-15
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ package cbmia_pkg is
                                                  -- pulses < c_DEGLITCH_THRESHOLD * sys_clk ticks
                                                  -- are filtered out by the glitch filter
 
-  constant c_TX_BUFFER_SIZE : integer := 32;  -- Transmit buffer size, in 16-bit words
+  constant c_TX_BUFFER_SIZE : integer := 33;  -- Transmit buffer size, in 16-bit words
   constant c_RX_BUFFER_SIZE : integer := 33;  -- Receive buffer size, in 16-bit words
 
   -- Bit positions in MIL1553 command word
@@ -117,13 +117,16 @@ package cbmia_pkg is
   -- MIL1553 decoding
   constant c_STAT_SYNC_FIELD : std_logic_vector(1 downto 0) := "00";  -- Status word synchronisation field (as seen by the deserialiser)
 
+  --
+  constant c_LED_MONOSTABLE_LENGTH : natural := 400000;  -- number of system clock ticks, 
+
   -----------------------------------------------------------------------------
   -- Types declaration
   -----------------------------------------------------------------------------
-  type t_tx_buffer_array is array (0 to c_TX_BUFFER_SIZE) of std_logic_vector(15 downto 0);
-  type t_tx_buffer_encoded_array is array (0 to c_TX_BUFFER_SIZE) of std_logic_vector(39 downto 0);
+  type t_tx_buffer_array is array (0 to c_TX_BUFFER_SIZE - 1) of std_logic_vector(15 downto 0);
+  type t_tx_buffer_encoded_array is array (0 to c_TX_BUFFER_SIZE - 1) of std_logic_vector(39 downto 0);
 
-  type t_rx_buffer_array is array (0 to c_RX_BUFFER_SIZE) of std_logic_vector(15 downto 0);
+  type t_rx_buffer_array is array (0 to c_RX_BUFFER_SIZE - 1) of std_logic_vector(15 downto 0);
 
   -----------------------------------------------------------------------------
   -- Functions declaration
@@ -257,35 +260,37 @@ package cbmia_pkg is
 
   component mil1553_rx_deserialiser
     port (
-      sys_rst_n_i          : in  std_logic;          -- Synchronous system reset (active low)
-      sys_clk_i            : in  std_logic;          -- System clock
-      rxd_i                : in  std_logic;          -- Serial data input
-      rxd_f_edge_p_i       : in  std_logic;          -- Indicates a falling edge on serial input
-      rxd_r_edge_p_i       : in  std_logic;          -- Indicates a rising edge on serial input
-      sample_bit_p_i       : in  std_logic;          -- Pulse indicating the sampling of a bit
-      sample_manch_bit_p_i : in  std_logic;          -- Pulse indicating the sampling of a Manchester bit
-      signif_edge_window_i : in  std_logic;          -- Time window where a significant edge is expected
-      adjac_bits_window_i  : in  std_logic;          -- Time window where a transition between adjacent bits is expected
-      rx_clk_rst_o         : out std_logic;          -- Resets the clk recovery procedure
-      rx_buffer_o          : out t_rx_buffer_array;  -- Receive buffer
-      rx_in_progress_o     : out std_logic;          -- Frame reception in progress
-      rx_done_p_o          : out std_logic;          -- End of frame reception
-      rx_glitch_detect_o   : out std_logic;          -- Glitch detected in serial data
-      rx_word_error_o      : out std_logic           -- Received word contains error (parity error, code violation)
+      sys_rst_n_i          : in  std_logic;                     -- Synchronous system reset (active low)
+      sys_clk_i            : in  std_logic;                     -- System clock
+      rxd_i                : in  std_logic;                     -- Serial data input
+      rxd_f_edge_p_i       : in  std_logic;                     -- Indicates a falling edge on serial input
+      rxd_r_edge_p_i       : in  std_logic;                     -- Indicates a rising edge on serial input
+      sample_bit_p_i       : in  std_logic;                     -- Pulse indicating the sampling of a bit
+      sample_manch_bit_p_i : in  std_logic;                     -- Pulse indicating the sampling of a Manchester bit
+      signif_edge_window_i : in  std_logic;                     -- Time window where a significant edge is expected
+      adjac_bits_window_i  : in  std_logic;                     -- Time window where a transition between adjacent bits is expected
+      rx_clk_rst_o         : out std_logic;                     -- Resets the clk recovery procedure
+      rx_buffer_o          : out t_rx_buffer_array;             -- Receive buffer
+      rx_word_cnt_o        : out std_logic_vector(4 downto 0);  -- Number of words in the receive buffer
+      rx_in_progress_o     : out std_logic;                     -- Frame reception in progress
+      rx_done_p_o          : out std_logic;                     -- End of frame reception
+      rx_parity_error_p_o  : out std_logic;                     -- Parity error detected
+      rx_manch_error_p_o   : out std_logic                      -- Manchester code violation detected
       );
   end component mil1553_rx_deserialiser;
 
   component mil1553_rx
     port (
-      sys_rst_n_i        : in  std_logic;          -- Synchronous system reset (active low)
-      sys_clk_i          : in  std_logic;          -- System clock
-      mil1553_rxd_i      : in  std_logic;          -- Serial data input
-      mil1553_rx_en_i    : in  std_logic;          -- Receiver enable
-      rx_buffer_o        : out t_rx_buffer_array;  -- Receive buffer
-      rx_in_progress_o   : out std_logic;          -- Frame reception in progress
-      rx_done_p_o        : out std_logic;          -- End of frame reception
-      rx_glitch_detect_o : out std_logic;          -- Glitch detected in serial data
-      rx_word_error_o    : out std_logic           -- Received word contains error (parity error, code violation)
+      sys_rst_n_i         : in  std_logic;                     -- Synchronous system reset (active low)
+      sys_clk_i           : in  std_logic;                     -- System clock
+      mil1553_rxd_i       : in  std_logic;                     -- Serial data input
+      mil1553_rx_en_i     : in  std_logic;                     -- Receiver enable
+      rx_buffer_o         : out t_rx_buffer_array;             -- Receive buffer
+      rx_word_cnt_o       : out std_logic_vector(4 downto 0);  -- Number of words in the receive buffer
+      rx_in_progress_o    : out std_logic;                     -- Frame reception in progress
+      rx_done_p_o         : out std_logic;                     -- End of frame reception
+      rx_parity_error_p_o : out std_logic;                     -- Parity error detected
+      rx_manch_error_p_o  : out std_logic                      -- Manchester code violation detected
       );
   end component mil1553_rx;
 
@@ -302,7 +307,7 @@ package cbmia_pkg is
       sys_rst_n_i       : in  std_logic;          -- Synchronous system reset (active low)
       sys_clk_i         : in  std_logic;          -- System clock
       mil1553_txd_o     : out std_logic;          -- Serial data output
-      mil1553_tx_o      : out std_logic;          -- Serial data output enable
+      mil1553_tx_en_o   : out std_logic;          -- Serial data output enable
       tx_bit_rate_p_i   : in  std_logic;          -- Bit rate pulse train, two pulses per bit
       tx_buffer_i       : in  t_tx_buffer_array;  -- Array of 16-bit word to transmit
       tx_send_frame_p_i : in  std_logic;          -- Send frame
@@ -315,7 +320,7 @@ package cbmia_pkg is
       sys_rst_n_i       : in  std_logic;          -- Synchronous system reset (active low)
       sys_clk_i         : in  std_logic;          -- System clock
       mil1553_txd_o     : out std_logic;          -- Serial data output
-      mil1553_tx_o      : out std_logic;          -- Serial data output enable
+      mil1553_tx_en_o   : out std_logic;          -- Serial data output enable
       tx_buffer_i       : in  t_tx_buffer_array;  -- Array of 16-bit word to transmit
       tx_send_frame_p_i : in  std_logic;          -- Send frame
       tx_done_p_o       : out std_logic           -- Frame transmission finished
@@ -349,6 +354,21 @@ package cbmia_pkg is
       counter_is_zero_o : out std_logic                                        -- empty counter indication
       );
   end component decr_cnt;
+
+  component monostable
+    generic(
+      g_INPUT_POLARITY  : std_logic := '1';    --! trigger_i polarity
+      g_OUTPUT_POLARITY : std_logic := '1';    --! pulse_o polarity
+      g_OUTPUT_RETRIG   : boolean   := false;  --! Retriggerable output monostable
+      g_OUTPUT_LENGTH   : natural   := 1       --! pulse_o lenght (in clk_i ticks)
+      );
+    port (
+      rst_n_i   : in  std_logic;               --! Reset (active low)
+      clk_i     : in  std_logic;               --! Clock
+      trigger_i : in  std_logic;               --! Trigger input pulse
+      pulse_o   : out std_logic                --! Monostable output pulse
+      );
+  end component monostable;
 
 
 end cbmia_pkg;

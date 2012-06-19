@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-14
+-- Last update: 2012-03-15
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -64,11 +64,12 @@ entity mil1553_rx is
 
     -- User interface
     ----------------------------------------------------------------------------
-    rx_buffer_o        : out t_rx_buffer_array;  -- Receive buffer
-    rx_in_progress_o   : out std_logic;          -- Frame reception in progress
-    rx_done_p_o        : out std_logic;          -- End of frame reception
-    rx_glitch_detect_o : out std_logic;          -- Glitch detected in serial data
-    rx_word_error_o    : out std_logic           -- Received word contains error (parity error, code violation)
+    rx_buffer_o         : out t_rx_buffer_array;             -- Receive buffer
+    rx_word_cnt_o       : out std_logic_vector(4 downto 0);  -- Number of words in the receive buffer
+    rx_in_progress_o    : out std_logic;                     -- Frame reception in progress
+    rx_done_p_o         : out std_logic;                     -- End of frame reception
+    rx_parity_error_p_o : out std_logic;                     -- Parity error detected
+    rx_manch_error_p_o  : out std_logic                      -- Manchester code violation detected
 
     );
 
@@ -80,6 +81,7 @@ architecture rtl of mil1553_rx is
   ----------------------------------------------------------------------------
   -- Signals declaration
   ----------------------------------------------------------------------------
+  signal mil1553_rxd        : std_logic;
   signal rx_clk_rst         : std_logic;
   signal sample_manch_bit_p : std_logic;
   signal sample_bit_p       : std_logic;
@@ -93,7 +95,12 @@ architecture rtl of mil1553_rx is
 begin
 
   ------------------------------------------------------------------------------
-  -- Components instantiation
+  -- 
+  ------------------------------------------------------------------------------
+  mil1553_rxd <= mil1553_rxd_i and mil1553_rx_en_i;
+
+  ------------------------------------------------------------------------------
+  -- MIL1553 clock recovery
   ------------------------------------------------------------------------------
   cmp_mil1553_rx_clk : mil1553_rx_clk
     port map(
@@ -107,17 +114,23 @@ begin
       rx_adjac_bits_window_o  => adjac_bits_window
       );
 
+  ------------------------------------------------------------------------------
+  -- MIL1553 serial input glitch filter and edge detection
+  ------------------------------------------------------------------------------
   cmp_mil1553_rx_deglitcher : mil1553_rx_deglitcher
     port map(
       sys_rst_n_i         => sys_rst_n_i,
       sys_clk_i           => sys_clk_i,
-      rxd_a_i             => mil1553_rxd_i,
+      rxd_a_i             => mil1553_rxd,
       rxd_filt_o          => rxd_filt,
       rxd_filt_edge_p_o   => rxd_filt_edge_p,
       rxd_filt_f_edge_p_o => rxd_filt_f_edge_p,
       rxd_filt_r_edge_p_o => rxd_filt_r_edge_p
       );
 
+  ------------------------------------------------------------------------------
+  -- MIL1553 deserialiser and RX buffer
+  ------------------------------------------------------------------------------
   cmp_mil1553_rx_deserialiser : mil1553_rx_deserialiser
     port map(
       sys_rst_n_i          => sys_rst_n_i,
@@ -131,10 +144,11 @@ begin
       adjac_bits_window_i  => adjac_bits_window,
       rx_clk_rst_o         => rx_clk_rst,
       rx_buffer_o          => rx_buffer_o,
+      rx_word_cnt_o        => rx_word_cnt_o,
       rx_in_progress_o     => rx_in_progress_o,
       rx_done_p_o          => rx_done_p_o,
-      rx_glitch_detect_o   => rx_glitch_detect_o,
-      rx_word_error_o      => rx_word_error_o
+      rx_parity_error_p_o  => rx_parity_error_p_o,
+      rx_manch_error_p_o   => rx_manch_error_p_o
       );
 
 
