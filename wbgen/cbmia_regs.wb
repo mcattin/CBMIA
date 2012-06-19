@@ -50,6 +50,62 @@ peripheral {
 
 
   reg {
+    name = "Status register.";
+    prefix = "stat";
+
+    field {
+      name = "VHDL version.";
+      description = "4-digit binary coded decimal VHDL version (e.g. 0102 = V01.02).";
+      prefix = "ver";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+
+    field {
+      name = "PCB temperature.";
+      description = "Format: 12-bit signed, fixed point.";
+      prefix = "temp";
+      type = SLV;
+      size = 16;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  reg {
+    name = "Unique ID (MSB) register.";
+    description = "32 most significant bits of the 64-bit unique ID from DS1822.";
+    prefix = "id_msb";
+
+    field {
+      name = "Unique ID (MSB) register.";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  reg {
+    name = "Unique ID (LSB) register.";
+    description = "32 least significant bits of the 64-bit unique ID from DS1822.";
+    prefix = "id_lsb";
+
+    field {
+      name = "Unique ID (LSB) register.";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  reg {
     name = "Control register.";
     prefix = "ctrl";
 
@@ -62,31 +118,66 @@ peripheral {
 
     field {
       name = "Send frame.";
-      description = "Sends the frame in tx FIFO.\nWrite 0 = no effect\nWrite 1 = sends frame";
+      description = "Sends the frame in Tx FIFO.\nWrite 0 = no effect\nWrite 1 = sends frame";
       prefix = "send_frame";
+      type = MONOSTABLE;
+    };
+
+    field {
+      name = "Clear Tx FIFO.";
+      description = "Clears Tx FIFO.\nWrite 0 = no effect\nWrite 1 = clears FIFO";
+      prefix = "clr_tx_fifo";
+      type = MONOSTABLE;
+    };
+
+    field {
+      name = "Clear Rx FIFO.";
+      description = "Clears Rx FIFO.\nWrite 0 = no effect\nWrite 1 = clears FIFO";
+      prefix = "clr_tx_fifo";
       type = MONOSTABLE;
     };
   };
 
 
   reg {
-    name = "Global status register.";
-    prefix = "stat";
+    name = "Frame sent time-tag register.";
+    description = "This time-tag comes from a 32-bit free running counter, frozen at the end of a frame transmission.";
+    prefix = "send_tag";
 
     field {
-      name = "";
-      description = "";
-      prefix = "";
-      type = BIT;
+      name = "Frame sent time-tag register.";
+      type = SLV;
+      size = 32;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
+  };
+
+
+  reg {
+    name = "Frame reveived time-tag register.";
+    description = "This time-tag comes from a 32-bit free running counter, frozen at the end of a frame reception.";
+    prefix = "receive_tag";
 
     field {
-      name = "";
-      description = "";
-      prefix = "";
-      type = BIT;
+      name = "Frame reveived time-tag register.";
+      type = SLV;
+      size = 32;
+      access_bus = READ_ONLY;
+      access_dev = WRITE_ONLY;
+    };
+  };
+
+
+  reg {
+    name = "Free running counter register.";
+    description = "Free running counter used for time-tagging.";
+    prefix = "tag_cnt";
+
+    field {
+      name = "Free running counter register.";
+      type = SLV;
+      size = 32;
       access_bus = READ_ONLY;
       access_dev = WRITE_ONLY;
     };
@@ -97,7 +188,7 @@ peripheral {
     size = 33;
     direction = BUS_TO_CORE;
     prefix = "tx_fifo";
-    name = "mil1553 transmitter FIFO";
+    name = "mil1553 transmitter";
     description = "This FIFO holds the words to be transmitted in the next mil1553 frame.";
     flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
     flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
@@ -121,7 +212,7 @@ peripheral {
     size = 33;
     direction = CORE_TO_BUS;
     prefix = "rx_fifo";
-    name = "mil1553 receiver FIFO";
+    name = "mil1553 receiver";
     description = "This FIFO holds the words reveived in the last mil1553 frame.";
     flags_bus = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
     flags_dev = {FIFO_FULL, FIFO_EMPTY, FIFO_COUNT};
@@ -158,6 +249,12 @@ peripheral {
     };
   };
 
+
+  irq {
+    name = "mil1553 frame sent.";
+    trigger = LEVEL_0;
+    prefix = "tx_done";
+  };
 
   irq {
     name = "mil1553 frame received.";

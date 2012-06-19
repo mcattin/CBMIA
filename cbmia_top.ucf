@@ -99,7 +99,7 @@ NET "l_gpio_b<8>"        LOC = "w1" |IOSTANDARD = LVCMOS33 ;
 # MIL1553 interface
 #-------------------------------------------------------------------------------
 NET "mil1553_md_fault_i" LOC = "f3" |IOSTANDARD = LVCMOS33 ;
-NET "mil1553_rxd_i"      LOC = "e3" |IOSTANDARD = LVCMOS33 ;
+NET "mil1553_rxd_a_i"    LOC = "e3" |IOSTANDARD = LVCMOS33 ;
 NET "mil1553_tx_rx_n_o"  LOC = "d3" |IOSTANDARD = LVCMOS33 ;
 NET "mil1553_txd_o"      LOC = "c3" |IOSTANDARD = LVCMOS33 ;
 NET "mil1553_txd_n_o"    LOC = "l4" |IOSTANDARD = LVCMOS33 ;

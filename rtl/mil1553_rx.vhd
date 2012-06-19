@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-02-29
+-- Last update: 2012-03-02
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -63,26 +63,75 @@ entity mil1553_rx is
 
     -- User interface
     ----------------------------------------------------------------------------
-    rx_word_o           : out std_logic_vector(19 downto 0);  -- Received word
-                                                              -- 15..0 : word data
-                                                              --    16 : word type flag, 0=data, 1=status
-                                                              --    17 : error flag, 0=no error, 1=word contains error
-                                                              --    18 : parity error flag, 0=no error, 1=error
-                                                              --    19 : Manchester code violation flag, 0=no error, 1=error
-    rx_word_wr_o        : out std_logic;                      -- Received word write strobe
-    rx_done_o           : out std_logic;                      -- End of frame reception
-    rx_glitch_detect_o  : out std_logic;                      -- Glitch detected in serial data
-    rx_word_error_o     : out std_logic                       -- Received word contains error (parity error, code violation)
+    rx_word_o          : out std_logic_vector(19 downto 0);  -- Received word
+                                                             -- 15..0 : word data
+                                                             --    16 : word type flag, 0=data, 1=status
+                                                             --    17 : error flag, 0=no error, 1=word contains error
+                                                             --    18 : parity error flag, 0=no error, 1=error
+                                                             --    19 : Manchester code violation flag, 0=no error, 1=error
+    rx_word_wr_o       : out std_logic;                      -- Received word write strobe
+    rx_done_o          : out std_logic;                      -- End of frame reception
+    rx_glitch_detect_o : out std_logic;                      -- Glitch detected in serial data
+    rx_word_error_o    : out std_logic                       -- Received word contains error (parity error, code violation)
 
     );
 end mil1553_rx;
 
 architecture rtl of mil1553_rx is
 
+  type t_rx_fsm_state is (IDLE, SYNC_DETECT, GET_BITS, DATA_SYNC);
 
+  signal rx_fsm_state      : t_rx_fsm_state;
+  signal rx_fsm_next_state : t_rx_fsm_state;
 
 begin
 
+  ------------------------------------------------------------------------------
+  -- Receiver FSM
+  ------------------------------------------------------------------------------
+  p_rx_fsm_sync : process (sys_clk_i)
+  begin
+    if rising_edge (sys_clk_i) then
+      if sys_rst_n_i = '0' then
+        rx_fsm_state <= IDLE;
+      else
+        rx_fsm_state <= rx_fsm_next_state;
+      end if;
+    end if;
+  end process p_rx_fsm_sync;
 
+  p_rx_fsm_transitions : process
+  begin
+    case rx_fsm_state is
+
+      when IDLE =>;
+
+      when SYNC_DETECT =>;
+
+      when GET_BITS =>;
+
+      when DATA_SYNC =>;
+
+      when others => null;
+
+    end case;
+  end process p_rx_fsm_transitions;
+
+  p_rx_fsm_outputs : process
+  begin
+    case rx_fsm_state is
+
+      when IDLE =>;
+
+      when SYNC_DETECT =>;
+
+      when GET_BITS =>;
+
+      when DATA_SYNC =>;
+
+      when others => null;
+
+    end case;
+  end process p_rx_fsm_outputs;
 
 end architecture rtl;

@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-02-29
+-- Last update: 2012-03-02
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ entity cbmia_top is
     -- MIL1553 interface
     ----------------------------------------------------------------------------
     -- Serial data input -> RXDATA3V
-    mil1553_rxd_i      : in  std_logic;
+    mil1553_rxd_a_i      : in  std_logic;
     -- Manchester decoder fault? -> MDFAULT3V (not connected in schematics)
     mil1553_md_fault_i : in  std_logic;
     -- Low  = enable receiver and disable tranmitter

@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-02-29
+-- Last update: 2012-03-01
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -37,7 +37,7 @@
 -- Date        Version  Author          Description
 -- 2012-02-29  1.0      mcattin         Created
 -------------------------------------------------------------------------------
--- TODO: - 
+-- TODO: - Watchdog ??
 --       - 
 -------------------------------------------------------------------------------
 
@@ -83,14 +83,20 @@ entity plx_to_wb is
     wb_cyc_o   : out std_logic;                      -- Cycle
     wb_dat_i   : in  std_logic_vector(31 downto 0);  -- Data bus input
     wb_ack_i   : in  std_logic;                      -- Acknowledge
-    wb_stall_i : in  std_logic                       -- Pipeline stall
+    wb_stall_i : in  std_logic;                      -- Pipeline stall
+    wb_irq_i   : in  std_logic                       -- Interrupt request
     );
 end plx_to_wb;
 
 architecture rtl of plx_to_wb is
 
   type   t_wb_state is (WB_IDLE, WB_CYCLE, WB_WAIT_ACK);
-  signal wb_state: t_wb_state;
+  signal wb_state : t_wb_state;
+
+  signal wb_we_t     : std_logic;
+  signal l_data_i_d  : std_logic_vector(31 downto 0);
+  signal l_data_o_d  : std_logic_vector(31 downto 0);
+  signal l_address_d : std_logic_vector(21 downto 0);
 
   signal start_wr_cyc : std_logic;
   signal start_rd_cyc : std_logic;
@@ -116,76 +122,108 @@ begin
   start_rd_cyc <= not(l_wr_rd_n_i) and not(l_ads_n_i);
 
   -----------------------------------------------------------------------------
+  -- Data to local bus
+  -----------------------------------------------------------------------------
+  l_data_b <= l_data_o_d when l_wr_rd_n_i = '0' else (others => 'Z');
+
+  -----------------------------------------------------------------------------
+  -- Registers address from local bus
+  -----------------------------------------------------------------------------
+  p_addr : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if sys_rst_n_i = '0' then
+        l_address_d <= (others => '0');
+      elsif l_ads_n_i = '0' then
+        l_address_d <= l_address_i;
+      end if;
+    end if;
+  end process p_addr;
+
+  -----------------------------------------------------------------------------
+  -- Registers data from local bus
+  -----------------------------------------------------------------------------
+  p_addr : process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if sys_rst_n_i = '0' then
+        l_data_i_d <= (others => '0');
+      elsif l_blast_n_i = '0' then
+        l_data_i_d <= l_data_b;
+      end if;
+    end if;
+  end process p_addr;
+
+  -----------------------------------------------------------------------------
   -- Wishbone master FSM
   -----------------------------------------------------------------------------
   p_wb_fsm : process (sys_clk_i, sys_rst_n_i)
   begin
     if(rst_n_i = c_RST_ACTIVE) then
-      wb_state <= WB_IDLE;
-      wb_cyc_o               <= '0';
-      wb_stb_o               <= '0';
-      wb_we_o                <= '0';
-      wb_sel_o               <= "0000";
-      wb_dat_o             <= (others => '0');
-      wb_adr_o               <= (others => '0');
-      from_wb_fifo_din       <= (others => '0');
-      from_wb_fifo_wr        <= '0';
+      wb_state    <= WB_IDLE;
+      wb_cyc_o    <= '0';
+      wb_stb_o    <= '0';
+      wb_we_t     <= '0';
+      wb_sel_o    <= "0000";
+      wb_dat_o    <= (others => '0');
+      wb_adr_o    <= (others => '0');
+      l_data_o_d  <= (others => '0');
+      l_ready_n_o <= '1';
     elsif rising_edge(sys_clk_i) then
       case wb_state is
 
         when WB_IDLE =>
+          -- Ends write cycle to local bus
+          l_ready_n_o <= '1';
           -- Clear bus
-          wb_cyc_o        <= '0';
-          wb_stb_o        <= '0';
-          wb_sel_o        <= "0000";
+          wb_cyc_o    <= '0';
+          wb_stb_o    <= '0';
+          wb_sel_o    <= "0000";
           -- Wait for a PLX local bus cycle
           if (l_ads_n_i = '0') then
             wb_state <= WB_CYCLE;
           end if;
 
         when WB_CYCLE =>
-          -- initate a bus cycle
-          wb_cyc_t               <= '1';
-          wb_stb_t               <= '1';
-          wb_we_t                <= to_wb_fifo_rw;
-          wb_sel_t               <= "1111";
-          wb_adr_t               <= to_wb_fifo_addr;
-          --if (to_wb_fifo_rw = '1') then
-          wb_dat_o_t             <= to_wb_fifo_data;
-          --end if;
-          -- wait for slave to ack
-          wishbone_current_state <= WB_WAIT_ACK;
+          -- Initate a bus cycle
+          wb_cyc_o <= '1';
+          wb_stb_o <= '1';
+          wb_we_t  <= l_wr_rd_n_i;
+          wb_sel_o <= l_be_i;
+          wb_adr_o <= l_address_d;
+          wb_dat_o <= l_data_i_d;
+          -- Wait for slave to ack
+          wb_state <= WB_WAIT_ACK;
 
         when WB_WAIT_ACK =>
-          if wb_stall_t = '0' then
-            wb_stb_t <= '0';
+          if wb_stall_i = '0' then
+            wb_stb_o <= '0';
           end if;
-          if (wb_ack_t = '1') then
-            -- for read cycles write read data to fifo
+          if (wb_ack_i = '1') then
+            -- For read cycles, write data to local bus
             if (wb_we_t = '0') then
-              from_wb_fifo_din <= wb_dat_i_t;
-              from_wb_fifo_wr  <= '1';
+              l_data_o_d  <= wb_dat_i;
+              l_ready_n_o <= '0';
             end if;
-            -- end of the bus cycle
-            wb_cyc_t               <= '0';
-            wishbone_current_state <= WB_IDLE;
+            -- End of the bus cycle
+            wb_cyc_o <= '0';
+            wb_state <= WB_IDLE;
           end if;
 
         when others =>
-          -- should not get here!
-          wishbone_current_state <= WB_IDLE;
-          wb_cyc_t               <= '0';
-          wb_stb_t               <= '0';
-          wb_we_t                <= '0';
-          wb_sel_t               <= "0000";
-          wb_dat_o_t             <= (others => '0');
-          wb_adr_t               <= (others => '0');
-          to_wb_fifo_rd          <= '0';
-          from_wb_fifo_din       <= (others => '0');
-          from_wb_fifo_wr        <= '0';
+          -- Should not get here!
+          wb_state <= WB_IDLE;
+          wb_cyc_o <= '0';
+          wb_stb_o <= '0';
+          wb_we_t  <= '0';
+          wb_sel_o <= "0000";
+          wb_dat_o <= (others => '0');
+          wb_adr_o <= (others => '0');
 
       end case;
     end if;
   end process p_wb_fsm;
+
+  wb_we_o <= wb_we_t;
 
 end architecture rtl;

@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-02-29
+-- Last update: 2012-03-02
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -51,7 +51,16 @@ package cbmia_pkg is
   -----------------------------------------------------------------------------
   -- Constants declaration
   -----------------------------------------------------------------------------
-  
+  c_SYS_CLK_PERIOD         : integer  := 25;  -- ns
+  c_PERIODS_CNT_WIDTH      : integer  := 6;   -- Number of bits needed for the
+                                              -- Manchester period counter
+                                              -- -> at 1Mbit/s
+  c_BIT_RATE_SYS_CLK_TICKS : unsigned :=
+    to_unsigned((1000/c_SYS_CLK_PERIOD), c_PERIODS_CNT_WIDTH);
+
+  c_DEGLITCH_THRESHOLD : integer := 4;  -- serial input glitch filter threshold
+                                        -- pulses < c_DEGLITCH_THRESHOLD * sys_clk ticks
+                                        -- are filtered out by the glitch filter
 
   -----------------------------------------------------------------------------
   -- Functions declaration
@@ -61,7 +70,16 @@ package cbmia_pkg is
   -----------------------------------------------------------------------------
   -- Componants declaration
   -----------------------------------------------------------------------------
-  
+  component mil1553_rx_deglitcher
+    port (
+      sys_rst_n_i         : in  std_logic;  -- Synchronous system reset (active low)
+      sys_clk_i           : in  std_logic;  -- System clock
+      rxd_a_i             : in  std_logic;  -- Serial data input
+      rxd_filt_o          : out std_logic;  -- filtered output signal
+      rxd_filt_edge_p_o   : out std_logic;  -- indicates an edge on the filtered signal
+      rxd_filt_f_edge_p_o : out std_logic   -- indicates a falling edge on the filtered signal
+      );
+  end component mil1553_rx_deglitcher;
 
 end cbmia_pkg;
 
