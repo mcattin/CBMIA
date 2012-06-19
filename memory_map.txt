@@ -118,7 +118,7 @@ Mux correspondance table:
   "1011" = Send frame
   "1100" = Send frame request
   "1101" = MIL1553 TXD
-  "1110" = Transaction end
+  "1110" = IRQ request
   "1111" = RX error
 
 

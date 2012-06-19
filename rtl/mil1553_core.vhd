@@ -169,6 +169,8 @@ architecture rtl of mil1553_core is
   signal req_during_trans_cnt : unsigned(31 downto 0);
   signal req_during_trans_p   : std_logic;
 
+  signal irq_req : std_logic_vector(1 downto 0);
+
 
 begin
 
@@ -210,11 +212,12 @@ begin
       irq_en_o       => irq_en_msk_reg,
       irq_src_o      => irq_src_reg,
       irq_src_rden_i => to_regs.rden(c_IRQ_SRC_POS),
-      irq_req_o      => irq_req_o
+      irq_req_o      => irq_req
       );
 
   irq_src(31 downto 1) <= (others => '0');
   irq_src(0)           <= transaction_end_p;
+  irq_req_o            <= irq_req;
 
   ------------------------------------------------------------------------------
   -- PPS counter for temperature readout
@@ -943,7 +946,7 @@ begin
       when "1011" => test_point_o(0) <= tx_send_frame_p;
       when "1100" => test_point_o(0) <= send_frame_req_p;
       when "1101" => test_point_o(0) <= mil1553_txd;
-      when "1110" => test_point_o(0) <= transaction_end_p;
+      when "1110" => test_point_o(0) <= irq_req(0);
       when "1111" => test_point_o(0) <= rx_error_p;
       when others => test_point_o(0) <= transaction_progress;
     end case;
@@ -966,7 +969,7 @@ begin
       when "1011" => test_point_o(1) <= tx_send_frame_p;
       when "1100" => test_point_o(1) <= send_frame_req_p;
       when "1101" => test_point_o(1) <= mil1553_txd;
-      when "1110" => test_point_o(1) <= transaction_end_p;
+      when "1110" => test_point_o(1) <= irq_req(0);
       when "1111" => test_point_o(1) <= rx_error_p;
       when others => test_point_o(1) <= mil1553_tx_en;
     end case;
@@ -989,7 +992,7 @@ begin
       when "1011" => test_point_o(2) <= tx_send_frame_p;
       when "1100" => test_point_o(2) <= send_frame_req_p;
       when "1101" => test_point_o(2) <= mil1553_txd;
-      when "1110" => test_point_o(2) <= transaction_end_p;
+      when "1110" => test_point_o(2) <= irq_req(0);
       when "1111" => test_point_o(2) <= rx_error_p;
       when others => test_point_o(2) <= rx_in_progress;
     end case;
@@ -1012,7 +1015,7 @@ begin
       when "1011" => test_point_o(3) <= tx_send_frame_p;
       when "1100" => test_point_o(3) <= send_frame_req_p;
       when "1101" => test_point_o(3) <= mil1553_txd;
-      when "1110" => test_point_o(3) <= transaction_end_p;
+      when "1110" => test_point_o(3) <= irq_req(0);
       when "1111" => test_point_o(3) <= rx_error_p;
       when others => test_point_o(3) <= mil1553_rxd_a_i;
     end case;
