@@ -59,12 +59,12 @@ entity decr_cnt is
 
     sys_rst_n_i : in std_logic;         -- resets counter to all '1'
 
-    counter_decr_i : in std_logic;                                    -- decrement enable
-    counter_load_i : in std_logic;                                    -- load enable; loads counter to counter_top_i
-    counter_top_i  : in std_logic_vector(g_counter_lgth-1 downto 0);  -- load value
+    counter_decr_i : in std_logic;                                       -- decrement enable
+    counter_load_i : in std_logic;                                       -- load enable; loads counter to counter_top_i
+    counter_top_i  : in std_logic_vector(g_COUNTER_WIDTH - 1 downto 0);  -- load value
 
-    counter_o         : out std_logic_vector(g_counter_lgth-1 downto 0);  -- counter
-    counter_is_zero_o : out std_logic                                     -- empty counter indication
+    counter_o         : out std_logic_vector(g_COUNTER_WIDTH - 1 downto 0);  -- counter
+    counter_is_zero_o : out std_logic                                        -- empty counter indication
     );
 
 end entity decr_cnt;
@@ -72,7 +72,7 @@ end entity decr_cnt;
 
 architecture rtl of decr_cnt is
 
-  signal s_counter : unsigned (g_counter_lgth-1 downto 0);
+  signal s_counter : unsigned (g_COUNTER_WIDTH - 1 downto 0);
 
 begin
 
@@ -84,7 +84,7 @@ begin
   begin
     if rising_edge (sys_clk_i) then
 
-      if sys_rst_n_i = '1' then
+      if sys_rst_n_i = '0' then
         s_counter <= (others => '1');
       else
 

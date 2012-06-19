@@ -45,7 +45,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 library work;
-use work.bus_interface_pkg.all;
+use work.mem_interface_pkg.all;
 
 
 package cbmia_pkg is
@@ -60,7 +60,7 @@ package cbmia_pkg is
   constant c_BIT_RATE_SYS_CLK_TICKS : unsigned :=
     to_unsigned((1000/c_SYS_CLK_PERIOD), c_PERIODS_CNT_WIDTH);
 
-  constant c_DEGLITCH_THRESHOLD : integer := 4;  -- Serial input glitch filter threshold
+  constant c_DEGLITCH_THRESHOLD : integer := 1;  -- Serial input glitch filter threshold
                                                  -- pulses < c_DEGLITCH_THRESHOLD * sys_clk ticks
                                                  -- are filtered out by the glitch filter
 
@@ -130,6 +130,7 @@ package cbmia_pkg is
   -----------------------------------------------------------------------------
   function f_log2_ceil(N          :    natural) return positive;
   function f_manch_encoder(word_i : in std_logic_vector(15 downto 0)) return std_logic_vector;
+  function f_parity_check(word_i  : in std_logic_vector(16 downto 0)) return std_logic;
 
   -----------------------------------------------------------------------------
   -- Componants declaration
@@ -266,7 +267,7 @@ package cbmia_pkg is
       signif_edge_window_i : in  std_logic;          -- Time window where a significant edge is expected
       adjac_bits_window_i  : in  std_logic;          -- Time window where a transition between adjacent bits is expected
       rx_clk_rst_o         : out std_logic;          -- Resets the clk recovery procedure
-      rx_word_o            : out t_tx_buffer_array;  -- Receive buffer
+      rx_buffer_o          : out t_rx_buffer_array;  -- Receive buffer
       rx_in_progress_o     : out std_logic;          -- Frame reception in progress
       rx_done_p_o          : out std_logic;          -- End of frame reception
       rx_glitch_detect_o   : out std_logic;          -- Glitch detected in serial data
@@ -280,7 +281,7 @@ package cbmia_pkg is
       sys_clk_i          : in  std_logic;          -- System clock
       mil1553_rxd_i      : in  std_logic;          -- Serial data input
       mil1553_rx_en_i    : in  std_logic;          -- Receiver enable
-      rx_word_o          : out t_tx_buffer_array;  -- Receive buffer
+      rx_buffer_o        : out t_rx_buffer_array;  -- Receive buffer
       rx_in_progress_o   : out std_logic;          -- Frame reception in progress
       rx_done_p_o        : out std_logic;          -- End of frame reception
       rx_glitch_detect_o : out std_logic;          -- Glitch detected in serial data
@@ -323,29 +324,29 @@ package cbmia_pkg is
 
   component incr_cnt
     generic(
-      g_COUNTER_WIDTH : natural := 4                                 -- default counter width
+      g_COUNTER_WIDTH : natural := 4                                    -- default counter width
       );
     port(
       sys_clk_i         : in  std_logic;
-      counter_incr_i    : in  std_logic;                             -- increment enable
-      counter_reinit_i  : in  std_logic;                             -- reinitializes counter to 0
-      counter_o         : out unsigned (g_counter_lgth-1 downto 0);  -- counter
-      counter_is_full_o : out std_logic                              -- counter full indication
+      counter_incr_i    : in  std_logic;                                -- increment enable
+      counter_reinit_i  : in  std_logic;                                -- reinitializes counter to 0
+      counter_o         : out unsigned (g_COUNTER_WIDTH - 1 downto 0);  -- counter
+      counter_is_full_o : out std_logic                                 -- counter full indication
       );
   end component incr_cnt;
 
   component decr_cnt
     generic(
-      g_COUNTER_WIDTH : natural := 4                                 -- default counter width
+      g_COUNTER_WIDTH : natural := 4                                           -- default counter width
       );
     port(
       sys_clk_i         : in  std_logic;
-      counter_rst_i     : in  std_logic;                             -- resets counter to all '1'
-      counter_decr_i    : in  std_logic;                             -- decrement enable
-      counter_load_i    : in  std_logic;                             -- load enable; loads counter to counter_top_i
-      counter_top_i     : in  unsigned (g_counter_lgth-1 downto 0);  -- load value
-      counter_o         : out unsigned (g_counter_lgth-1 downto 0);  -- counter
-      counter_is_zero_o : out std_logic                              -- empty counter indication
+      sys_rst_n_i       : in  std_logic;                                       -- resets counter to all '1'
+      counter_decr_i    : in  std_logic;                                       -- decrement enable
+      counter_load_i    : in  std_logic;                                       -- load enable; loads counter to counter_top_i
+      counter_top_i     : in  std_logic_vector(g_COUNTER_WIDTH - 1 downto 0);  -- load value
+      counter_o         : out std_logic_vector(g_COUNTER_WIDTH - 1 downto 0);  -- counter
+      counter_is_zero_o : out std_logic                                        -- empty counter indication
       );
   end component decr_cnt;
 
@@ -397,6 +398,23 @@ package body cbmia_pkg is
     end loop;
     -- returns encoded word + parity
     return v_word_o;
+  end;
+
+  -----------------------------------------------------------------------------
+  -- Parity of the input 16-bit word + parity
+  -- Returns '1' is parity is OK, '0' otherwise
+  -----------------------------------------------------------------------------
+  function f_parity_check(word_i : std_logic_vector(16 downto 0))
+    return std_logic is
+    variable v_parity_ok : std_logic;
+  begin
+    -- check parity
+    v_parity_ok := word_i(0) xor word_i(1) xor word_i(2) xor word_i(3) xor
+                   word_i(4) xor word_i(5) xor word_i(6) xor word_i(7) xor
+                   word_i(8) xor word_i(9) xor word_i(10) xor word_i(11) xor
+                   word_i(12) xor word_i(13) xor word_i(14) xor word_i(15) xor
+                   word_i(16);
+    return v_parity_ok;
   end;
 
 end cbmia_pkg;

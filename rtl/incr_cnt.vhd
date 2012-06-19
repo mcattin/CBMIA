@@ -49,7 +49,7 @@ use IEEE.NUMERIC_STD.all;
 entity incr_cnt is
 
   generic(
-    g_COUNTER_WIDTH : natural := 4       -- default counter width
+    g_COUNTER_WIDTH : natural := 4      -- default counter width
     );
 
   port(
@@ -59,9 +59,9 @@ entity incr_cnt is
     counter_incr_i   : in std_logic;    -- increment enable
     counter_reinit_i : in std_logic;    -- reinitializes counter to 0
 
-    counter_o         : out unsigned (g_counter_lgth-1 downto 0);  -- counter
-    counter_is_full_o : out std_logic                              -- counter full indication
-                                                                   -- (all bits to '1')
+    counter_o         : out unsigned (g_COUNTER_WIDTH - 1 downto 0);  -- counter
+    counter_is_full_o : out std_logic                                 -- counter full indication
+                                                                      -- (all bits to '1')
     );
 
 end entity incr_cnt;
@@ -78,9 +78,9 @@ begin
   ------------------------------------------------------------------------------
   -- Synchronous process Incr_Counter
   ------------------------------------------------------------------------------
-  p_incr_cnt : process (uclk_i)
+  p_incr_cnt : process (sys_clk_i)
   begin
-    if rising_edge (uclk_i) then
+    if rising_edge (sys_clk_i) then
       if counter_reinit_i = '1' then
         s_counter <= (others => '0');
 

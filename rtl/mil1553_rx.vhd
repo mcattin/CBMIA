@@ -64,7 +64,7 @@ entity mil1553_rx is
 
     -- User interface
     ----------------------------------------------------------------------------
-    rx_word_o          : out t_tx_buffer_array;  -- Receive buffer
+    rx_buffer_o        : out t_rx_buffer_array;  -- Receive buffer
     rx_in_progress_o   : out std_logic;          -- Frame reception in progress
     rx_done_p_o        : out std_logic;          -- End of frame reception
     rx_glitch_detect_o : out std_logic;          -- Glitch detected in serial data
@@ -80,16 +80,15 @@ architecture rtl of mil1553_rx is
   ----------------------------------------------------------------------------
   -- Signals declaration
   ----------------------------------------------------------------------------
-  signal rxd_edge_p : std_logic;
-  signal rx_clk_rst : std_logic;
+  signal rx_clk_rst         : std_logic;
   signal sample_manch_bit_p : std_logic;
-  signal sample_bit_p : std_logic;
+  signal sample_bit_p       : std_logic;
   signal signif_edge_window : std_logic;
-  signal adjac_bits_window : std_logic;
-  signal rxd_filt : std_logic;
-  signal rxd_filt_f_edge_p : std_logic;
-  signal rxd_filt_r_edge_p : std_logic;
-  signal rxd_filt_edge_p : std_logic;
+  signal adjac_bits_window  : std_logic;
+  signal rxd_filt           : std_logic;
+  signal rxd_filt_f_edge_p  : std_logic;
+  signal rxd_filt_r_edge_p  : std_logic;
+  signal rxd_filt_edge_p    : std_logic;
 
 begin
 
@@ -98,44 +97,44 @@ begin
   ------------------------------------------------------------------------------
   cmp_mil1553_rx_clk : mil1553_rx_clk
     port map(
-      sys_rst_n_i             <= sys_rst_n_i,
-      sys_clk_i               <= sys_clk_i,
-      rxd_edge_p_i            <= rxd_edge_p,
-      rx_clk_rst_i            <= rx_clk_rst,
-      rx_manch_clk_p_o        <= sample_manch_bit_p,
-      rx_bit_clk_p_o          <= sample_bit_p,
-      rx_signif_edge_window_o <= signif_edge_window,
-      rx_adjac_bits_window_o  <= adjac_bits_window
+      sys_rst_n_i             => sys_rst_n_i,
+      sys_clk_i               => sys_clk_i,
+      rxd_edge_p_i            => rxd_filt_edge_p,
+      rx_clk_rst_i            => rx_clk_rst,
+      rx_manch_clk_p_o        => sample_manch_bit_p,
+      rx_bit_clk_p_o          => sample_bit_p,
+      rx_signif_edge_window_o => signif_edge_window,
+      rx_adjac_bits_window_o  => adjac_bits_window
       );
 
   cmp_mil1553_rx_deglitcher : mil1553_rx_deglitcher
     port map(
-      sys_rst_n_i         <= sys_rst_n_i,
-      sys_clk_i           <= sys_clk_i,
-      rxd_a_i             <= mil1553_rxd_i,
-      rxd_filt_o          <= rxd_filt,
-      rxd_filt_edge_p_o   <= rxd_filt_edge_p,
-      rxd_filt_f_edge_p_o <= rxd_filt_f_edge_p,
-      rxd_filt_r_edge_p_o <= rxd_filt_r_edge_p
+      sys_rst_n_i         => sys_rst_n_i,
+      sys_clk_i           => sys_clk_i,
+      rxd_a_i             => mil1553_rxd_i,
+      rxd_filt_o          => rxd_filt,
+      rxd_filt_edge_p_o   => rxd_filt_edge_p,
+      rxd_filt_f_edge_p_o => rxd_filt_f_edge_p,
+      rxd_filt_r_edge_p_o => rxd_filt_r_edge_p
       );
 
   cmp_mil1553_rx_deserialiser : mil1553_rx_deserialiser
     port map(
-      sys_rst_n_i          <= sys_rst_n_i,
-      sys_clk_i            <= sys_clk_i,
-      rxd_i                <= rxd_filt,
-      rxd_f_edge_p_i       <= rxd_filt_f_edge_p,
-      rxd_r_edge_p_i       <= rxd_filt_r_edge_p,
-      sample_bit_p_i       <= sample_bit_p,
-      sample_manch_bit_p_i <= sample_manch_bit_p,
-      signif_edge_window_i <= signif_edge_window,
-      adjac_bits_window_i  <= adjac_bits_window,
-      rx_clk_rst_o         <= rx_clk_rst,
-      rx_word_o            <= rx_word_o,
-      rx_in_progress_o     <= rx_in_progress_o,
-      rx_done_p_o          <= rx_done_p_o,
-      rx_glitch_detect_o   <= rx_glitch_detect_o,
-      rx_word_error_o      <= rx_word_error_o
+      sys_rst_n_i          => sys_rst_n_i,
+      sys_clk_i            => sys_clk_i,
+      rxd_i                => rxd_filt,
+      rxd_f_edge_p_i       => rxd_filt_f_edge_p,
+      rxd_r_edge_p_i       => rxd_filt_r_edge_p,
+      sample_bit_p_i       => sample_bit_p,
+      sample_manch_bit_p_i => sample_manch_bit_p,
+      signif_edge_window_i => signif_edge_window,
+      adjac_bits_window_i  => adjac_bits_window,
+      rx_clk_rst_o         => rx_clk_rst,
+      rx_buffer_o          => rx_buffer_o,
+      rx_in_progress_o     => rx_in_progress_o,
+      rx_done_p_o          => rx_done_p_o,
+      rx_glitch_detect_o   => rx_glitch_detect_o,
+      rx_word_error_o      => rx_word_error_o
       );
 
 

@@ -111,25 +111,25 @@ begin
 
 --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
   --  # sys_clk ticks for a bit period, defined by the WorldFIP bit rate
-  s_period      <= c_BIT_RATE_SYS_CLK_TICKS(to_integer(unsigned(rate_i)));
+  s_period      <= c_BIT_RATE_SYS_CLK_TICKS;
   s_half_period <= s_period srl 1;      -- 1/2 s_period
   s_margin      <= s_period srl 3;      -- margin for jitter defined as 1/8 of the period
 
 
 --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
 -- Instantiation of a wf_incr_counter unit : the rx_counter starts counting after the
--- release of the reset signal rx_osc_rst_i. This takes place after a falling edge on the
+-- release of the reset signal rx_clk_rst_i. This takes place after a falling edge on the
 -- filtered FD_RXD; this edge should be representing the 1st Manchester 2 (manch.) encoded bit '1'
 -- of the PREamble. Starting from this edge, other falling or rising significant edges, are
 -- expected around one period (s_period) later. A time window around the expected arrival time is
 -- set and its length is defined as 1/4th of the period (1/8th before and 1/8th after the expected
 -- time). When the actual edge arrives, the counter is reset.
 -- If that first falling edge of FD_RXD is finally proven not to belong to a valid PRE the counter
--- is reinitialialized through the rx_osc_rst_i signal from the wf_rx_deserializer.
+-- is reinitialialized through the rx_clk_rst_i signal from the wf_rx_deserializer.
 
-  rx_periods_count : incr_counter
+  rx_periods_count : incr_cnt
     generic map(
-      g_counter_lgth => c_PERIODS_COUNTER_LGTH
+      g_COUNTER_WIDTH => 6
       )
     port map(
       sys_clk_i         => sys_clk_i,
@@ -141,14 +141,14 @@ begin
       );
   ------------------------------------------
 
-  s_period_c_is_full <= '1' when s_period_c = s_period -1 else '0';  -- counter full indicator
+  s_period_c_is_full <= '1' when s_period_c = s_period - 1 else '0';  -- counter full indicator
 
   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-  -- counter reinitialized: if nfip_rst_i is active                       or
-  --                        if rx_osc_rst_i is active                     or
+  -- counter reinitialized: if sys_rst_n_i is active                       or
+  --                        if rx_clk_rst_i is active                     or
   --                        if an edge is detected in the expected window or
   --                        if it fills up
-  s_period_c_reinit <= nfip_rst_i or rx_osc_rst_i or (s_signif_edge_window and fd_rxd_edge_p_i)
+  s_period_c_reinit <= not(sys_rst_n_i) or rx_clk_rst_i or (s_signif_edge_window and rxd_edge_p_i)
                        or s_period_c_is_full;
 
 
@@ -190,7 +190,7 @@ begin
 
   begin
     if rising_edge (sys_clk_i) then
-      if (nfip_rst_i = '1') then
+      if (sys_rst_n_i = '0') then
         s_manch_clk             <= '0';
         s_bit_clk               <= '0';
         s_bit_clk_d1            <= '0';
@@ -203,7 +203,7 @@ begin
         -- regarding significant edges:
 
         -- looking for a significant edge inside the corresponding window
-        if (s_signif_edge_window = '1') and (fd_rxd_edge_p_i = '1') and (s_signif_edge_found = '0') then
+        if (s_signif_edge_window = '1') and (rxd_edge_p_i = '1') and (s_signif_edge_found = '0') then
 
           s_manch_clk             <= not s_manch_clk;  -- inversion of rx_manch_clk
           s_signif_edge_found     <= '1';              -- indication that the edge was found
@@ -222,7 +222,7 @@ begin
           -- regarding edges between adjacent bits:
 
           -- looking for an edge inside the corresponding window
-        elsif (s_adjac_bits_window = '1') and (fd_rxd_edge_p_i = '1') then
+        elsif (s_adjac_bits_window = '1') and (rxd_edge_p_i = '1') then
 
           s_manch_clk             <= not s_manch_clk;  -- inversion of rx_manch_clk
           s_bit_clk               <= not s_bit_clk;    -- inversion of rx_bit_clk
