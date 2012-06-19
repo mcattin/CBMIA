@@ -76,6 +76,11 @@ class CMil1553Tx;
         waveform.push_back(1'b1);
    endtask // gap
 
+   task shigh(ref logic waveform[$]);
+      // set bus to high ('1')
+      waveform.push_back(1'b1);
+   endtask // shigh
+
    task add_glitches_edge(ref logic waveform[$], input int prob);
       int i, prev_glitch = 0;
 
@@ -129,6 +134,11 @@ class CMil1553Tx;
         end
 
       sbit(w, ~(n_ones % 2));
+      if(!command)
+        begin
+           sync(w, command);
+        end
+      shigh(w);
       //sgap(w);
 
       i=$dist_uniform(seed, 0, w.size());
@@ -178,9 +188,10 @@ module main;
       #100000ns;
 
       sent.push_back(1);
-      phy_obj.send(1, 1);
+      phy_obj.send(1, 3);
+      phy_obj.send(0, 1024);
 
-      #60000ns;
+      #600000ns;
 
       sent.push_back(2);
       phy_obj.send(1, 2);
@@ -223,7 +234,7 @@ module main;
    wire rx_done;
    wire rx_parity_error;
    wire rx_manch_error;
-   wire rx_word_cnt[5:0];
+   wire rx_word_cnt[4:0];
 
    int         rx_xfer = 0;
 

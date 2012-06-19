@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-23
+-- Last update: 2012-03-30
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -184,8 +184,6 @@ begin
 
         if bit_cnt_is_zero = '1' and sample_manch_bit_p_i = '1' then
           rx_fsm_next_state <= RX_DATA_SYNC;
-          --elsif edge outside windows then
-          --  rx_fsm_next_state <= RX_ERROR;
         elsif sample_bit_p_i = '1' then
           rx_fsm_next_state <= RX_MANCH_EDGE;
         else
@@ -208,8 +206,6 @@ begin
 
         if data_sync_detected = '1' then
           rx_fsm_next_state <= RX_GET_BITS;
-          --elsif edge outside signif window then
-          --  rx_fsm_next_state <= RX_ERROR;
         elsif bit_cnt_is_zero = '1' and sample_bit_p_i = '1' then
           rx_fsm_next_state <= RX_DONE;
         else
@@ -223,8 +219,8 @@ begin
 
 
       when RX_ERROR =>
-
-        rx_fsm_next_state <= RX_IDLE;
+        -- ERROR state only generates a Manchester error pulse
+        rx_fsm_next_state <= RX_GET_BITS;
 
 
       when others =>
@@ -303,7 +299,7 @@ begin
 
         detecting_stat_sync <= '0';
         rx_is_idle          <= '0';
-        receiving_word      <= '0';
+        receiving_word      <= '1';
         detecting_data_sync <= '0';
         rx_done_p           <= '0';
         manch_error         <= '1';

@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-29
+-- Last update: 2012-03-30
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -49,6 +49,8 @@
 --                                      word is either 0 or 31, the word count
 --                                      field indicates a mode code (not a word
 --                                      count).
+-- 2012-03-30  2.06     mcattin         Don't stop reception on Manchester error,
+--                                      only generate a error pulse.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -65,7 +67,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0205"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0206"
     );
   port (
     -- description -> net name in schematics
