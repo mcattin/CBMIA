@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-15
+-- Last update: 2012-03-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -68,7 +68,6 @@ entity mil1553_tx is
     tx_buffer_i       : in  t_tx_buffer_array;  -- Array of 16-bit word to transmit
                                                 -- tx_buffer_i(0) = command word
     tx_send_frame_p_i : in  std_logic;          -- Send frame
-    tx_in_progress_o  : out std_logic;          -- Frame transmission in progress
     tx_done_p_o       : out std_logic           -- Frame transmission finished
 
     );

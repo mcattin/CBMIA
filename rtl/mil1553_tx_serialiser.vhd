@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-08
--- Last update: 2012-03-15
+-- Last update: 2012-03-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -173,13 +173,16 @@ begin
   end process p_tx_fsm_sync;
 
   p_tx_fsm_transitions : process(tx_fsm_state, tx_send_frame_p_d, bit_cnt,
-                                 tr_flag, word_cnt, tx_bit_rate_p_i)
+                                 tr_flag, word_cnt, tx_bit_rate_p_i,
+                                 nb_word_to_send)
   begin
     case tx_fsm_state is
 
       when TX_IDLE =>
         if tx_send_frame_p_d = '1' then
           tx_fsm_next_state <= TX_COMMAND;
+        else
+          tx_fsm_next_state <= TX_IDLE;
         end if;
 
       when TX_COMMAND =>
@@ -189,11 +192,15 @@ begin
           else
             tx_fsm_next_state <= TX_DONE;
           end if;
+        else
+          tx_fsm_next_state <= TX_COMMAND;
         end if;
 
       when TX_WORD =>
         if bit_cnt = 0 and word_cnt = nb_word_to_send and tx_bit_rate_p_i = '1' then
           tx_fsm_next_state <= TX_DONE;
+        else
+          tx_fsm_next_state <= TX_WORD;
         end if;
 
       when TX_DONE =>

@@ -7,7 +7,7 @@
 -- Author     : Pablo Antonio Alvarez Sanchez
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2004-09-27
--- Last update: 2012-03-12
+-- Last update: 2012-03-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -51,184 +51,161 @@ use IEEE.STD_LOGIC_1164.all;
 package mem_interface_pkg is
 
 
-  constant DPRAM_COUNT_HIS : integer := 1;
-  constant ADDTOP          : integer := 16#FFFF#;  -- All address are in Long word
-  constant ADDLENGTH       : integer := 14;  --18; -- 23 - 2 + 1       ;
-  constant DATALENGTH      : integer := 32;
+  constant c_ADDR_TOP   : integer := 16#FFFF#;
+  constant c_ADDR_WIDTH : integer := 14;
+  constant c_DATA_WIDTH : integer := 32;
 
-  subtype RamAType is integer range 0 to ADDTOP;
-  type RwType is (
+  subtype t_mem_addr is integer range 0 to c_ADDR_TOP;
+  type t_rw is (
     rw,                                 --Read Write
     ro,                                 --Read Only
     wo,                                 --Write Only
     cr                                  --Clear on Read
     );
 
-  type AddRwRecord is
+  type t_addr_rw is
   record
-    AddL     : RamAType;
-    AddH     : RamAType;
+    AddL     : t_mem_addr;
+    AddH     : t_mem_addr;
     Delay    : integer;
-    Rw       : RwType;
+    Rw       : t_rw;
     PosToSel : integer;
   end record;
 
-  constant NUMMEMPOSITION : integer := 45;
-  subtype  MEMPOSITION is integer range 0 to NUMMEMPOSITION - 1;
+  constant c_NB_MEM_POS : integer := 45;
+  subtype  t_mem_pos is integer range 0 to c_NB_MEM_POS - 1;
 
-  constant InterruptSourceP : MEMPOSITION := 0;
-  constant InterruptEnableP : MEMPOSITION := 1;
-  constant RTIPRESENTP      : MEMPOSITION := 2;
-  constant SOURCEREGP       : MEMPOSITION := 3;
-  constant CommandP         : MEMPOSITION := 4;
-  constant CIRCADDP         : MEMPOSITION := 5;
+  constant c_IRQ_SRC_POS        : t_mem_pos := 0;
+  constant c_IRQ_EN_POS         : t_mem_pos := 1;
+  constant c_DBG0_POS           : t_mem_pos := 2;
+  constant c_STAT_POS           : t_mem_pos := 3;
+  constant c_CMD_POS            : t_mem_pos := 4;
+  constant c_DBG1_POS           : t_mem_pos := 5;
+  constant c_ID_MSB_POS         : t_mem_pos := 6;
+  constant c_ID_LSB_POS         : t_mem_pos := 7;
+  constant c_TX_REG_POS         : t_mem_pos := 8;
+  constant c_RX_REG_POS         : t_mem_pos := 9;
+  constant c_RX_BUF0_POS        : t_mem_pos := 10;
+  constant c_RX_BUF1_POS        : t_mem_pos := 11;
+  constant c_RX_BUF2_POS        : t_mem_pos := 12;
+  constant c_RX_BUF3_POS        : t_mem_pos := 13;
+  constant c_RX_BUF4_POS        : t_mem_pos := 14;
+  constant c_RX_BUF5_POS        : t_mem_pos := 15;
+  constant c_RX_BUF6_POS        : t_mem_pos := 16;
+  constant c_RX_BUF7_POS        : t_mem_pos := 17;
+  constant c_RX_BUF8_POS        : t_mem_pos := 18;
+  constant c_RX_BUF9_POS        : t_mem_pos := 19;
+  constant c_RX_BUF10_POS       : t_mem_pos := 20;
+  constant c_RX_BUF11_POS       : t_mem_pos := 21;
+  constant c_RX_BUF12_POS       : t_mem_pos := 22;
+  constant c_RX_BUF13_POS       : t_mem_pos := 23;
+  constant c_RX_BUF14_POS       : t_mem_pos := 24;
+  constant c_RX_BUF15_POS       : t_mem_pos := 25;
+  constant c_RX_BUF16_POS       : t_mem_pos := 26;
+  constant c_TX_BUF0_POS        : t_mem_pos := 27;
+  constant c_TX_BUF1_POS        : t_mem_pos := 28;
+  constant c_TX_BUF2_POS        : t_mem_pos := 29;
+  constant c_TX_BUF3_POS        : t_mem_pos := 30;
+  constant c_TX_BUF4_POS        : t_mem_pos := 31;
+  constant c_TX_BUF5_POS        : t_mem_pos := 32;
+  constant c_TX_BUF6_POS        : t_mem_pos := 33;
+  constant c_TX_BUF7_POS        : t_mem_pos := 34;
+  constant c_TX_BUF8_POS        : t_mem_pos := 35;
+  constant c_TX_BUF9_POS        : t_mem_pos := 36;
+  constant c_TX_BUF10_POS       : t_mem_pos := 37;
+  constant c_TX_BUF11_POS       : t_mem_pos := 38;
+  constant c_TX_BUF12_POS       : t_mem_pos := 39;
+  constant c_TX_BUF13_POS       : t_mem_pos := 40;
+  constant c_TX_BUF14_POS       : t_mem_pos := 41;
+  constant c_TX_BUF15_POS       : t_mem_pos := 42;
+  constant c_FAULT_ADDR_LOW_POS : t_mem_pos := 43;
+  constant c_FAULT_ADDR_POS     : t_mem_pos := 44;
 
-  constant MIDP        : MEMPOSITION := 6;
-  constant LIDP        : MEMPOSITION := 7;
-  constant TXREGP      : MEMPOSITION := 8;
-  constant RXREGP      : MEMPOSITION := 9;
-  constant W1          : MEMPOSITION := 10;
-  constant W2          : MEMPOSITION := 11;
-  constant W3          : MEMPOSITION := 12;
-  constant W4          : MEMPOSITION := 13;
-  constant W5          : MEMPOSITION := 14;
-  constant W6          : MEMPOSITION := 15;
-  constant W7          : MEMPOSITION := 16;
-  constant W8          : MEMPOSITION := 17;
-  constant W9          : MEMPOSITION := 18;
-  constant W10         : MEMPOSITION := 19;
-  constant W11         : MEMPOSITION := 20;
-  constant W12         : MEMPOSITION := 21;
-  constant W13         : MEMPOSITION := 22;
-  constant W14         : MEMPOSITION := 23;
-  constant W15         : MEMPOSITION := 24;
-  constant W16         : MEMPOSITION := 25;
-  constant W17         : MEMPOSITION := 26;
-  constant TXW1        : MEMPOSITION := 27;
-  constant TXW2        : MEMPOSITION := 28;
-  constant TXW3        : MEMPOSITION := 29;
-  constant TXW4        : MEMPOSITION := 30;
-  constant TXW5        : MEMPOSITION := 31;
-  constant TXW6        : MEMPOSITION := 32;
-  constant TXW7        : MEMPOSITION := 33;
-  constant TXW8        : MEMPOSITION := 34;
-  constant TXW9        : MEMPOSITION := 35;
-  constant TXW10       : MEMPOSITION := 36;
-  constant TXW11       : MEMPOSITION := 37;
-  constant TXW12       : MEMPOSITION := 38;
-  constant TXW13       : MEMPOSITION := 39;
-  constant TXW14       : MEMPOSITION := 40;
-  constant TXW15       : MEMPOSITION := 41;
-  constant TXW16       : MEMPOSITION := 42;
-  constant FAULTADDLOW : MEMPOSITION := 43;
-  constant FAULTADD    : MEMPOSITION := 44;
-
-  constant BLOCKSIZE : integer := 63;
-
-  type     ADDMAPPINGType is array (0 to NUMMEMPOSITION - 1) of AddRwRecord;
-  constant ADDTABLE : ADDMAPPINGType :=
+  type     t_addr_mapping is array (0 to c_NB_MEM_POS - 1) of t_addr_rw;
+  constant ADDTABLE : t_addr_mapping :=
     (
-      InterruptSourceP => (AddL => 0, AddH => 0, Delay => 0, rw => cr, PosToSel => 0),
-      InterruptEnableP => (AddL => 1, AddH => 1, Delay => 0, rw => rw, PosToSel => 1),
-      RTIPRESENTP      => (AddL => 2, AddH => 2, Delay => 0, rw => rw, PosToSel => RTIPRESENTP),
-      SOURCEREGP       => (AddL => 3, AddH => 3, Delay => 0, rw => rw, PosToSel => SOURCEREGP),
-      CommandP         => (AddL => 4, AddH => 4, Delay => 0, rw => rw, PosToSel => CommandP),
-      CIRCADDP         => (AddL => 5, AddH => 5, Delay => 0, rw => rw, PosToSel => CIRCADDP),
-      MIDP             => (AddL => 6, AddH => 6, Delay => 0, rw => ro, PosToSel => MIDP),
-      LIDP             => (AddL => 7, AddH => 7, Delay => 0, rw => ro, PosToSel => LIDP),
-      TXREGP           => (AddL => 8, AddH => 8, Delay => 0, rw => ro, PosToSel => TXREGP),
-      RXREGP           => (AddL => 9, AddH => 9, Delay => 0, rw => ro, PosToSel => RXREGP),
-      W1               => (AddL => 10, AddH => 10, Delay => 0, rw => ro, PosToSel => W1),
-      W2               => (AddL => 11, AddH => 11, Delay => 0, rw => ro, PosToSel => W2),
-      W3               => (AddL => 12, AddH => 12, Delay => 0, rw => ro, PosToSel => W3),
-      W4               => (AddL => 13, AddH => 13, Delay => 0, rw => ro, PosToSel => W4),
-      W5               => (AddL => 14, AddH => 14, Delay => 0, rw => ro, PosToSel => W5),
-      W6               => (AddL => 15, AddH => 15, Delay => 0, rw => ro, PosToSel => W6),
-      W7               => (AddL => 16, AddH => 16, Delay => 0, rw => ro, PosToSel => W7),
-      W8               => (AddL => 17, AddH => 17, Delay => 0, rw => ro, PosToSel => W8),
-      W9               => (AddL => 18, AddH => 18, Delay => 0, rw => ro, PosToSel => W9),
-      W10              => (AddL => 19, AddH => 19, Delay => 0, rw => ro, PosToSel => W10),
-      W11              => (AddL => 20, AddH => 20, Delay => 0, rw => ro, PosToSel => W11),
-      W12              => (AddL => 21, AddH => 21, Delay => 0, rw => ro, PosToSel => W12),
-      W13              => (AddL => 22, AddH => 22, Delay => 0, rw => ro, PosToSel => W13),
-      W14              => (AddL => 23, AddH => 23, Delay => 0, rw => ro, PosToSel => W14),
-      W15              => (AddL => 24, AddH => 24, Delay => 0, rw => ro, PosToSel => W15),
-      W16              => (AddL => 25, AddH => 25, Delay => 0, rw => ro, PosToSel => W16),
-      W17              => (AddL => 26, AddH => 26, Delay => 0, rw => ro, PosToSel => W17),
-      TXW1             => (AddL => 27, AddH => 27, Delay => 0, rw => ro, PosToSel => TXW1),
-      TXW2             => (AddL => 28, AddH => 28, Delay => 0, rw => ro, PosToSel => TXW2),
-      TXW3             => (AddL => 29, AddH => 29, Delay => 0, rw => ro, PosToSel => TXW3),
-      TXW4             => (AddL => 30, AddH => 30, Delay => 0, rw => ro, PosToSel => TXW4),
-      TXW5             => (AddL => 31, AddH => 31, Delay => 0, rw => ro, PosToSel => TXW5),
-      TXW6             => (AddL => 32, AddH => 32, Delay => 0, rw => ro, PosToSel => TXW6),
-      TXW7             => (AddL => 33, AddH => 33, Delay => 0, rw => ro, PosToSel => TXW7),
-      TXW8             => (AddL => 34, AddH => 34, Delay => 0, rw => ro, PosToSel => TXW8),
-      TXW9             => (AddL => 35, AddH => 35, Delay => 0, rw => ro, PosToSel => TXW9),
-      TXW10            => (AddL => 36, AddH => 36, Delay => 0, rw => ro, PosToSel => TXW10),
-      TXW11            => (AddL => 37, AddH => 37, Delay => 0, rw => ro, PosToSel => TXW11),
-      TXW12            => (AddL => 38, AddH => 38, Delay => 0, rw => ro, PosToSel => TXW12),
-      TXW13            => (AddL => 39, AddH => 39, Delay => 0, rw => ro, PosToSel => TXW13),
-      TXW14            => (AddL => 40, AddH => 40, Delay => 0, rw => ro, PosToSel => TXW14),
-      TXW15            => (AddL => 41, AddH => 41, Delay => 0, rw => ro, PosToSel => TXW15),
-      TXW16            => (AddL => 42, AddH => 42, Delay => 0, rw => ro, PosToSel => TXW16),
-      FAULTADDLOW      => (AddL => 44, AddH => 16#0b8F#, Delay => 0, rw => ro, PosToSel => FAULTADDLOW),
-      FAULTADD         => (AddL => 16#0BC0#, AddH => 16#FFFF#, Delay => 0, rw => ro, PosToSel => FAULTADD)
+      c_IRQ_SRC_POS        => (AddL => 0, AddH => 0, Delay => 0, rw => cr, PosToSel => c_IRQ_SRC_POS),
+      c_IRQ_EN_POS         => (AddL => 1, AddH => 1, Delay => 0, rw => rw, PosToSel => c_IRQ_EN_POS),
+      c_DBG0_POS           => (AddL => 2, AddH => 2, Delay => 0, rw => rw, PosToSel => c_DBG0_POS),
+      c_STAT_POS           => (AddL => 3, AddH => 3, Delay => 0, rw => rw, PosToSel => c_STAT_POS),
+      c_CMD_POS            => (AddL => 4, AddH => 4, Delay => 0, rw => rw, PosToSel => c_CMD_POS),
+      c_DBG1_POS           => (AddL => 5, AddH => 5, Delay => 0, rw => rw, PosToSel => c_DBG1_POS),
+      c_ID_MSB_POS         => (AddL => 6, AddH => 6, Delay => 0, rw => ro, PosToSel => c_ID_MSB_POS),
+      c_ID_LSB_POS         => (AddL => 7, AddH => 7, Delay => 0, rw => ro, PosToSel => c_ID_LSB_POS),
+      c_TX_REG_POS         => (AddL => 8, AddH => 8, Delay => 0, rw => ro, PosToSel => c_TX_REG_POS),
+      c_RX_REG_POS         => (AddL => 9, AddH => 9, Delay => 0, rw => ro, PosToSel => c_RX_REG_POS),
+      c_RX_BUF0_POS        => (AddL => 10, AddH => 10, Delay => 0, rw => ro, PosToSel => c_RX_BUF0_POS),
+      c_RX_BUF1_POS        => (AddL => 11, AddH => 11, Delay => 0, rw => ro, PosToSel => c_RX_BUF1_POS),
+      c_RX_BUF2_POS        => (AddL => 12, AddH => 12, Delay => 0, rw => ro, PosToSel => c_RX_BUF2_POS),
+      c_RX_BUF3_POS        => (AddL => 13, AddH => 13, Delay => 0, rw => ro, PosToSel => c_RX_BUF3_POS),
+      c_RX_BUF4_POS        => (AddL => 14, AddH => 14, Delay => 0, rw => ro, PosToSel => c_RX_BUF4_POS),
+      c_RX_BUF5_POS        => (AddL => 15, AddH => 15, Delay => 0, rw => ro, PosToSel => c_RX_BUF5_POS),
+      c_RX_BUF6_POS        => (AddL => 16, AddH => 16, Delay => 0, rw => ro, PosToSel => c_RX_BUF6_POS),
+      c_RX_BUF7_POS        => (AddL => 17, AddH => 17, Delay => 0, rw => ro, PosToSel => c_RX_BUF7_POS),
+      c_RX_BUF8_POS        => (AddL => 18, AddH => 18, Delay => 0, rw => ro, PosToSel => c_RX_BUF8_POS),
+      c_RX_BUF9_POS        => (AddL => 19, AddH => 19, Delay => 0, rw => ro, PosToSel => c_RX_BUF9_POS),
+      c_RX_BUF10_POS       => (AddL => 20, AddH => 20, Delay => 0, rw => ro, PosToSel => c_RX_BUF10_POS),
+      c_RX_BUF11_POS       => (AddL => 21, AddH => 21, Delay => 0, rw => ro, PosToSel => c_RX_BUF11_POS),
+      c_RX_BUF12_POS       => (AddL => 22, AddH => 22, Delay => 0, rw => ro, PosToSel => c_RX_BUF12_POS),
+      c_RX_BUF13_POS       => (AddL => 23, AddH => 23, Delay => 0, rw => ro, PosToSel => c_RX_BUF13_POS),
+      c_RX_BUF14_POS       => (AddL => 24, AddH => 24, Delay => 0, rw => ro, PosToSel => c_RX_BUF14_POS),
+      c_RX_BUF15_POS       => (AddL => 25, AddH => 25, Delay => 0, rw => ro, PosToSel => c_RX_BUF15_POS),
+      c_RX_BUF16_POS       => (AddL => 26, AddH => 26, Delay => 0, rw => ro, PosToSel => c_RX_BUF16_POS),
+      c_TX_BUF0_POS        => (AddL => 27, AddH => 27, Delay => 0, rw => ro, PosToSel => c_TX_BUF0_POS),
+      c_TX_BUF1_POS        => (AddL => 28, AddH => 28, Delay => 0, rw => ro, PosToSel => c_TX_BUF1_POS),
+      c_TX_BUF2_POS        => (AddL => 29, AddH => 29, Delay => 0, rw => ro, PosToSel => c_TX_BUF2_POS),
+      c_TX_BUF3_POS        => (AddL => 30, AddH => 30, Delay => 0, rw => ro, PosToSel => c_TX_BUF3_POS),
+      c_TX_BUF4_POS        => (AddL => 31, AddH => 31, Delay => 0, rw => ro, PosToSel => c_TX_BUF4_POS),
+      c_TX_BUF5_POS        => (AddL => 32, AddH => 32, Delay => 0, rw => ro, PosToSel => c_TX_BUF5_POS),
+      c_TX_BUF6_POS        => (AddL => 33, AddH => 33, Delay => 0, rw => ro, PosToSel => c_TX_BUF6_POS),
+      c_TX_BUF7_POS        => (AddL => 34, AddH => 34, Delay => 0, rw => ro, PosToSel => c_TX_BUF7_POS),
+      c_TX_BUF8_POS        => (AddL => 35, AddH => 35, Delay => 0, rw => ro, PosToSel => c_TX_BUF8_POS),
+      c_TX_BUF9_POS        => (AddL => 36, AddH => 36, Delay => 0, rw => ro, PosToSel => c_TX_BUF9_POS),
+      c_TX_BUF10_POS       => (AddL => 37, AddH => 37, Delay => 0, rw => ro, PosToSel => c_TX_BUF10_POS),
+      c_TX_BUF11_POS       => (AddL => 38, AddH => 38, Delay => 0, rw => ro, PosToSel => c_TX_BUF11_POS),
+      c_TX_BUF12_POS       => (AddL => 39, AddH => 39, Delay => 0, rw => ro, PosToSel => c_TX_BUF12_POS),
+      c_TX_BUF13_POS       => (AddL => 40, AddH => 40, Delay => 0, rw => ro, PosToSel => c_TX_BUF13_POS),
+      c_TX_BUF14_POS       => (AddL => 41, AddH => 41, Delay => 0, rw => ro, PosToSel => c_TX_BUF14_POS),
+      c_TX_BUF15_POS       => (AddL => 42, AddH => 42, Delay => 0, rw => ro, PosToSel => c_TX_BUF15_POS),
+      c_FAULT_ADDR_LOW_POS => (AddL => 44, AddH => 16#0b8F#, Delay => 0, rw => ro, PosToSel => c_FAULT_ADDR_LOW_POS),
+      c_FAULT_ADDR_POS     => (AddL => 16#0BC0#, AddH => 16#FFFF#, Delay => 0, rw => ro, PosToSel => c_FAULT_ADDR_POS)
       );
 
-  constant CommandRESETP    : integer := 0;
-  constant CommandENABLEP   : integer := 1;   -- Polling is enable if = 1
-  constant CommandDISABLEP  : integer := 2;   -- Polling is disable if = 1
-  constant CommandBUSSPEEDP : integer := 31;  -- bit 31 and 30 of the register to set the M1553 Bus Speed
 
-  constant RESET_ACTIVE : std_logic := '0';
+  constant c_CMD_RST_BIT : integer := 0;
 
-  type     KINDOFMUXType is (USEMUXZ, USEMUXCOMB);
-  constant KINDOFMUX : KINDOFMUXType := USEMUXCOMB;
 
-  subtype IntDataType is std_logic_vector(DATALENGTH - 1 downto 0);
-  subtype IntAddrOutType is std_logic_vector(ADDLENGTH - 1 downto 0);
-  type    MuxDataArrType is array (0 to NUMMEMPOSITION -1) of IntDataType;
-  subtype MuxSelType is std_logic_vector(NUMMEMPOSITION -1 downto 0);
-  subtype SelectedPosType is std_logic_vector(NUMMEMPOSITION - 1 downto 0);
-  type    SelRamDataType is array (0 to NUMMEMPOSITION - 1) of IntDataType;
+  subtype t_int_data is std_logic_vector(c_DATA_WIDTH - 1 downto 0);
+  subtype t_int_addr is std_logic_vector(c_ADDR_WIDTH - 1 downto 0);
+  type    t_mux_data_array is array (0 to c_NB_MEM_POS -1) of t_int_data;
+  subtype t_selected_pos is std_logic_vector(c_NB_MEM_POS - 1 downto 0);
 
-  type ContToMemType is
+  type t_cont_to_mem is
   record
-    Data        : IntDataType;          -- std_logic_vector(31 downto 0);
-    Add         : IntAddrOutType;       -- std_logic_vector(addtop downto 0);
-    AddOffSet   : IntAddrOutType;
-    SelectedPos : SelectedPosType;      -- register to be accessed
-    WrEn        : SelectedPosType;      -- register to be written std_logic_vector(NUMMEMPOSITION - 1 downto 0);
-    RdEn        : SelectedPosType;
+    Data        : t_int_data;           -- std_logic_vector(31 downto 0);
+    Add         : t_int_addr;           -- std_logic_vector(addtop downto 0);
+    AddOffSet   : t_int_addr;
+    SelectedPos : t_selected_pos;       -- register to be accessed
+    WrEn        : t_selected_pos;       -- register to be written std_logic_vector(c_NB_MEM_POS - 1 downto 0);
+    RdEn        : t_selected_pos;
     Wr          : std_logic;
     Rd          : std_logic;
   end record;
 
-  type MemToContCellType is
+  type t_mem_to_cont_cell is
   record
-    Data   : IntDataType;
+    Data   : t_int_data;
     RdDone : std_logic;
   end record;
 
-  type MemToContType is array (integer range <>) of MemToContCellType;
-  --function ExtendStdLogicVector(signal S   : std_logic_vector;
-  --                              constant n : integer) return std_logic_vector ;
+  type t_mem_to_cont is array (integer range <>) of t_mem_to_cont_cell;
+
 
 end mem_interface_pkg;
 
+
 package body mem_interface_pkg is
 
-  --function ExtendStdLogicVector(signal S : std_logic_vector; constant n : integer) return std_logic_vector is
-  --  variable SL : std_logic_vector(n - 1 downto 0);
-  --begin
-  --  for I in SL'range loop
-  --    if I > S'left then
-  --      SL(I) := '0';
-  --    else
-  --      SL(I) := S(I);
-  --    end if;
-  --  end loop;
-  --  return SL;
-  --end ExtendStdLogicVector;
+
 
 end mem_interface_pkg;

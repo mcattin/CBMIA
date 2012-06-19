@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-15
+-- Last update: 2012-03-19
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -67,6 +67,7 @@ entity mil1553_rx_deserialiser is
     signif_edge_window_i : in  std_logic;  -- Time window where a significant edge is expected
     adjac_bits_window_i  : in  std_logic;  -- Time window where a transition between adjacent
                                            -- bits is expected
+    rx_en_i              : in  std_logic;  -- Receiver enable
     rx_clk_rst_o         : out std_logic;  -- Resets the clk recovery procedure
 
     -- User interface
@@ -149,13 +150,14 @@ begin
                                  stat_sync_detected, bit_cnt_is_zero,
                                  sample_manch_bit_p_i, sample_bit_p_i,
                                  data_sync_detected, manch_edge_p,
-                                 rxd_hist)
+                                 rxd_hist, rx_en_i)
   begin
     case rx_fsm_state is
 
       when RX_IDLE =>
 
-        if rxd_f_edge_p_i = '1' and rxd_hist(59 downto 0) = X"FFFFFFFFFFFFFFF" then
+        if (rx_en_i = '1' and rxd_f_edge_p_i = '1' and
+            rxd_hist(59 downto 0) = X"FFFFFFFFFFFFFFF") then
           rx_fsm_next_state <= RX_SYNC_DETECT;
         else
           rx_fsm_next_state <= RX_IDLE;
@@ -181,6 +183,8 @@ begin
           --  rx_fsm_next_state <= RX_ERROR;
         elsif sample_bit_p_i = '1' then
           rx_fsm_next_state <= RX_MANCH_EDGE;
+        else
+          rx_fsm_next_state <= RX_GET_BITS;
         end if;
 
 
@@ -457,11 +461,11 @@ begin
     if rising_edge (sys_clk_i) then
       if sys_rst_n_i = '0' then
         rx_word_cnt_o <= (others => '0');
-      elsif detecting_stat_sync = '1' then
+      elsif detecting_stat_sync = '1' or rx_done_p = '1' then
         rx_word_cnt_o <= (others => '0');
-      elsif rx_done_p = '1' then
+      elsif word_ready_p = '1' then
         if word_cnt = to_unsigned(32, word_cnt'length) then
-          rx_word_cnt_o <= (others => '0');
+          rx_word_cnt_o <= "00000";
         else
           rx_word_cnt_o <= std_logic_vector(word_cnt(4 downto 0));
         end if;

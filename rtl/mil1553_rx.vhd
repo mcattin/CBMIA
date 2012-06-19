@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-15
+-- Last update: 2012-03-19
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ architecture rtl of mil1553_rx is
 begin
 
   ------------------------------------------------------------------------------
-  -- 
+  -- Ignore data when transmitting
   ------------------------------------------------------------------------------
   mil1553_rxd <= mil1553_rxd_i and mil1553_rx_en_i;
 
@@ -142,6 +142,7 @@ begin
       sample_manch_bit_p_i => sample_manch_bit_p,
       signif_edge_window_i => signif_edge_window,
       adjac_bits_window_i  => adjac_bits_window,
+      rx_en_i              => mil1553_rx_en_i,
       rx_clk_rst_o         => rx_clk_rst,
       rx_buffer_o          => rx_buffer_o,
       rx_word_cnt_o        => rx_word_cnt_o,

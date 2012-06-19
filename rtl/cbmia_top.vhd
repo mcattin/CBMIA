@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-15
+-- Last update: 2012-03-21
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -36,8 +36,11 @@
 --
 -------------------------------------------------------------------------------
 -- Revisions  :
--- Date        Version  Author          Description
--- 2012-02-29  1.0      mcattin         Created
+-- DATE        VERSION  AUTHOR          DESCRIPTION
+-- 2012-02-29  2.01     mcattin         Created from original CBMIA design.
+-- 2012-03-19  2.02     mcattin         Doesn't start RX FSM when transmitting,
+--                                      add temperature readout.
+-- 2012-03-21  2.03     mcattin         Add TR flag in the interrupt source reg.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -48,12 +51,13 @@ use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 library work;
 use work.cbmia_pkg.all;
-use work.bus_interface_pkg.all;
-
+use work.mem_interface_pkg.all;
+library UNISIM;
+use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0201"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0203"
     );
   port (
     -- description -> net name in schematics
@@ -169,15 +173,17 @@ architecture rtl of cbmia_top is
   signal pwr_rst_sync_n : std_logic_vector(1 downto 0);
   signal pwr_rst_n      : std_logic;
 
+  signal sys_clk : std_logic;
+
   signal l_ready_n : std_logic;
 
-  signal rd_to_mem     : std_logic;       -- Read strobe to memory interface
-  signal wr_to_mem     : std_logic;       -- Write strobe to memory interface
-  signal data_from_mem : IntDataType;     -- Data from memory interface
-  signal addr_to_mem   : IntAddrOutType;  -- Address to memory interface
-  signal data_to_mem   : IntDataType;     -- Data to memory interface
-  signal op_done       : std_logic;       -- Operation done from memory interface
-                                          -- Read or Write finished
+  signal rd_to_mem     : std_logic;     -- Read strobe to memory interface
+  signal wr_to_mem     : std_logic;     -- Write strobe to memory interface
+  signal data_from_mem : t_int_data;    -- Data from memory interface
+  signal addr_to_mem   : t_int_addr;    -- Address to memory interface
+  signal data_to_mem   : t_int_data;    -- Data to memory interface
+  signal op_done       : std_logic;     -- Operation done from memory interface
+                                        -- Read or Write finished
   signal irq_req       : std_logic_vector(1 downto 0);
 
   signal led : std_logic_vector(6 downto 0);
@@ -186,11 +192,20 @@ architecture rtl of cbmia_top is
 begin
 
   ----------------------------------------------------------------------------
+  -- Clock buffer (BUFG)
+  ---------------------------------------------------------------------------
+  cmp_bufg : BUFG
+    port map (
+      I => clk_i,
+      O => sys_clk
+      );
+
+  ----------------------------------------------------------------------------
   -- Synchronises power-on reset to system clock
   ----------------------------------------------------------------------------
-  p_rst : process (clk)
+  p_rst : process (sys_clk)
   begin
-    if rising_edge(clk) then
+    if rising_edge(sys_clk) then
       pwr_rst_sync_n <= pwr_rst_sync_n(0) & pwr_reset_n_i;
     end if;
   end process p_rst;
@@ -201,23 +216,23 @@ begin
   ----------------------------------------------------------------------------
   cmp_plx_to_mem_interface : plx_to_mem_interface
     generic map(
-      LALEFT  <= 2,
-      LARIGHT <= 23
+      LALEFT  => 2,
+      LARIGHT => 23
       )
     port map(
-      LClk        <= clk_i,
-      RstN        <= pwr_rst_n,
-      LAdSN       <= l_ads_n_i,
-      LA          <= l_address_i,
-      LData       <= l_data_b,
-      LWrRdN      <= l_wr_rd_n_i,
-      LReadyN     <= l_ready_n,
-      AddrMem     <= addr_to_mem,
-      ReadMem     <= rd_to_mem,
-      WriteMem    <= wr_to_mem,
-      OpDone      <= op_done,
-      DataFromMem <= data_from_mem,
-      DataToMem   <= data_to_mem
+      LClk        => sys_clk,
+      RstN        => pwr_rst_n,
+      LAdSN       => l_ads_n_i,
+      LA          => l_address_i,
+      LData       => l_data_b,
+      LWrRdN      => l_wr_rd_n_i,
+      LReadyN     => l_ready_n,
+      AddrMem     => addr_to_mem,
+      ReadMem     => rd_to_mem,
+      WriteMem    => wr_to_mem,
+      OpDone      => op_done,
+      DataFromMem => data_from_mem,
+      DataToMem   => data_to_mem
       );
 
   l_ready_n_o <= l_ready_n;
@@ -227,26 +242,26 @@ begin
   ----------------------------------------------------------------------------
   cmp_mil1553_core : mil1553_core
     generic map(
-      g_HW_VERSION <= g_HW_VERSION
+      g_HW_VERSION => g_HW_VERSION
       )
     port map(
-      pwr_reset_n_i     <= pwr_rst_n,
-      sys_clk_i         <= clk_i,
-      mil1553_rxd_a_i   <= mil1553_rxd_a_i,
-      mil1553_tx_rx_n_o <= mil1553_tx_rx_n_o,
-      mil1553_tx_n_o    <= mil1553_tx_n_o,
-      mil1553_txd_o     <= mil1553_txd_o,
-      mil1553_txd_n_o   <= mil1553_txd_n_o,
-      led_o             <= led,
-      test_point_o      <= test_point_o,
-      onewire_b         <= onewire_b,
-      rd_to_mem_i       <= rd_to_mem,
-      wr_to_mem_i       <= wr_to_mem,
-      data_from_mem_o   <= data_from_mem,
-      addr_to_mem_i     <= addr_to_mem,
-      data_to_mem_i     <= data_to_mem,
-      op_done_o         <= op_done,
-      irq_req_o         <= irq_req
+      pwr_reset_n_i     => pwr_rst_n,
+      sys_clk_i         => sys_clk,
+      mil1553_rxd_a_i   => mil1553_rxd_a_i,
+      mil1553_tx_rx_n_o => mil1553_tx_rx_n_o,
+      mil1553_tx_n_o    => mil1553_tx_n_o,
+      mil1553_txd_o     => mil1553_txd_o,
+      mil1553_txd_n_o   => mil1553_txd_n_o,
+      led_o             => led,
+      test_point_o      => test_point_o,
+      onewire_b         => onewire_b,
+      rd_to_mem_i       => rd_to_mem,
+      wr_to_mem_i       => wr_to_mem,
+      data_from_mem_o   => data_from_mem,
+      addr_to_mem_i     => addr_to_mem,
+      data_to_mem_i     => data_to_mem,
+      op_done_o         => op_done,
+      irq_req_o         => irq_req
       );
 
   l_int1_o <= irq_req(0);
@@ -264,8 +279,8 @@ begin
       g_OUTPUT_LENGTH   => c_LED_MONOSTABLE_LENGTH
       )
     port map(
-      rst_n_i   => rst_n,
-      clk_i     => sys_clk_i,
+      rst_n_i   => pwr_rst_n,
+      clk_i     => sys_clk,
       trigger_i => l_ready_n,
       pulse_o   => led_o(6)
       );

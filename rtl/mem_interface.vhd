@@ -7,7 +7,7 @@
 -- Author     : Pablo Antonio Alvarez Sanchez
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2002-09-30
--- Last update: 2012-03-12
+-- Last update: 2012-03-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -63,19 +63,18 @@ entity mem_interface is
     -- Interface
     IntRead     : in  std_logic;        -- Interface Read Signal
     IntWrite    : in  std_logic;        -- Interface Write Signal
-    DataFromInt : in  IntDataType;      -- Data From interface
-    IntAdd      : in  IntAddrOutType;   -- Address From interface
+    DataFromInt : in  t_int_data;       -- Data From interface
+    IntAdd      : in  t_int_addr;       -- Address From interface
     OpDone      : out std_logic;        -- Operation Done, Read or Write Finished
-    DataToInt   : out IntDataType;      -- Data going from Control to the Interface
+    DataToInt   : out t_int_data;       -- Data going from Control to the Interface
 
     -- Memory
-    ContToMem : out ContToMemType;                          -- Data going from Control to the Registers
-                                                            -- This consists of Data + Enable + Read + Write
-    MemToCont : in  MemToContType(0 to NUMMEMPOSITION - 1)  -- Data Array  From the Registers to the Control
-                                                            -- Data + Done
+    ContToMem : out t_cont_to_mem;                        -- Data going from Control to the Registers
+                                                          -- This consists of Data + Enable + Read + Write
+    MemToCont : in  t_mem_to_cont(0 to c_NB_MEM_POS - 1)  -- Data Array  From the Registers to the Control
+                                                          -- Data + Done
     );
 end mem_interface;
-
 
 
 architecture rtl of mem_interface is
@@ -86,51 +85,52 @@ architecture rtl of mem_interface is
       INDL : integer := 0
       );
     port(
-      IntAdd    : in  IntAddrOutType;
+      IntAdd    : in  t_int_addr;
       DoingOpC  : in  std_logic;
-      DoneRam   : in  SelectedPosType;
-      DataArray : in  MuxDataArrType;
-      Sel       : out SelectedPosType;
-      AddL      : out IntAddrOutType;
+      DoneRam   : in  t_selected_pos;
+      DataArray : in  t_mux_data_array;
+      Sel       : out t_selected_pos;
+      AddL      : out t_int_addr;
       Done      : out std_logic;
       ThisIs    : out std_logic;
-      DataOut   : out IntDataType
+      DataOut   : out t_int_data
       );
   end component mem_interface_mux;
 
 
-  signal iSelectedPos, nxSelectedPos     : SelectedPosType;
-  signal nxSelectedPosH, nxSelectedPosHR : SelectedPosType;
-  signal nxSelectedPosLR, nxSelectedPosL : SelectedPosType;
+  signal iSelectedPos, nxSelectedPos     : t_selected_pos;
+  signal nxSelectedPosH, nxSelectedPosHR : t_selected_pos;
+  signal nxSelectedPosLR, nxSelectedPosL : t_selected_pos;
   signal thisIsL, thisIsH                : std_logic;
   signal thisIsLR, thisIsHR              : std_logic;
 
-  signal addLL, addLLR : IntAddrOutType;
-  signal addLH, addLHR : IntAddrOutType;
+  signal addLL, addLLR : t_int_addr;
+  signal addLH, addLHR : t_int_addr;
 
-  signal dataFromIntDelayed                : IntDataType;
-  signal intAddDelayed, addL, addOffSet    : IntAddrOutType;
+  signal dataFromIntDelayed                : t_int_data;
+  signal intAddDelayed, addL, addOffSet    : t_int_addr;
   signal intReadDelayed, intWriteDelayed   : std_logic;
   signal intReadDelayed2, intWriteDelayed2 : std_logic;
   signal intReadDelayed3, intWriteDelayed3 : std_logic;
   signal opDoneMuxL, opDoneMuxLR           : std_logic;
   signal opDoneMuxH, opDoneMuxHR           : std_logic;
-  signal iDataToIntH, iDataToIntHR         : IntDataType;
-  signal iDataToIntL, iDataToIntLR         : IntDataType;
+  signal iDataToIntH, iDataToIntHR         : t_int_data;
+  signal iDataToIntL, iDataToIntLR         : t_int_data;
 
   signal iOpDone, opDoneMux : std_logic;
   signal doingOpC           : std_logic;
-  signal iDataToInt         : IntDataType;
-  signal dataMuxArrayIn     : MuxDataArrType;
-  signal doneRam            : SelectedPosType;
+  signal iDataToInt         : t_int_data;
+  signal dataMuxArrayIn     : t_mux_data_array;
+  signal doneRam            : t_selected_pos;
   signal iOpDoneD           : std_logic;
+
 begin
 
 
 -- Address Decoder + Data Multiplexor
   UROMMUXH : mem_interface_mux
-    generic map (INDH => NUMMEMPOSITION-1,
-                 INDL => NUMMEMPOSITION/2)
+    generic map (INDH => c_NB_MEM_POS-1,
+                 INDL => c_NB_MEM_POS/2)
     port map(
       IntAdd    => IntAdd,
       DoingOpC  => doingOpC,
@@ -145,7 +145,7 @@ begin
 
 
   UROMMUXL : mem_interface_mux
-    generic map (INDH => NUMMEMPOSITION/2 -1,
+    generic map (INDH => c_NB_MEM_POS/2 -1,
                  INDL => 0)
     port map(
       IntAdd    => IntAdd,
@@ -236,7 +236,7 @@ begin
 
   doingOpC <= (IntRead or IntWrite);
 
-  G0 : for I in 0 to NUMMEMPOSITION - 1 generate
+  G0 : for I in 0 to c_NB_MEM_POS - 1 generate
     doneRam(I) <= MemToCont(I).RdDone;
   end generate;
 
@@ -257,6 +257,7 @@ begin
     ContToMem.WrEn(I) <= intWriteDelayed2 and (not intWriteDelayed3) and iSelectedPos(I);
     ContToMem.RdEn(I) <= intReadDelayed2 and (not intReadDelayed3) and iSelectedPos(I);
   end generate;
+
 
 end rtl;
 

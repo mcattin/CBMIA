@@ -197,10 +197,10 @@ NET "led_o<7>"           LOC = "d10" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
 
 # Test points
 #-------------------------------------------------------------------------------
-NET "test_point<0>"      LOC = "u20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
-NET "test_point<1>"      LOC = "v20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
-NET "test_point<2>"      LOC = "w20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
-NET "test_point<3>"      LOC = "y20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point_o<0>"    LOC = "u20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point_o<1>"    LOC = "v20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point_o<2>"    LOC = "w20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
+NET "test_point_o<3>"    LOC = "y20" |SLEW = SLOW |IOSTANDARD = LVCMOS33 ;
 
 # Prohibited pins
 #-------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 -- Author     : Pablo Antonio Alvarez Sanchez
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2002-09-30
--- Last update: 2012-03-12
+-- Last update: 2012-03-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -58,18 +58,19 @@ entity mem_interface_mux is
     );
 
   port (
-    IntAdd    : in  IntAddrOutType;
+    IntAdd    : in  t_int_addr;
     DoingOpC  : in  std_logic;
-    DoneRam   : in  SelectedPosType;
-    DataArray : in  MuxDataArrType;
-    Sel       : out SelectedPosType;
-    AddL      : out IntAddrOutType;
+    DoneRam   : in  t_selected_pos;
+    DataArray : in  t_mux_data_array;
+    Sel       : out t_selected_pos;
+    AddL      : out t_int_addr;
     Done      : out std_logic;
     ThisIs    : out std_logic;
-    DataOut   : out IntDataType
+    DataOut   : out t_int_data
     );
 
 end mem_interface_mux;
+
 
 architecture rtl of mem_interface_mux is
 

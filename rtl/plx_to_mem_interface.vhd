@@ -7,7 +7,7 @@
 -- Author     : Pablo Antonio Alvarez Sanchez
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2008-05-26
--- Last update: 2012-03-12
+-- Last update: 2012-03-16
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ entity plx_to_mem_interface is
     LWrRdN  : in    std_logic;
     LReadyN : out   std_logic;
 
-    AddrMem     : out IntAddrOutType;
+    AddrMem     : out t_int_addr;
     ReadMem     : out std_logic;
     WriteMem    : out std_logic;
     OpDone      : in  std_logic;

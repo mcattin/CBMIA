@@ -1,5 +1,19 @@
 files = ["cbmia_top.vhd",
-         "",
-         ""]
-
-modules = {"git" : "git://ohwr.org/hdl-core-lib/general-cores.git"}
+         "cbmia_pkg.vhd",
+         "decr_cnt.vhd",
+         "incr_cnt.vhd",
+         "irq_regs.vhd",
+         "mem_interface_mux.vhd",
+         "mem_interface_pkg.vhd",
+         "mem_interface.vhd",
+         "mil1553_core.vhd",
+         "mil1553_rx_clk.vhd",
+         "mil1553_rx_deglitcher.vhd",
+         "mil1553_rx_deserialiser.vhd",
+         "mil1553_rx.vhd",
+         "mil1553_tx_clk.vhd",
+         "mil1553_tx_serialiser.vhd",
+         "mil1553_tx.vhd",
+         "monostable.vhd",
+         "one_wire_ds1822.vhd",
+         "plx_to_mem_interface.vhd"]

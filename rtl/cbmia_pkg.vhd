@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-15
+-- Last update: 2012-03-19
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -64,9 +64,6 @@ package cbmia_pkg is
                                                  -- pulses < c_DEGLITCH_THRESHOLD * sys_clk ticks
                                                  -- are filtered out by the glitch filter
 
-  constant c_TX_BUFFER_SIZE : integer := 33;  -- Transmit buffer size, in 16-bit words
-  constant c_RX_BUFFER_SIZE : integer := 33;  -- Receive buffer size, in 16-bit words
-
   -- Bit positions in MIL1553 command word
   constant c_CMD_WC0 : integer := 0;    -- Word count bit 0
   constant c_CMD_WC1 : integer := 1;    -- Word count bit 1
@@ -105,7 +102,7 @@ package cbmia_pkg is
 
   -- Transmit/receive bit meaning
   constant c_TR_WRITE : std_logic := '0';  -- BC writes to RT
-  constant c_TR_READ  : std_logic := '0';  -- BC reads from RT
+  constant c_TR_READ  : std_logic := '1';  -- BC reads from RT
 
   -- MIL1553 data encoding
   constant c_MANCH_ZERO      : std_logic_vector(1 downto 0) := "01";      -- Manchester encoded zero
@@ -117,8 +114,14 @@ package cbmia_pkg is
   -- MIL1553 decoding
   constant c_STAT_SYNC_FIELD : std_logic_vector(1 downto 0) := "00";  -- Status word synchronisation field (as seen by the deserialiser)
 
-  --
-  constant c_LED_MONOSTABLE_LENGTH : natural := 400000;  -- number of system clock ticks, 
+  -- Time constant for LED monosable
+  constant c_LED_MONOSTABLE_LENGTH : natural := 400000;  -- number of system clock ticks,
+
+  -- Buffers size
+  constant c_TX_BUFFER_SIZE : integer := 33;  -- Transmit buffer size, in 16-bit words
+  constant c_RX_BUFFER_SIZE : integer := 33;  -- Receive buffer size, in 16-bit words
+
+
 
   -----------------------------------------------------------------------------
   -- Types declaration
@@ -151,7 +154,7 @@ package cbmia_pkg is
       LData       : inout std_logic_vector(31 downto 0);
       LWrRdN      : in    std_logic;
       LReadyN     : out   std_logic;
-      AddrMem     : out   IntAddrOutType;
+      AddrMem     : out   t_int_addr;
       ReadMem     : out   std_logic;
       WriteMem    : out   std_logic;
       OpDone      : in    std_logic;
@@ -172,14 +175,14 @@ package cbmia_pkg is
       mil1553_tx_n_o    : out   std_logic;
       mil1553_txd_o     : out   std_logic;
       mil1553_txd_n_o   : out   std_logic;
-      led_o             : out   std_logic_vector(7 downto 0);
+      led_o             : out   std_logic_vector(6 downto 0);
       test_point_o      : out   std_logic_vector (3 downto 0);
       onewire_b         : inout std_logic;
       rd_to_mem_i       : in    std_logic;
       wr_to_mem_i       : in    std_logic;
-      data_from_mem_o   : out   IntDataType;
-      addr_to_mem_i     : in    IntAddrOutType;
-      data_to_mem_i     : in    IntDataType;
+      data_from_mem_o   : out   t_int_data;
+      addr_to_mem_i     : in    t_int_addr;
+      data_to_mem_i     : in    t_int_data;
       op_done_o         : out   std_logic;
       irq_req_o         : out   std_logic_vector(1 downto 0)
       );
@@ -191,12 +194,12 @@ package cbmia_pkg is
       RstN        : in  std_logic;
       IntRead     : in  std_logic;
       IntWrite    : in  std_logic;
-      DataFromInt : in  IntDataType;
-      IntAdd      : in  IntAddrOutType;
+      DataFromInt : in  t_int_data;
+      IntAdd      : in  t_int_addr;
       OpDone      : out std_logic;
-      DataToInt   : out IntDataType;
-      ContToMem   : out ContToMemType;
-      MemToCont   : in  MemToContType(0 to NUMMEMPOSITION - 1)
+      DataToInt   : out t_int_data;
+      ContToMem   : out t_cont_to_mem;
+      MemToCont   : in  t_mem_to_cont(0 to c_NB_MEM_POS - 1)
       );
   end component mem_interface;
 
@@ -269,6 +272,7 @@ package cbmia_pkg is
       sample_manch_bit_p_i : in  std_logic;                     -- Pulse indicating the sampling of a Manchester bit
       signif_edge_window_i : in  std_logic;                     -- Time window where a significant edge is expected
       adjac_bits_window_i  : in  std_logic;                     -- Time window where a transition between adjacent bits is expected
+      rx_en_i              : in  std_logic;                     -- Receiver enable
       rx_clk_rst_o         : out std_logic;                     -- Resets the clk recovery procedure
       rx_buffer_o          : out t_rx_buffer_array;             -- Receive buffer
       rx_word_cnt_o        : out std_logic_vector(4 downto 0);  -- Number of words in the receive buffer

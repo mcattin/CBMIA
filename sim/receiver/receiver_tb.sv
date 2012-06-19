@@ -189,6 +189,26 @@ module main;
            sent.push_back(i);
            phy_obj.send(0, i);
         end
+
+      #60000ns;
+
+      sent.push_back(2);
+      phy_obj.send(1, 2);
+      for(i=1;i<32;i++)
+        begin
+           sent.push_back(i);
+           phy_obj.send(0, i);
+        end
+
+      #60000ns;
+
+      sent.push_back(2);
+      phy_obj.send(1, 2);
+      for(i=1;i<2;i++)
+        begin
+           sent.push_back(i);
+           phy_obj.send(0, i);
+        end
 /*
       for(i=0;i<5;i++)
         begin
@@ -203,7 +223,7 @@ module main;
    wire rx_done;
    wire rx_parity_error;
    wire rx_manch_error;
-   wire rx_word_cnt[4:0];
+   wire rx_word_cnt[5:0];
 
    int         rx_xfer = 0;
 
