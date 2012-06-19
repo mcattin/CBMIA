@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-03-13
+-- Last update: 2012-03-15
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -169,6 +169,8 @@ architecture rtl of cbmia_top is
   signal pwr_rst_sync_n : std_logic_vector(1 downto 0);
   signal pwr_rst_n      : std_logic;
 
+  signal l_ready_n : std_logic;
+
   signal rd_to_mem     : std_logic;       -- Read strobe to memory interface
   signal wr_to_mem     : std_logic;       -- Write strobe to memory interface
   signal data_from_mem : IntDataType;     -- Data from memory interface
@@ -177,6 +179,8 @@ architecture rtl of cbmia_top is
   signal op_done       : std_logic;       -- Operation done from memory interface
                                           -- Read or Write finished
   signal irq_req       : std_logic_vector(1 downto 0);
+
+  signal led : std_logic_vector(6 downto 0);
 
 
 begin
@@ -193,7 +197,7 @@ begin
   pwr_rst_n <= pwr_rst_sync_n(1);
 
   ----------------------------------------------------------------------------
-  -- Components instantiation
+  -- PLX to memory interface
   ----------------------------------------------------------------------------
   cmp_plx_to_mem_interface : plx_to_mem_interface
     generic map(
@@ -207,7 +211,7 @@ begin
       LA          <= l_address_i,
       LData       <= l_data_b,
       LWrRdN      <= l_wr_rd_n_i,
-      LReadyN     <= l_ready_n_o,
+      LReadyN     <= l_ready_n,
       AddrMem     <= addr_to_mem,
       ReadMem     <= rd_to_mem,
       WriteMem    <= wr_to_mem,
@@ -216,6 +220,11 @@ begin
       DataToMem   <= data_to_mem
       );
 
+  l_ready_n_o <= l_ready_n;
+
+  ----------------------------------------------------------------------------
+  -- MIL1553 core
+  ----------------------------------------------------------------------------
   cmp_mil1553_core : mil1553_core
     generic map(
       g_HW_VERSION <= g_HW_VERSION
@@ -228,7 +237,7 @@ begin
       mil1553_tx_n_o    <= mil1553_tx_n_o,
       mil1553_txd_o     <= mil1553_txd_o,
       mil1553_txd_n_o   <= mil1553_txd_n_o,
-      led_o             <= led_o,
+      led_o             <= led,
       test_point_o      <= test_point_o,
       onewire_b         <= onewire_b,
       rd_to_mem_i       <= rd_to_mem,
@@ -242,6 +251,27 @@ begin
 
   l_int1_o <= irq_req(0);
   l_int2_o <= irq_req(1);
+
+  ----------------------------------------------------------------------------
+  -- PCI bus access LED
+  -- LED 6 (green)
+  ----------------------------------------------------------------------------
+  cmp_monostable_led7 : monostable
+    generic map(
+      g_INPUT_POLARITY  => '0',
+      g_OUTPUT_POLARITY => '1',
+      g_OUTPUT_RETRIG   => false,
+      g_OUTPUT_LENGTH   => c_LED_MONOSTABLE_LENGTH
+      )
+    port map(
+      rst_n_i   => rst_n,
+      clk_i     => sys_clk_i,
+      trigger_i => l_ready_n,
+      pulse_o   => led_o(6)
+      );
+
+  led_o(5 downto 0) <= led(5 downto 0);
+  led_o(7)          <= led(6);
 
   ----------------------------------------------------------------------------
   -- Unused output assigment
