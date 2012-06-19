@@ -294,7 +294,9 @@ begin
     from_regs(c_MANCH_ERR_CNT_POS).data   <= std_logic_vector(rx_manch_error_cnt);
     from_regs(c_NB_WORD_ERR_CNT_POS).data <= std_logic_vector(rx_nb_word_error_cnt);
     from_regs(c_TX_ERR_CNT_POS).data      <= std_logic_vector(req_during_trans_cnt);
-    from_regs(c_NB_WORD_POS).data         <= X"00" & "000" & rx_word_cnt & X"00" & "000" & tx_word_cnt;
+    from_regs(c_NB_WORD_POS).data         <= tx_tr_flag & rx_parity_error_flag & rx_manch_error_flag
+                                             & rx_nb_word_error_flag & resp_timeout_flag
+                                             & "000000" & rx_word_cnt & X"00" & "000" & tx_word_cnt;
     from_regs(c_RESP_TIMEOUT_POS).data    <= X"0000" & "000000" & std_logic_vector(resp_timeout_cnt);
 
     -- Reserved for future use
@@ -875,8 +877,8 @@ begin
   p_tp1_mux : process (cmd_reg)
   begin
     case cmd_reg(23 downto 20) is
-      when "0000" => test_point_o(1) <= mil1553_tx_en;
-      when "0001" => test_point_o(1) <= transaction_progress;
+      when "0000" => test_point_o(1) <= transaction_progress;
+      when "0001" => test_point_o(1) <= mil1553_tx_en;
       when "0010" => test_point_o(1) <= rx_in_progress;
       when "0011" => test_point_o(1) <= mil1553_rxd_a_i;
       when "0100" => test_point_o(1) <= tx_done_p;
@@ -898,9 +900,9 @@ begin
   p_tp2_mux : process (cmd_reg)
   begin
     case cmd_reg(27 downto 24) is
-      when "0000" => test_point_o(2) <= rx_in_progress;
+      when "0000" => test_point_o(2) <= transaction_progress;
       when "0001" => test_point_o(2) <= mil1553_tx_en;
-      when "0010" => test_point_o(2) <= transaction_progress;
+      when "0010" => test_point_o(2) <= rx_in_progress;
       when "0011" => test_point_o(2) <= mil1553_rxd_a_i;
       when "0100" => test_point_o(2) <= tx_done_p;
       when "0101" => test_point_o(2) <= rx_done_p;
@@ -921,10 +923,10 @@ begin
   p_tp3_mux : process (cmd_reg)
   begin
     case cmd_reg(31 downto 28) is
-      when "0000" => test_point_o(3) <= mil1553_rxd_a_i;
+      when "0000" => test_point_o(3) <= transaction_progress;
       when "0001" => test_point_o(3) <= mil1553_tx_en;
       when "0010" => test_point_o(3) <= rx_in_progress;
-      when "0011" => test_point_o(3) <= transaction_progress;
+      when "0011" => test_point_o(3) <= mil1553_rxd_a_i;
       when "0100" => test_point_o(3) <= tx_done_p;
       when "0101" => test_point_o(3) <= rx_done_p;
       when "0110" => test_point_o(3) <= rx_manch_error_p;
