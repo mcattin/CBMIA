@@ -1,0 +1,6 @@
+
+From version 2.00 CBMIA firmware is stored in this directory.
+
+CBMIA firmware version older than 2.00 can be found in the ACC-FPGA SVN repository
+under: /trunk/fpga/m1553nbci/
+
