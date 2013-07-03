@@ -5,14 +5,14 @@ Parameter TMPDIR set to xst/projnav.tmp
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.06 secs
+Total CPU time to Xst completion: 0.08 secs
  
 --> 
 Parameter xsthdpdir set to xst
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.06 secs
+Total CPU time to Xst completion: 0.08 secs
  
 --> 
 Reading design: cbmia_top.prj
@@ -108,41 +108,59 @@ Slice Utilization Ratio Delta      : 5
 *                          HDL Compilation                              *
 =========================================================================
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mem_interface_pkg.vhd" in Library work.
-Architecture mem_interface_pkg of Entity mem_interface_pkg is up to date.
+Package <mem_interface_pkg> compiled.
+Package body <mem_interface_pkg> compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/cbmia_pkg.vhd" in Library work.
-Architecture cbmia_pkg of Entity cbmia_pkg is up to date.
+Package <cbmia_pkg> compiled.
+Package body <cbmia_pkg> compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/decr_cnt.vhd" in Library work.
-Architecture rtl of Entity decr_cnt is up to date.
+Entity <decr_cnt> compiled.
+Entity <decr_cnt> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/incr_cnt.vhd" in Library work.
-Architecture rtl of Entity incr_cnt is up to date.
+Entity <incr_cnt> compiled.
+Entity <incr_cnt> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx_clk.vhd" in Library work.
-Architecture rtl of Entity mil1553_rx_clk is up to date.
+Entity <mil1553_rx_clk> compiled.
+Entity <mil1553_rx_clk> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx_deglitcher.vhd" in Library work.
-Architecture rtl of Entity mil1553_rx_deglitcher is up to date.
+Entity <mil1553_rx_deglitcher> compiled.
+Entity <mil1553_rx_deglitcher> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx_deserialiser.vhd" in Library work.
-Architecture rtl of Entity mil1553_rx_deserialiser is up to date.
+Entity <mil1553_rx_deserialiser> compiled.
+Entity <mil1553_rx_deserialiser> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_tx_clk.vhd" in Library work.
-Architecture rtl of Entity mil1553_tx_clk is up to date.
+Entity <mil1553_tx_clk> compiled.
+Entity <mil1553_tx_clk> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_tx_serialiser.vhd" in Library work.
-Architecture rtl of Entity mil1553_tx_serialiser is up to date.
+Entity <mil1553_tx_serialiser> compiled.
+Entity <mil1553_tx_serialiser> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mem_interface_mux.vhd" in Library work.
-Architecture rtl of Entity mem_interface_mux is up to date.
+Entity <mem_interface_mux> compiled.
+Entity <mem_interface_mux> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mem_interface.vhd" in Library work.
-Architecture rtl of Entity mem_interface is up to date.
+Entity <mem_interface> compiled.
+Entity <mem_interface> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/irq_regs.vhd" in Library work.
-Architecture rtl of Entity irq_regs is up to date.
+Entity <irq_regs> compiled.
+Entity <irq_regs> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/one_wire_ds1822.vhd" in Library work.
-Architecture rtl of Entity one_wire_ds1822 is up to date.
+Entity <one_wire_ds1822> compiled.
+Entity <one_wire_ds1822> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_tx.vhd" in Library work.
-Architecture rtl of Entity mil1553_tx is up to date.
+Entity <mil1553_tx> compiled.
+Entity <mil1553_tx> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx.vhd" in Library work.
-Architecture rtl of Entity mil1553_rx is up to date.
+Entity <mil1553_rx> compiled.
+Entity <mil1553_rx> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/monostable.vhd" in Library work.
-Architecture rtl of Entity monostable is up to date.
+Entity <monostable> compiled.
+Entity <monostable> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/plx_to_mem_interface.vhd" in Library work.
-Architecture rtl of Entity plx_to_mem_interface is up to date.
+Entity <plx_to_mem_interface> compiled.
+Entity <plx_to_mem_interface> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" in Library work.
-Architecture rtl of Entity mil1553_core is up to date.
+Entity <mil1553_core> compiled.
+Entity <mil1553_core> (Architecture <rtl>) compiled.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/cbmia_top.vhd" in Library work.
 Entity <cbmia_top> compiled.
 Entity <cbmia_top> (Architecture <rtl>) compiled.
@@ -151,14 +169,14 @@ Entity <cbmia_top> (Architecture <rtl>) compiled.
 *                     Design Hierarchy Analysis                         *
 =========================================================================
 Analyzing hierarchy for entity <cbmia_top> in library <work> (architecture <rtl>) with generics.
-	g_HW_VERSION = "0000001000010001"
+	g_HW_VERSION = "0000001000010010"
 
 Analyzing hierarchy for entity <plx_to_mem_interface> in library <work> (architecture <rtl>) with generics.
 	LALEFT = 2
 	LARIGHT = 23
 
 Analyzing hierarchy for entity <mil1553_core> in library <work> (architecture <rtl>) with generics.
-	g_HW_VERSION = "0000001000010001"
+	g_HW_VERSION = "0000001000010010"
 
 Analyzing hierarchy for entity <monostable> in library <work> (architecture <rtl>) with generics.
 	g_INPUT_POLARITY = '0'
@@ -213,7 +231,7 @@ Analyzing hierarchy for entity <decr_cnt> in library <work> (architecture <rtl>)
 *                            HDL Analysis                               *
 =========================================================================
 Analyzing generic Entity <cbmia_top> in library <work> (Architecture <rtl>).
-	g_HW_VERSION = "0000001000010001"
+	g_HW_VERSION = "0000001000010010"
 Entity <cbmia_top> analyzed. Unit <cbmia_top> generated.
 
 Analyzing generic Entity <plx_to_mem_interface> in library <work> (Architecture <rtl>).
@@ -223,20 +241,19 @@ INFO:Xst:2679 - Register <iLReadyN> in unit <plx_to_mem_interface> has a constan
 Entity <plx_to_mem_interface> analyzed. Unit <plx_to_mem_interface> generated.
 
 Analyzing generic Entity <mil1553_core> in library <work> (Architecture <rtl>).
-	g_HW_VERSION = "0000001000010001"
-WARNING:Xst:753 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 244: Unconnected output port 'IdRead' of component 'one_wire_ds1822'.
-WARNING:Xst:753 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 244: Unconnected output port 'IdOk' of component 'one_wire_ds1822'.
-INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 950: Mux is complete : default of case is discarded
-WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 932: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
+	g_HW_VERSION = "0000001000010010"
+WARNING:Xst:753 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 246: Unconnected output port 'IdOk' of component 'one_wire_ds1822'.
+INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 963: Mux is complete : default of case is discarded
+WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 945: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
    <transaction_progress>, <mil1553_tx_en>, <rx_in_progress>, <mil1553_rxd_a_i>, <tx_done_p>, <rx_done_p>, <rx_manch_error_p>, <rx_parity_error_p>, <rx_nb_word_error_p>, <resp_timeout_p>, <req_during_trans_p>, <tx_send_frame_p>, <send_frame_req_p>, <mil1553_txd>, <irq_req>, <rx_error_p>
-INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 973: Mux is complete : default of case is discarded
-WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 955: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
+INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 986: Mux is complete : default of case is discarded
+WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 968: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
    <transaction_progress>, <mil1553_tx_en>, <rx_in_progress>, <mil1553_rxd_a_i>, <tx_done_p>, <rx_done_p>, <rx_manch_error_p>, <rx_parity_error_p>, <rx_nb_word_error_p>, <resp_timeout_p>, <req_during_trans_p>, <tx_send_frame_p>, <send_frame_req_p>, <mil1553_txd>, <irq_req>, <rx_error_p>
-INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 996: Mux is complete : default of case is discarded
-WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 978: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
+INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 1009: Mux is complete : default of case is discarded
+WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 991: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
    <transaction_progress>, <mil1553_tx_en>, <rx_in_progress>, <mil1553_rxd_a_i>, <tx_done_p>, <rx_done_p>, <rx_manch_error_p>, <rx_parity_error_p>, <rx_nb_word_error_p>, <resp_timeout_p>, <req_during_trans_p>, <tx_send_frame_p>, <send_frame_req_p>, <mil1553_txd>, <irq_req>, <rx_error_p>
-INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 1019: Mux is complete : default of case is discarded
-WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 1001: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
+INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 1032: Mux is complete : default of case is discarded
+WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 1014: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
    <transaction_progress>, <mil1553_tx_en>, <rx_in_progress>, <mil1553_rxd_a_i>, <tx_done_p>, <rx_done_p>, <rx_manch_error_p>, <rx_parity_error_p>, <rx_nb_word_error_p>, <resp_timeout_p>, <req_during_trans_p>, <tx_send_frame_p>, <send_frame_req_p>, <mil1553_txd>, <irq_req>, <rx_error_p>
 Entity <mil1553_core> analyzed. Unit <mil1553_core> generated.
 
@@ -843,7 +860,7 @@ WARNING:Xst:646 - Signal <irq_src_reg<31:15>> is assigned but never used. This u
     Found 4-bit 16-to-1 multiplexer for signal <test_point_o>.
     Found 32-bit register for signal <cmd_reg>.
     Found 6-bit register for signal <expected_nb_word>.
-    Found 6-bit adder for signal <expected_nb_word$addsub0000> created at line 395.
+    Found 6-bit adder for signal <expected_nb_word$addsub0000> created at line 408.
     Found 26-bit down counter for signal <pps_cnt>.
     Found 1-bit register for signal <pps_p>.
     Found 32-bit up counter for signal <received_frame_cnt>.
@@ -861,7 +878,7 @@ WARNING:Xst:646 - Signal <irq_src_reg<31:15>> is assigned but never used. This u
     Found 32-bit up counter for signal <rx_nb_word_error_cnt>.
     Found 1-bit register for signal <rx_nb_word_error_flag>.
     Found 1-bit register for signal <rx_nb_word_error_p>.
-    Found 6-bit comparator equal for signal <rx_nb_word_error_p$cmp_eq0000> created at line 670.
+    Found 6-bit comparator equal for signal <rx_nb_word_error_p$cmp_eq0000> created at line 683.
     Found 32-bit up counter for signal <rx_parity_error_cnt>.
     Found 1-bit register for signal <rx_parity_error_flag>.
     Found 32-bit register for signal <rx_reg>.
@@ -874,11 +891,12 @@ WARNING:Xst:646 - Signal <irq_src_reg<31:15>> is assigned but never used. This u
     Found 32-bit register for signal <tx_reg>.
     Found 1-bit register for signal <tx_tr_flag>.
     Found 6-bit register for signal <tx_word_cnt>.
+    Found 64-bit register for signal <unique_id>.
 INFO:Xst:738 - HDL ADVISOR - 512 flip-flops were inferred for signal <tx_buffer>. You may be trying to describe a RAM in a way that is incompatible with block and distributed RAM resources available on Xilinx devices, or with a specific template that is not supported. Please review the Xilinx resources documentation and the XST user manual for coding guidelines. Taking advantage of RAM resources will lead to improved device usage and reduced synthesis time.
 INFO:Xst:738 - HDL ADVISOR - 528 flip-flops were inferred for signal <rx_buffer>. You may be trying to describe a RAM in a way that is incompatible with block and distributed RAM resources available on Xilinx devices, or with a specific template that is not supported. Please review the Xilinx resources documentation and the XST user manual for coding guidelines. Taking advantage of RAM resources will lead to improved device usage and reduced synthesis time.
     Summary:
 	inferred  10 Counter(s).
-	inferred 1167 D-type flip-flop(s).
+	inferred 1231 D-type flip-flop(s).
 	inferred   1 Adder/Subtractor(s).
 	inferred   1 Comparator(s).
 	inferred   4 Multiplexer(s).
@@ -959,7 +977,7 @@ Macro Statistics
  7-bit down counter                                    : 1
  7-bit up counter                                      : 1
  8-bit up counter                                      : 1
-# Registers                                            : 380
+# Registers                                            : 381
  1-bit register                                        : 215
  14-bit register                                       : 4
  16-bit register                                       : 99
@@ -971,7 +989,7 @@ Macro Statistics
  55-bit register                                       : 3
  6-bit register                                        : 7
  60-bit register                                       : 1
- 64-bit register                                       : 1
+ 64-bit register                                       : 2
 # Comparators                                          : 125
  14-bit comparator greatequal                          : 54
  14-bit comparator lessequal                           : 54
@@ -1306,8 +1324,8 @@ Macro Statistics
  7-bit down counter                                    : 1
  7-bit up counter                                      : 1
  8-bit up counter                                      : 1
-# Registers                                            : 3803
- Flip-Flops                                            : 3803
+# Registers                                            : 3867
+ Flip-Flops                                            : 3867
 # Comparators                                          : 125
  14-bit comparator greatequal                          : 54
  14-bit comparator lessequal                           : 54
@@ -1374,8 +1392,6 @@ WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <irq_src_reg_4> (wit
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <irq_src_reg_3> (without init value) has a constant value of 0 in block <irq_regs>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <irq_src_reg_2> (without init value) has a constant value of 0 in block <irq_regs>. This FF/Latch will be trimmed during the optimization process.
 WARNING:Xst:1895 - Due to other FF/Latch trimming, FF/Latch <irq_src_reg_1> (without init value) has a constant value of 0 in block <irq_regs>. This FF/Latch will be trimmed during the optimization process.
-WARNING:Xst:2677 - Node <cmp_mil1553_core/cmp_one_wire_ds1822/iIdRead> of sequential type is unconnected in block <cbmia_top>.
-WARNING:Xst:2677 - Node <cmp_mil1553_core/cmp_one_wire_ds1822/IdRead> of sequential type is unconnected in block <cbmia_top>.
 WARNING:Xst:2677 - Node <cmp_mil1553_core/cmp_one_wire_ds1822/IdOk> of sequential type is unconnected in block <cbmia_top>.
 
 Optimizing unit <cbmia_top> ...
@@ -1622,8 +1638,8 @@ Unit <cbmia_top> processed.
 Final Register Report
 
 Macro Statistics
-# Registers                                            : 4072
- Flip-Flops                                            : 4072
+# Registers                                            : 4138
+ Flip-Flops                                            : 4138
 # Shift Registers                                      : 1
  2-bit shift register                                  : 1
 
@@ -1654,11 +1670,11 @@ Design Statistics
 # IOs                              : 169
 
 Cell Usage :
-# BELS                             : 7434
+# BELS                             : 7435
 #      GND                         : 1
 #      INV                         : 846
 #      LUT1                        : 389
-#      LUT2                        : 250
+#      LUT2                        : 251
 #      LUT2_D                      : 40
 #      LUT2_L                      : 26
 #      LUT3                        : 1105
@@ -1674,11 +1690,11 @@ Cell Usage :
 #      MUXF8                       : 34
 #      VCC                         : 1
 #      XORCY                       : 476
-# FlipFlops/Latches                : 4073
+# FlipFlops/Latches                : 4139
 #      FD                          : 3
 #      FDE                         : 64
-#      FDR                         : 206
-#      FDRE                        : 3556
+#      FDR                         : 207
+#      FDRE                        : 3621
 #      FDRS                        : 91
 #      FDRSE                       : 113
 #      FDS                         : 6
@@ -1699,10 +1715,10 @@ Device utilization summary:
 
 Selected Device : 3s1500fg456-4 
 
- Number of Slices:                     3932  out of  13312    29%  
- Number of Slice Flip Flops:           4073  out of  26624    15%  
- Number of 4 input LUTs:               5189  out of  26624    19%  
-    Number used as logic:              5188
+ Number of Slices:                     3970  out of  13312    29%  
+ Number of Slice Flip Flops:           4139  out of  26624    15%  
+ Number of 4 input LUTs:               5190  out of  26624    19%  
+    Number used as logic:              5189
     Number used as Shift registers:       1
  Number of IOs:                         169
  Number of bonded IOBs:                 111  out of    333    33%  
@@ -1729,7 +1745,7 @@ Clock Information:
 -----------------------------------+------------------------+-------+
 Clock Signal                       | Clock buffer(FF name)  | Load  |
 -----------------------------------+------------------------+-------+
-clk_i                              | IBUFG+BUFG             | 4074  |
+clk_i                              | IBUFG+BUFG             | 4140  |
 -----------------------------------+------------------------+-------+
 
 Asynchronous Control Signals Information:
@@ -1752,7 +1768,7 @@ All values displayed in nanoseconds (ns)
 =========================================================================
 Timing constraint: Default period analysis for Clock 'clk_i'
   Clock period: 15.693ns (frequency: 63.723MHz)
-  Total number of paths / destination ports: 318323 / 11963
+  Total number of paths / destination ports: 318594 / 12159
 -------------------------------------------------------------------------
 Delay:               15.693ns (Levels of Logic = 13)
   Source:            cmp_plx_to_mem_interface/LAReg_1_3 (FF)
@@ -1854,15 +1870,15 @@ Delay:               9.850ns (Levels of Logic = 6)
 =========================================================================
 
 
-Total REAL time to Xst completion: 83.00 secs
-Total CPU time to Xst completion: 82.39 secs
+Total REAL time to Xst completion: 87.00 secs
+Total CPU time to Xst completion: 86.37 secs
  
 --> 
 
 
-Total memory usage is 253276 kilobytes
+Total memory usage is 253944 kilobytes
 
 Number of errors   :    0 (   0 filtered)
-Number of warnings :  533 (   0 filtered)
+Number of warnings :  530 (   0 filtered)
 Number of infos    :   54 (   0 filtered)
 

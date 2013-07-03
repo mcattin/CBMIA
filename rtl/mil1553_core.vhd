@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-03-12
--- Last update: 2012-04-16
+-- Last update: 2013-06-25
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -114,10 +114,12 @@ architecture rtl of mil1553_core is
   signal irq_src_reg    : std_logic_vector(31 downto 0);
   signal irq_en_msk_reg : std_logic_vector(31 downto 0);
 
-  signal pps_cnt   : unsigned(25 downto 0);
-  signal pps_p     : std_logic;
-  signal temp      : std_logic_vector(15 downto 0);
-  signal unique_id : std_logic_vector(63 downto 0);
+  signal pps_cnt         : unsigned(25 downto 0);
+  signal pps_p           : std_logic;
+  signal temp            : std_logic_vector(15 downto 0);
+  signal unique_id       : std_logic_vector(63 downto 0);
+  signal unique_id_t     : std_logic_vector(63 downto 0);
+  signal unique_id_valid : std_logic;
 
   signal tx_reg      : std_logic_vector(31 downto 0);
   signal tx_buffer   : t_tx_buffer_array;
@@ -249,12 +251,23 @@ begin
       Clk      => sys_clk_i,
       RstN     => rst_n,
       SerialId => onewire_b,
-      Id       => unique_id,            -- 64-bit
+      Id       => unique_id_t,          -- 64-bit
       Temp     => temp,                 -- 16-bit
-      IdRead   => open,
+      IdRead   => unique_id_valid,
       Pps      => pps_p,                -- pulse per second for temp read
       IdOk     => open
       );
+
+  p_unique_id: process (sys_clk_i)
+  begin
+    if rising_edge(sys_clk_i) then
+      if rst_n = '0' then
+        unique_id <= (others => '0');
+      elsif unique_id_valid = '1' then
+        unique_id <= unique_id_t;
+      end if;
+    end if;
+  end process p_unique_id;
 
   ------------------------------------------------------------------------------
   -- Registers readback

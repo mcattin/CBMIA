@@ -34,545 +34,551 @@ INFO:Timing:3389 - This architecture does not support 'Discrete Jitter' and
 ================================================================================
 Timing constraint: TS_clk_i = PERIOD TIMEGRP "clk_i" 25 ns HIGH 50%;
 
- 318322 paths analyzed, 13457 endpoints analyzed, 0 failing endpoints
+ 318593 paths analyzed, 13653 endpoints analyzed, 0 failing endpoints
  0 timing errors detected. (0 setup errors, 0 hold errors, 0 component switching limit errors)
- Minimum period is  21.786ns.
+ Minimum period is  21.279ns.
 --------------------------------------------------------------------------------
 
-Paths for end point cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (SLICE_X39Y29.G1), 1257 paths
+Paths for end point cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11 (SLICE_X36Y71.G3), 2099 paths
 --------------------------------------------------------------------------------
-Slack (setup path):     3.214ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_4_5 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (FF)
+Slack (setup path):     3.721ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_2 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11 (FF)
   Requirement:          25.000ns
-  Data Path Delay:      21.786ns (Levels of Logic = 8)
+  Data Path Delay:      21.279ns (Levels of Logic = 9)
   Clock Path Skew:      0.000ns
   Source Clock:         sys_clk rising at 0.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_4_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_2 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X38Y79.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_4_5
-                                                       cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.F2      net (fanout=16)       4.465   cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.COUT    Topcyf                1.027   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_lut<0>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<0>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>_6
-    SLICE_X25Y61.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-    SLICE_X25Y61.COUT    Tbyp                  0.128   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<2>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<3>_6
-    SLICE_X44Y33.G3      net (fanout=26)       5.781   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-    SLICE_X44Y33.Y       Tilo                  0.608   N1265
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>231
-    SLICE_X29Y25.G1      net (fanout=27)       3.288   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/N245
-    SLICE_X29Y25.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<24>34
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>32_SW0
-    SLICE_X39Y27.G2      net (fanout=1)        1.294   N1271
-    SLICE_X39Y27.Y       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.F3      net (fanout=2)        0.703   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.X       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>207_SW0
-    SLICE_X39Y29.F2      net (fanout=3)        0.595   N845
-    SLICE_X39Y29.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW0
-    SLICE_X39Y29.G1      net (fanout=1)        0.340   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW0/O
-    SLICE_X39Y29.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>2401
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
-    -------------------------------------------------  ---------------------------
-    Total                                     21.786ns (5.320ns logic, 16.466ns route)
-                                                       (24.4% logic, 75.6% route)
-
---------------------------------------------------------------------------------
-Slack (setup path):     3.383ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_4_5 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (FF)
-  Requirement:          25.000ns
-  Data Path Delay:      21.617ns (Levels of Logic = 8)
-  Clock Path Skew:      0.000ns
-  Source Clock:         sys_clk rising at 0.000ns
-  Destination Clock:    sys_clk rising at 25.000ns
-  Clock Uncertainty:    0.000ns
-
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_4_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
-    Location             Delay type         Delay(ns)  Physical Resource
-                                                       Logical Resource(s)
-    -------------------------------------------------  -------------------
-    SLICE_X38Y79.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_4_5
-                                                       cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.F2      net (fanout=16)       4.465   cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.COUT    Topcyf                1.027   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_lut<0>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<0>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>_6
-    SLICE_X25Y61.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-    SLICE_X25Y61.COUT    Tbyp                  0.128   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<2>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<3>_6
-    SLICE_X44Y33.G3      net (fanout=26)       5.781   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-    SLICE_X44Y33.Y       Tilo                  0.608   N1265
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>231
-    SLICE_X29Y25.G1      net (fanout=27)       3.288   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/N245
-    SLICE_X29Y25.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<24>34
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>32_SW0
-    SLICE_X39Y27.G2      net (fanout=1)        1.294   N1271
-    SLICE_X39Y27.Y       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X38Y27.BX      net (fanout=2)        0.702   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X38Y27.X       Tbxx                  0.621   N846
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>207_SW1
-    SLICE_X39Y29.F4      net (fanout=2)        0.357   N846
-    SLICE_X39Y29.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW0
-    SLICE_X39Y29.G1      net (fanout=1)        0.340   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW0/O
-    SLICE_X39Y29.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>2401
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
-    -------------------------------------------------  ---------------------------
-    Total                                     21.617ns (5.390ns logic, 16.227ns route)
-                                                       (24.9% logic, 75.1% route)
-
---------------------------------------------------------------------------------
-Slack (setup path):     4.004ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_3_2 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (FF)
-  Requirement:          25.000ns
-  Data Path Delay:      20.996ns (Levels of Logic = 9)
-  Clock Path Skew:      0.000ns
-  Source Clock:         sys_clk rising at 0.000ns
-  Destination Clock:    sys_clk rising at 25.000ns
-  Clock Uncertainty:    0.000ns
-
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_3_2 to cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
-    Location             Delay type         Delay(ns)  Physical Resource
-                                                       Logical Resource(s)
-    -------------------------------------------------  -------------------
-    SLICE_X29Y74.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_3_2
-                                                       cmp_plx_to_mem_interface/LAReg_3_2
-    SLICE_X20Y58.G2      net (fanout=16)       3.214   cmp_plx_to_mem_interface/LAReg_3_2
-    SLICE_X20Y58.COUT    Topcyg                1.096   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<1>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_lut<1>6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<1>_6
-    SLICE_X20Y59.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<1>7
-    SLICE_X20Y59.COUT    Tbyp                  0.120   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<3>5
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<2>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<3>_6
-    SLICE_X20Y60.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<3>5
-    SLICE_X20Y60.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_ge0008
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_ge0000_cy<4>_4
-    SLICE_X44Y33.G2      net (fanout=26)       5.741   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_ge0008
-    SLICE_X44Y33.Y       Tilo                  0.608   N1265
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>231
-    SLICE_X29Y25.G1      net (fanout=27)       3.288   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/N245
-    SLICE_X29Y25.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<24>34
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>32_SW0
-    SLICE_X39Y27.G2      net (fanout=1)        1.294   N1271
-    SLICE_X39Y27.Y       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.F3      net (fanout=2)        0.703   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.X       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>207_SW0
-    SLICE_X39Y29.F2      net (fanout=3)        0.595   N845
-    SLICE_X39Y29.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW0
-    SLICE_X39Y29.G1      net (fanout=1)        0.340   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW0/O
-    SLICE_X39Y29.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>2401
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
-    -------------------------------------------------  ---------------------------
-    Total                                     20.996ns (5.821ns logic, 15.175ns route)
-                                                       (27.7% logic, 72.3% route)
-
---------------------------------------------------------------------------------
-
-Paths for end point cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (SLICE_X59Y58.G2), 2099 paths
---------------------------------------------------------------------------------
-Slack (setup path):     3.223ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_6 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (FF)
-  Requirement:          25.000ns
-  Data Path Delay:      21.777ns (Levels of Logic = 8)
-  Clock Path Skew:      0.000ns
-  Source Clock:         sys_clk rising at 0.000ns
-  Destination Clock:    sys_clk rising at 25.000ns
-  Clock Uncertainty:    0.000ns
-
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_6 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
-    Location             Delay type         Delay(ns)  Physical Resource
-                                                       Logical Resource(s)
-    -------------------------------------------------  -------------------
-    SLICE_X33Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<7>
-                                                       cmp_plx_to_mem_interface/LAReg_6
-    SLICE_X61Y94.G1      net (fanout=45)       7.106   cmp_plx_to_mem_interface/LAReg<6>
-    SLICE_X61Y94.COUT    Topcyg                1.039   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<5>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_lut<5>9
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<5>_8
-    SLICE_X61Y95.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<5>
-    SLICE_X61Y95.COUT    Tbyp                  0.128   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_ge0020
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<6>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<7>
-    SLICE_X77Y94.G2      net (fanout=3)        1.363   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_ge0020
-    SLICE_X77Y94.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>64
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_and00161_1
-    SLICE_X83Y98.G3      net (fanout=32)       1.252   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_and00161
-    SLICE_X83Y98.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<14>65
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>65
-    SLICE_X78Y94.BX      net (fanout=2)        1.770   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>65
-    SLICE_X78Y94.X       Tbxx                  0.621   N685
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1
-    SLICE_X72Y89.F1      net (fanout=1)        1.397   N685
-    SLICE_X72Y89.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-    SLICE_X59Y58.F1      net (fanout=1)        3.344   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-    SLICE_X59Y58.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164
-    SLICE_X59Y58.G2      net (fanout=1)        0.143   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164/O
-    SLICE_X59Y58.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>2301
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
-    -------------------------------------------------  ---------------------------
-    Total                                     21.777ns (5.402ns logic, 16.375ns route)
-                                                       (24.8% logic, 75.2% route)
-
---------------------------------------------------------------------------------
-Slack (setup path):     3.882ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_6 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (FF)
-  Requirement:          25.000ns
-  Data Path Delay:      21.118ns (Levels of Logic = 8)
-  Clock Path Skew:      0.000ns
-  Source Clock:         sys_clk rising at 0.000ns
-  Destination Clock:    sys_clk rising at 25.000ns
-  Clock Uncertainty:    0.000ns
-
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_6 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
-    Location             Delay type         Delay(ns)  Physical Resource
-                                                       Logical Resource(s)
-    -------------------------------------------------  -------------------
-    SLICE_X33Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<7>
-                                                       cmp_plx_to_mem_interface/LAReg_6
-    SLICE_X68Y76.G3      net (fanout=45)       4.678   cmp_plx_to_mem_interface/LAReg<6>
-    SLICE_X68Y76.COUT    Topcyg                1.096   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<1>23
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_lut<1>23
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<1>_22
-    SLICE_X68Y77.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<1>23
-    SLICE_X68Y77.COUT    Tbyp                  0.120   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_ge0023
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<2>_22
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_ge0000_cy<3>_22
-    SLICE_X83Y91.G1      net (fanout=19)       3.468   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_ge0023
-    SLICE_X83Y91.Y       Tilo                  0.551   N523
+    SLICE_X39Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<3>
+                                                       cmp_plx_to_mem_interface/LAReg_2
+    SLICE_X52Y76.F2      net (fanout=24)       3.523   cmp_plx_to_mem_interface/LAReg<2>
+    SLICE_X52Y76.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<0>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<0>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>_22
+    SLICE_X52Y77.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>23
+    SLICE_X52Y77.COUT    Tbyp                  0.120   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
                                                        cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
-    SLICE_X81Y96.F1      net (fanout=16)       1.710   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
-    SLICE_X81Y96.X       Tilo                  0.551   N493
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>80_SW0
-    SLICE_X78Y94.G1      net (fanout=1)        0.580   N493
-    SLICE_X78Y94.X       Tif5x                 0.968   N685
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1_F
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1
-    SLICE_X72Y89.F1      net (fanout=1)        1.397   N685
-    SLICE_X72Y89.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-    SLICE_X59Y58.F1      net (fanout=1)        3.344   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-    SLICE_X59Y58.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164
-    SLICE_X59Y58.G2      net (fanout=1)        0.143   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164/O
-    SLICE_X59Y58.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>2301
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
+    SLICE_X46Y109.F1     net (fanout=16)       2.764   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X46Y109.X      Tilo                  0.608   N511
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>80_SW0
+    SLICE_X45Y109.G2     net (fanout=1)        0.491   N511
+    SLICE_X45Y109.X      Tif5x                 0.911   N712
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>81_SW1
+    SLICE_X43Y105.F4     net (fanout=1)        0.674   N712
+    SLICE_X43Y105.X      Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+    SLICE_X36Y71.F3      net (fanout=1)        2.266   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+    SLICE_X36Y71.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<11>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>164
+    SLICE_X36Y71.G3      net (fanout=1)        0.371   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>164/O
+    SLICE_X36Y71.CLK     Tgck                  0.690   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<11>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11
     -------------------------------------------------  ---------------------------
-    Total                                     21.118ns (5.798ns logic, 15.320ns route)
-                                                       (27.5% logic, 72.5% route)
+    Total                                     21.279ns (6.283ns logic, 14.996ns route)
+                                                       (29.5% logic, 70.5% route)
 
 --------------------------------------------------------------------------------
-Slack (setup path):     4.102ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_8 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (FF)
+Slack (setup path):     4.310ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_8_5 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11 (FF)
   Requirement:          25.000ns
-  Data Path Delay:      20.898ns (Levels of Logic = 8)
-  Clock Path Skew:      0.000ns
+  Data Path Delay:      20.682ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.008ns (0.465 - 0.473)
   Source Clock:         sys_clk rising at 0.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_8 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_8_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X30Y75.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<9>
-                                                       cmp_plx_to_mem_interface/LAReg_8
-    SLICE_X50Y87.F1      net (fanout=38)       4.797   cmp_plx_to_mem_interface/LAReg<8>
-    SLICE_X50Y87.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>21
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<2>25
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_24
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_22
-    SLICE_X50Y88.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>21
-    SLICE_X50Y88.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0025
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_20
-    SLICE_X68Y89.G1      net (fanout=2)        1.819   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0025
-    SLICE_X68Y89.Y       Tilo                  0.608   N732
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_and00241
-    SLICE_X68Y85.F3      net (fanout=2)        1.339   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_and0024
-    SLICE_X68Y85.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N230
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<0>11111
-    SLICE_X78Y94.G4      net (fanout=16)       1.839   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N230
-    SLICE_X78Y94.X       Tif5x                 0.968   N685
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1_F
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1
-    SLICE_X72Y89.F1      net (fanout=1)        1.397   N685
-    SLICE_X72Y89.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-    SLICE_X59Y58.F1      net (fanout=1)        3.344   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
-    SLICE_X59Y58.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164
-    SLICE_X59Y58.G2      net (fanout=1)        0.143   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164/O
-    SLICE_X59Y58.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>2301
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
+    SLICE_X41Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_8_5
+                                                       cmp_plx_to_mem_interface/LAReg_8_5
+    SLICE_X52Y77.F1      net (fanout=28)       3.046   cmp_plx_to_mem_interface/LAReg_8_5
+    SLICE_X52Y77.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<2>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X46Y109.F1     net (fanout=16)       2.764   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X46Y109.X      Tilo                  0.608   N511
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>80_SW0
+    SLICE_X45Y109.G2     net (fanout=1)        0.491   N511
+    SLICE_X45Y109.X      Tif5x                 0.911   N712
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>81_SW1
+    SLICE_X43Y105.F4     net (fanout=1)        0.674   N712
+    SLICE_X43Y105.X      Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+    SLICE_X36Y71.F3      net (fanout=1)        2.266   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+    SLICE_X36Y71.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<11>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>164
+    SLICE_X36Y71.G3      net (fanout=1)        0.371   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>164/O
+    SLICE_X36Y71.CLK     Tgck                  0.690   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<11>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11
     -------------------------------------------------  ---------------------------
-    Total                                     20.898ns (6.220ns logic, 14.678ns route)
+    Total                                     20.682ns (6.163ns logic, 14.519ns route)
                                                        (29.8% logic, 70.2% route)
 
 --------------------------------------------------------------------------------
-
-Paths for end point cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (SLICE_X39Y29.G4), 2041 paths
---------------------------------------------------------------------------------
-Slack (setup path):     3.283ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_4_5 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (FF)
+Slack (setup path):     4.398ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_10 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11 (FF)
   Requirement:          25.000ns
-  Data Path Delay:      21.717ns (Levels of Logic = 8)
+  Data Path Delay:      20.602ns (Levels of Logic = 8)
   Clock Path Skew:      0.000ns
   Source Clock:         sys_clk rising at 0.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_4_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_10 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X38Y79.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_4_5
-                                                       cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.F2      net (fanout=16)       4.465   cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.COUT    Topcyf                1.027   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_lut<0>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<0>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>_6
-    SLICE_X25Y61.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-    SLICE_X25Y61.COUT    Tbyp                  0.128   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<2>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<3>_6
-    SLICE_X44Y33.G3      net (fanout=26)       5.781   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-    SLICE_X44Y33.Y       Tilo                  0.608   N1265
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>231
-    SLICE_X29Y25.G1      net (fanout=27)       3.288   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/N245
-    SLICE_X29Y25.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<24>34
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>32_SW0
-    SLICE_X39Y27.G2      net (fanout=1)        1.294   N1271
-    SLICE_X39Y27.Y       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.F3      net (fanout=2)        0.703   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.X       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>207_SW0
-    SLICE_X38Y28.G3      net (fanout=3)        0.422   N845
-    SLICE_X38Y28.X       Tif5x                 0.968   N1438
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW1_F
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW1
-    SLICE_X39Y29.G4      net (fanout=1)        0.027   N1438
-    SLICE_X39Y29.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>2401
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+    SLICE_X30Y75.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<11>
+                                                       cmp_plx_to_mem_interface/LAReg_10
+    SLICE_X52Y77.G1      net (fanout=83)       2.954   cmp_plx_to_mem_interface/LAReg<10>
+    SLICE_X52Y77.COUT    Topcyg                1.096   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<3>16
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X46Y109.F1     net (fanout=16)       2.764   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X46Y109.X      Tilo                  0.608   N511
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>80_SW0
+    SLICE_X45Y109.G2     net (fanout=1)        0.491   N511
+    SLICE_X45Y109.X      Tif5x                 0.911   N712
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>81_SW1
+    SLICE_X43Y105.F4     net (fanout=1)        0.674   N712
+    SLICE_X43Y105.X      Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+    SLICE_X36Y71.F3      net (fanout=1)        2.266   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>98
+    SLICE_X36Y71.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<11>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>164
+    SLICE_X36Y71.G3      net (fanout=1)        0.371   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>164/O
+    SLICE_X36Y71.CLK     Tgck                  0.690   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<11>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<11>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_11
     -------------------------------------------------  ---------------------------
-    Total                                     21.717ns (5.737ns logic, 15.980ns route)
-                                                       (26.4% logic, 73.6% route)
+    Total                                     20.602ns (6.175ns logic, 14.427ns route)
+                                                       (30.0% logic, 70.0% route)
 
 --------------------------------------------------------------------------------
-Slack (setup path):     3.304ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_4_5 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (FF)
+
+Paths for end point cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (SLICE_X37Y77.G1), 2099 paths
+--------------------------------------------------------------------------------
+Slack (setup path):     3.754ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_2 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (FF)
   Requirement:          25.000ns
-  Data Path Delay:      21.696ns (Levels of Logic = 8)
-  Clock Path Skew:      0.000ns
+  Data Path Delay:      21.123ns (Levels of Logic = 9)
+  Clock Path Skew:      -0.123ns (0.311 - 0.434)
   Source Clock:         sys_clk rising at 0.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_4_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_2 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X38Y79.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_4_5
-                                                       cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.F2      net (fanout=16)       4.465   cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.COUT    Topcyf                1.027   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_lut<0>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<0>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>_6
-    SLICE_X25Y61.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-    SLICE_X25Y61.COUT    Tbyp                  0.128   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<2>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<3>_6
-    SLICE_X44Y33.G3      net (fanout=26)       5.781   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-    SLICE_X44Y33.Y       Tilo                  0.608   N1265
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>231
-    SLICE_X29Y25.G1      net (fanout=27)       3.288   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/N245
-    SLICE_X29Y25.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<24>34
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>32_SW0
-    SLICE_X39Y27.G2      net (fanout=1)        1.294   N1271
-    SLICE_X39Y27.Y       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.F3      net (fanout=2)        0.703   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X39Y27.X       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>207_SW0
-    SLICE_X38Y28.F3      net (fanout=3)        0.401   N845
-    SLICE_X38Y28.X       Tif5x                 0.968   N1438
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW1_G
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW1
-    SLICE_X39Y29.G4      net (fanout=1)        0.027   N1438
-    SLICE_X39Y29.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>2401
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+    SLICE_X39Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<3>
+                                                       cmp_plx_to_mem_interface/LAReg_2
+    SLICE_X52Y76.F2      net (fanout=24)       3.523   cmp_plx_to_mem_interface/LAReg<2>
+    SLICE_X52Y76.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<0>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<0>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>_22
+    SLICE_X52Y77.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>23
+    SLICE_X52Y77.COUT    Tbyp                  0.120   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X53Y112.F2     net (fanout=16)       1.697   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X53Y112.X      Tilo                  0.551   N493
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>80_SW0
+    SLICE_X54Y113.G2     net (fanout=1)        0.587   N493
+    SLICE_X54Y113.X      Tif5x                 0.968   N685
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1
+    SLICE_X46Y104.F1     net (fanout=1)        1.716   N685
+    SLICE_X46Y104.X      Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+    SLICE_X37Y77.F3      net (fanout=1)        2.127   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+    SLICE_X37Y77.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164
+    SLICE_X37Y77.G1      net (fanout=1)        0.340   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164/O
+    SLICE_X37Y77.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
     -------------------------------------------------  ---------------------------
-    Total                                     21.696ns (5.737ns logic, 15.959ns route)
-                                                       (26.4% logic, 73.6% route)
+    Total                                     21.123ns (6.226ns logic, 14.897ns route)
+                                                       (29.5% logic, 70.5% route)
 
 --------------------------------------------------------------------------------
-Slack (setup path):     3.344ns (requirement - (data path - clock path skew + uncertainty))
-  Source:               cmp_plx_to_mem_interface/LAReg_4_5 (FF)
-  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16 (FF)
+Slack (setup path):     4.312ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_8_5 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (FF)
   Requirement:          25.000ns
-  Data Path Delay:      21.656ns (Levels of Logic = 8)
-  Clock Path Skew:      0.000ns
+  Data Path Delay:      20.526ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.162ns (0.311 - 0.473)
   Source Clock:         sys_clk rising at 0.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_4_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_8_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X38Y79.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_4_5
-                                                       cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.F2      net (fanout=16)       4.465   cmp_plx_to_mem_interface/LAReg_4_5
-    SLICE_X25Y60.COUT    Topcyf                1.027   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_lut<0>7
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<0>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>_6
-    SLICE_X25Y61.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<1>7
-    SLICE_X25Y61.COUT    Tbyp                  0.128   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<2>_6
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Mcompar_Sel_52_cmp_le0000_cy<3>_6
-    SLICE_X44Y33.G3      net (fanout=26)       5.781   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/Sel_52_cmp_le0008
-    SLICE_X44Y33.Y       Tilo                  0.608   N1265
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>231
-    SLICE_X29Y25.G1      net (fanout=27)       3.288   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/N245
-    SLICE_X29Y25.Y       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<24>34
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>32_SW0
-    SLICE_X39Y27.G2      net (fanout=1)        1.294   N1271
-    SLICE_X39Y27.Y       Tilo                  0.551   N845
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X38Y27.BX      net (fanout=2)        0.702   cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>34
-    SLICE_X38Y27.X       Tbxx                  0.621   N846
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>207_SW1
-    SLICE_X38Y28.BX      net (fanout=2)        0.639   N846
-    SLICE_X38Y28.X       Tbxx                  0.621   N1438
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>174_SW1
-    SLICE_X39Y29.G4      net (fanout=1)        0.027   N1438
-    SLICE_X39Y29.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntHR<16>
-                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<16>2401
-                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntHR_16
+    SLICE_X41Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_8_5
+                                                       cmp_plx_to_mem_interface/LAReg_8_5
+    SLICE_X52Y77.F1      net (fanout=28)       3.046   cmp_plx_to_mem_interface/LAReg_8_5
+    SLICE_X52Y77.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<2>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X53Y112.F2     net (fanout=16)       1.697   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X53Y112.X      Tilo                  0.551   N493
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>80_SW0
+    SLICE_X54Y113.G2     net (fanout=1)        0.587   N493
+    SLICE_X54Y113.X      Tif5x                 0.968   N685
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1
+    SLICE_X46Y104.F1     net (fanout=1)        1.716   N685
+    SLICE_X46Y104.X      Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+    SLICE_X37Y77.F3      net (fanout=1)        2.127   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+    SLICE_X37Y77.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164
+    SLICE_X37Y77.G1      net (fanout=1)        0.340   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164/O
+    SLICE_X37Y77.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
     -------------------------------------------------  ---------------------------
-    Total                                     21.656ns (5.460ns logic, 16.196ns route)
-                                                       (25.2% logic, 74.8% route)
+    Total                                     20.526ns (6.106ns logic, 14.420ns route)
+                                                       (29.7% logic, 70.3% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     4.535ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_10 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8 (FF)
+  Requirement:          25.000ns
+  Data Path Delay:      20.446ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.019ns (0.311 - 0.330)
+  Source Clock:         sys_clk rising at 0.000ns
+  Destination Clock:    sys_clk rising at 25.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_10 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X30Y75.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<11>
+                                                       cmp_plx_to_mem_interface/LAReg_10
+    SLICE_X52Y77.G1      net (fanout=83)       2.954   cmp_plx_to_mem_interface/LAReg<10>
+    SLICE_X52Y77.COUT    Topcyg                1.096   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<3>16
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X53Y112.F2     net (fanout=16)       1.697   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X53Y112.X      Tilo                  0.551   N493
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>80_SW0
+    SLICE_X54Y113.G2     net (fanout=1)        0.587   N493
+    SLICE_X54Y113.X      Tif5x                 0.968   N685
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>81_SW1
+    SLICE_X46Y104.F1     net (fanout=1)        1.716   N685
+    SLICE_X46Y104.X      Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+    SLICE_X37Y77.F3      net (fanout=1)        2.127   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>98
+    SLICE_X37Y77.X       Tilo                  0.551   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164
+    SLICE_X37Y77.G1      net (fanout=1)        0.340   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>164/O
+    SLICE_X37Y77.CLK     Tgck                  0.633   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<8>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<8>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_8
+    -------------------------------------------------  ---------------------------
+    Total                                     20.446ns (6.118ns logic, 14.328ns route)
+                                                       (29.9% logic, 70.1% route)
+
+--------------------------------------------------------------------------------
+
+Paths for end point cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2 (SLICE_X32Y82.G1), 2099 paths
+--------------------------------------------------------------------------------
+Slack (setup path):     4.045ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_2 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2 (FF)
+  Requirement:          25.000ns
+  Data Path Delay:      20.810ns (Levels of Logic = 9)
+  Clock Path Skew:      -0.145ns (0.289 - 0.434)
+  Source Clock:         sys_clk rising at 0.000ns
+  Destination Clock:    sys_clk rising at 25.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_2 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X39Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<3>
+                                                       cmp_plx_to_mem_interface/LAReg_2
+    SLICE_X52Y76.F2      net (fanout=24)       3.523   cmp_plx_to_mem_interface/LAReg<2>
+    SLICE_X52Y76.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<0>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<0>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>_22
+    SLICE_X52Y77.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<1>23
+    SLICE_X52Y77.COUT    Tbyp                  0.120   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X51Y113.G2     net (fanout=16)       1.632   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X51Y113.Y      Tilo                  0.551   N517
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>80_SW0
+    SLICE_X44Y112.G2     net (fanout=1)        0.958   N503
+    SLICE_X44Y112.X      Tif5x                 0.968   N700
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>81_SW1
+    SLICE_X44Y107.F2     net (fanout=1)        1.192   N700
+    SLICE_X44Y107.X      Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+    SLICE_X32Y82.F1      net (fanout=1)        2.014   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+    SLICE_X32Y82.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<2>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>164
+    SLICE_X32Y82.G1      net (fanout=1)        0.244   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>164/O
+    SLICE_X32Y82.CLK     Tgck                  0.690   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<2>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2
+    -------------------------------------------------  ---------------------------
+    Total                                     20.810ns (6.340ns logic, 14.470ns route)
+                                                       (30.5% logic, 69.5% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     4.603ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_8_5 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2 (FF)
+  Requirement:          25.000ns
+  Data Path Delay:      20.213ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.184ns (0.289 - 0.473)
+  Source Clock:         sys_clk rising at 0.000ns
+  Destination Clock:    sys_clk rising at 25.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_8_5 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X41Y72.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg_8_5
+                                                       cmp_plx_to_mem_interface/LAReg_8_5
+    SLICE_X52Y77.F1      net (fanout=28)       3.046   cmp_plx_to_mem_interface/LAReg_8_5
+    SLICE_X52Y77.COUT    Topcyf                1.084   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<2>23
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<2>_22
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X51Y113.G2     net (fanout=16)       1.632   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X51Y113.Y      Tilo                  0.551   N517
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>80_SW0
+    SLICE_X44Y112.G2     net (fanout=1)        0.958   N503
+    SLICE_X44Y112.X      Tif5x                 0.968   N700
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>81_SW1
+    SLICE_X44Y107.F2     net (fanout=1)        1.192   N700
+    SLICE_X44Y107.X      Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+    SLICE_X32Y82.F1      net (fanout=1)        2.014   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+    SLICE_X32Y82.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<2>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>164
+    SLICE_X32Y82.G1      net (fanout=1)        0.244   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>164/O
+    SLICE_X32Y82.CLK     Tgck                  0.690   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<2>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2
+    -------------------------------------------------  ---------------------------
+    Total                                     20.213ns (6.220ns logic, 13.993ns route)
+                                                       (30.8% logic, 69.2% route)
+
+--------------------------------------------------------------------------------
+Slack (setup path):     4.826ns (requirement - (data path - clock path skew + uncertainty))
+  Source:               cmp_plx_to_mem_interface/LAReg_10 (FF)
+  Destination:          cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2 (FF)
+  Requirement:          25.000ns
+  Data Path Delay:      20.133ns (Levels of Logic = 8)
+  Clock Path Skew:      -0.041ns (0.289 - 0.330)
+  Source Clock:         sys_clk rising at 0.000ns
+  Destination Clock:    sys_clk rising at 25.000ns
+  Clock Uncertainty:    0.000ns
+
+  Maximum Data Path: cmp_plx_to_mem_interface/LAReg_10 to cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X30Y75.YQ      Tcko                  0.720   cmp_plx_to_mem_interface/LAReg<11>
+                                                       cmp_plx_to_mem_interface/LAReg_10
+    SLICE_X52Y77.G1      net (fanout=83)       2.954   cmp_plx_to_mem_interface/LAReg<10>
+    SLICE_X52Y77.COUT    Topcyg                1.096   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_lut<3>16
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>_20
+    SLICE_X52Y78.CIN     net (fanout=1)        0.000   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<3>19
+    SLICE_X52Y78.XB      Tcinxb                0.440   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Mcompar_DataOut_cmp_le0000_cy<4>_18
+    SLICE_X61Y106.G2     net (fanout=19)       4.907   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut_cmp_le0024
+    SLICE_X61Y106.Y      Tilo                  0.551   N523
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_24_mux000011
+    SLICE_X51Y113.G2     net (fanout=16)       1.632   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/N247
+    SLICE_X51Y113.Y      Tilo                  0.551   N517
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>80_SW0
+    SLICE_X44Y112.G2     net (fanout=1)        0.958   N503
+    SLICE_X44Y112.X      Tif5x                 0.968   N700
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>81_SW1_F
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>81_SW1
+    SLICE_X44Y107.F2     net (fanout=1)        1.192   N700
+    SLICE_X44Y107.X      Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+    SLICE_X32Y82.F1      net (fanout=1)        2.014   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>98
+    SLICE_X32Y82.X       Tilo                  0.608   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<2>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>164
+    SLICE_X32Y82.G1      net (fanout=1)        0.244   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>164/O
+    SLICE_X32Y82.CLK     Tgck                  0.690   cmp_mil1553_core/cmp_mem_interface/iDataToIntLR<2>
+                                                       cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<2>2301
+                                                       cmp_mil1553_core/cmp_mem_interface/iDataToIntLR_2
+    -------------------------------------------------  ---------------------------
+    Total                                     20.133ns (6.232ns logic, 13.901ns route)
+                                                       (31.0% logic, 69.0% route)
 
 --------------------------------------------------------------------------------
 
 Hold Paths: TS_clk_i = PERIOD TIMEGRP "clk_i" 25 ns HIGH 50%;
 --------------------------------------------------------------------------------
 
-Paths for end point cmp_mil1553_core/rx_buffer_11_7 (SLICE_X93Y57.BX), 1 path
+Paths for end point cmp_mil1553_core/unique_id_53 (SLICE_X83Y55.BX), 1 path
 --------------------------------------------------------------------------------
-Slack (hold path):      0.725ns (requirement - (clock path skew + uncertainty - data path))
-  Source:               cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_11_7 (FF)
-  Destination:          cmp_mil1553_core/rx_buffer_11_7 (FF)
+Slack (hold path):      0.715ns (requirement - (clock path skew + uncertainty - data path))
+  Source:               cmp_mil1553_core/cmp_one_wire_ds1822/Id_53 (FF)
+  Destination:          cmp_mil1553_core/unique_id_53 (FF)
   Requirement:          0.000ns
   Data Path Delay:      0.780ns (Levels of Logic = 0)
-  Clock Path Skew:      0.055ns (0.261 - 0.206)
+  Clock Path Skew:      0.065ns (0.185 - 0.120)
   Source Clock:         sys_clk rising at 25.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Minimum Data Path: cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_11_7 to cmp_mil1553_core/rx_buffer_11_7
+  Minimum Data Path: cmp_mil1553_core/cmp_one_wire_ds1822/Id_53 to cmp_mil1553_core/unique_id_53
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X93Y54.XQ      Tcko                  0.576   cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_11_7
-                                                       cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_11_7
-    SLICE_X93Y57.BX      net (fanout=1)        0.487   cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_11_7
-    SLICE_X93Y57.CLK     Tckdi       (-Th)     0.283   cmp_mil1553_core/rx_buffer_11_7
-                                                       cmp_mil1553_core/rx_buffer_11_7
+    SLICE_X82Y52.XQ      Tcko                  0.576   cmp_mil1553_core/cmp_one_wire_ds1822/Id<53>
+                                                       cmp_mil1553_core/cmp_one_wire_ds1822/Id_53
+    SLICE_X83Y55.BX      net (fanout=1)        0.487   cmp_mil1553_core/cmp_one_wire_ds1822/Id<53>
+    SLICE_X83Y55.CLK     Tckdi       (-Th)     0.283   cmp_mil1553_core/unique_id<53>
+                                                       cmp_mil1553_core/unique_id_53
     -------------------------------------------------  ---------------------------
     Total                                      0.780ns (0.293ns logic, 0.487ns route)
                                                        (37.6% logic, 62.4% route)
 
 --------------------------------------------------------------------------------
 
-Paths for end point cmp_mil1553_core/rx_buffer_32_11 (SLICE_X81Y84.BX), 1 path
+Paths for end point cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_27 (SLICE_X75Y55.BX), 1 path
 --------------------------------------------------------------------------------
-Slack (hold path):      0.725ns (requirement - (clock path skew + uncertainty - data path))
-  Source:               cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_11 (FF)
-  Destination:          cmp_mil1553_core/rx_buffer_32_11 (FF)
+Slack (hold path):      0.739ns (requirement - (clock path skew + uncertainty - data path))
+  Source:               cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_28 (FF)
+  Destination:          cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_27 (FF)
   Requirement:          0.000ns
-  Data Path Delay:      0.780ns (Levels of Logic = 0)
-  Clock Path Skew:      0.055ns (0.137 - 0.082)
+  Data Path Delay:      0.798ns (Levels of Logic = 0)
+  Clock Path Skew:      0.059ns (0.193 - 0.134)
   Source Clock:         sys_clk rising at 25.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Minimum Data Path: cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_11 to cmp_mil1553_core/rx_buffer_32_11
+  Minimum Data Path: cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_28 to cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_27
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X80Y82.XQ      Tcko                  0.576   cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_11
-                                                       cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_11
-    SLICE_X81Y84.BX      net (fanout=1)        0.487   cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_11
-    SLICE_X81Y84.CLK     Tckdi       (-Th)     0.283   cmp_mil1553_core/rx_buffer_32_11
-                                                       cmp_mil1553_core/rx_buffer_32_11
+    SLICE_X74Y52.YQ      Tcko                  0.576   cmp_mil1553_core/cmp_one_wire_ds1822/cmRg<29>
+                                                       cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_28
+    SLICE_X75Y55.BX      net (fanout=2)        0.505   cmp_mil1553_core/cmp_one_wire_ds1822/cmRg<28>
+    SLICE_X75Y55.CLK     Tckdi       (-Th)     0.283   cmp_mil1553_core/cmp_one_wire_ds1822/cmRg<27>
+                                                       cmp_mil1553_core/cmp_one_wire_ds1822/cmRg_27
     -------------------------------------------------  ---------------------------
-    Total                                      0.780ns (0.293ns logic, 0.487ns route)
-                                                       (37.6% logic, 62.4% route)
+    Total                                      0.798ns (0.293ns logic, 0.505ns route)
+                                                       (36.7% logic, 63.3% route)
 
 --------------------------------------------------------------------------------
 
-Paths for end point cmp_mil1553_core/rx_buffer_32_5 (SLICE_X77Y88.BX), 1 path
+Paths for end point cmp_mil1553_core/unique_id_3 (SLICE_X42Y63.BX), 1 path
 --------------------------------------------------------------------------------
-Slack (hold path):      0.729ns (requirement - (clock path skew + uncertainty - data path))
-  Source:               cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_5 (FF)
-  Destination:          cmp_mil1553_core/rx_buffer_32_5 (FF)
+Slack (hold path):      0.752ns (requirement - (clock path skew + uncertainty - data path))
+  Source:               cmp_mil1553_core/cmp_one_wire_ds1822/Id_3 (FF)
+  Destination:          cmp_mil1553_core/unique_id_3 (FF)
   Requirement:          0.000ns
-  Data Path Delay:      0.780ns (Levels of Logic = 0)
-  Clock Path Skew:      0.051ns (0.239 - 0.188)
+  Data Path Delay:      0.806ns (Levels of Logic = 0)
+  Clock Path Skew:      0.054ns (0.590 - 0.536)
   Source Clock:         sys_clk rising at 25.000ns
   Destination Clock:    sys_clk rising at 25.000ns
   Clock Uncertainty:    0.000ns
 
-  Minimum Data Path: cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_5 to cmp_mil1553_core/rx_buffer_32_5
+  Minimum Data Path: cmp_mil1553_core/cmp_one_wire_ds1822/Id_3 to cmp_mil1553_core/unique_id_3
     Location             Delay type         Delay(ns)  Physical Resource
                                                        Logical Resource(s)
     -------------------------------------------------  -------------------
-    SLICE_X76Y87.XQ      Tcko                  0.576   cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_5
-                                                       cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_5
-    SLICE_X77Y88.BX      net (fanout=1)        0.487   cmp_mil1553_core/cmp_mil1553_rx/cmp_mil1553_rx_deserialiser/rx_buffer_o_32_5
-    SLICE_X77Y88.CLK     Tckdi       (-Th)     0.283   cmp_mil1553_core/rx_buffer_32_5
-                                                       cmp_mil1553_core/rx_buffer_32_5
+    SLICE_X40Y62.XQ      Tcko                  0.576   cmp_mil1553_core/cmp_one_wire_ds1822/Id<3>
+                                                       cmp_mil1553_core/cmp_one_wire_ds1822/Id_3
+    SLICE_X42Y63.BX      net (fanout=1)        0.513   cmp_mil1553_core/cmp_one_wire_ds1822/Id<3>
+    SLICE_X42Y63.CLK     Tckdi       (-Th)     0.283   cmp_mil1553_core/unique_id<3>
+                                                       cmp_mil1553_core/unique_id_3
     -------------------------------------------------  ---------------------------
-    Total                                      0.780ns (0.293ns logic, 0.487ns route)
-                                                       (37.6% logic, 62.4% route)
+    Total                                      0.806ns (0.293ns logic, 0.513ns route)
+                                                       (36.4% logic, 63.6% route)
 
 --------------------------------------------------------------------------------
 
@@ -584,7 +590,7 @@ Slack: 23.064ns (period - (min low pulse limit / (low pulse / period)))
   Low pulse limit: 0.968ns (Twpl)
   Physical resource: pwr_rst_sync_n<1>/CLK
   Logical resource: Mshreg_pwr_rst_sync_n_1/SRL16E/WS
-  Location pin: SLICE_X70Y26.CLK
+  Location pin: SLICE_X62Y23.CLK
   Clock network: sys_clk
 --------------------------------------------------------------------------------
 Slack: 23.064ns (period - (min high pulse limit / (high pulse / period)))
@@ -593,7 +599,7 @@ Slack: 23.064ns (period - (min high pulse limit / (high pulse / period)))
   High pulse limit: 0.968ns (Twph)
   Physical resource: pwr_rst_sync_n<1>/CLK
   Logical resource: Mshreg_pwr_rst_sync_n_1/SRL16E/WS
-  Location pin: SLICE_X70Y26.CLK
+  Location pin: SLICE_X62Y23.CLK
   Clock network: sys_clk
 --------------------------------------------------------------------------------
 Slack: 23.064ns (period - min period limit)
@@ -601,7 +607,7 @@ Slack: 23.064ns (period - min period limit)
   Min period limit: 1.936ns (516.529MHz) (Tcp)
   Physical resource: pwr_rst_sync_n<1>/CLK
   Logical resource: Mshreg_pwr_rst_sync_n_1/SRL16E/WS
-  Location pin: SLICE_X70Y26.CLK
+  Location pin: SLICE_X62Y23.CLK
   Clock network: sys_clk
 --------------------------------------------------------------------------------
 
@@ -618,7 +624,7 @@ Clock to Setup on destination clock clk_i
                | Src:Rise| Src:Fall| Src:Rise| Src:Fall|
 Source Clock   |Dest:Rise|Dest:Rise|Dest:Fall|Dest:Fall|
 ---------------+---------+---------+---------+---------+
-clk_i          |   21.786|         |         |         |
+clk_i          |   21.279|         |         |         |
 ---------------+---------+---------+---------+---------+
 
 
@@ -627,16 +633,16 @@ Timing summary:
 
 Timing errors: 0  Score: 0  (Setup/Max: 0, Hold: 0)
 
-Constraints cover 318322 paths, 0 nets, and 27631 connections
+Constraints cover 318593 paths, 0 nets, and 27805 connections
 
 Design statistics:
-   Minimum period:  21.786ns{1}   (Maximum frequency:  45.901MHz)
+   Minimum period:  21.279ns{1}   (Maximum frequency:  46.995MHz)
 
 
 ------------------------------------Footnotes-----------------------------------
 1)  The minimum period statistic assumes all single cycle delays.
 
-Analysis completed Mon Apr 16 18:22:53 2012 
+Analysis completed Tue Jun 25 15:08:35 2013 
 --------------------------------------------------------------------------------
 
 Trace Settings:

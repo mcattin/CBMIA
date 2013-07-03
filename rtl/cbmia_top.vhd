@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2012-04-16
+-- Last update: 2013-06-25
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -69,6 +69,8 @@
 --                                      state before going back to IDLE state.
 -- 2012-04-16  2.11     mcattin         Replace "Transaction end" by "irq req"
 --                                      in the test points muxes.
+-- 2013-06-25  2.12     mcattin         Add a register to save the unique id read
+--                                      from the DS1822 chip.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -85,7 +87,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0211"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0212"
     );
   port (
     -- description -> net name in schematics
