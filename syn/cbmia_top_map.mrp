@@ -9,24 +9,23 @@ Target Device  : xc3s1500
 Target Package : fg456
 Target Speed   : -4
 Mapper Version : spartan3 -- $Revision: 1.55 $
-Mapped Date    : Tue Jun 25 15:07:09 2013
+Mapped Date    : Mon Aug 26 14:39:13 2013
 
 Design Summary
 --------------
 Number of errors:      0
 Number of warnings:   10
 Logic Utilization:
-  Number of Slice Flip Flops:         4,139 out of  26,624   15%
-  Number of 4 input LUTs:             4,291 out of  26,624   16%
+  Number of Slice Flip Flops:         4,142 out of  26,624   15%
+  Number of 4 input LUTs:             4,292 out of  26,624   16%
 Logic Distribution:
-  Number of occupied Slices:          4,768 out of  13,312   35%
-    Number of Slices containing only related logic:   4,768 out of   4,768 100%
-    Number of Slices containing unrelated logic:          0 out of   4,768   0%
+  Number of occupied Slices:          4,771 out of  13,312   35%
+    Number of Slices containing only related logic:   4,771 out of   4,771 100%
+    Number of Slices containing unrelated logic:          0 out of   4,771   0%
       *See NOTES below for an explanation of the effects of unrelated logic.
-  Total Number of 4 input LUTs:       4,693 out of  26,624   17%
-    Number used as logic:             4,290
+  Total Number of 4 input LUTs:       4,694 out of  26,624   17%
+    Number used as logic:             4,292
     Number used as a route-thru:        402
-    Number used as Shift registers:       1
 
   The Slice Logic Distribution report is not meaningful if the design is
   over-mapped for a non-slice resource or if Placement fails.
@@ -37,7 +36,7 @@ Logic Distribution:
 Average Fanout of Non-Clock Nets:                3.48
 
 Peak Memory Usage:  199 MB
-Total REAL time to MAP completion:  13 secs 
+Total REAL time to MAP completion:  20 secs 
 Total CPU time to MAP completion:   9 secs 
 
 NOTES:
@@ -88,7 +87,7 @@ WARNING:Pack:266 - The function generator
 WARNING:Pack:266 - The function generator
    cmp_mil1553_core/cmp_mem_interface/UROMMUXL/Sel_26_mux0000131 failed to merge
    with F5 multiplexer
-   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<0>137_SW1.  There is a
+   cmp_mil1553_core/cmp_mem_interface/UROMMUXL/DataOut<0>140_SW1.  There is a
    conflict for the FXMUX.  The design will exhibit suboptimal timing.
 WARNING:Pack:266 - The function generator
    cmp_mil1553_core/cmp_mem_interface/UROMMUXH/DataOut<14>241 failed to merge
@@ -134,7 +133,7 @@ WARNING:Pack:266 - The function generator
 Section 3 - Informational
 -------------------------
 INFO:LIT:243 - Logical network ram_data_b<0>_IBUF has no load.
-INFO:LIT:395 - The above info message is repeated 57 more times for the
+INFO:LIT:395 - The above info message is repeated 56 more times for the
    following (max. 5 shown):
    ram_data_b<1>_IBUF,
    ram_data_b<2>_IBUF,
@@ -149,7 +148,7 @@ INFO:LIT:244 - All of the single ended outputs in this design are using slew
 
 Section 4 - Removed Logic Summary
 ---------------------------------
-   3 block(s) optimized away
+   2 block(s) optimized away
 
 Section 5 - Removed Logic
 -------------------------

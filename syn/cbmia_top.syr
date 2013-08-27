@@ -5,14 +5,14 @@ Parameter TMPDIR set to xst/projnav.tmp
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.08 secs
+Total CPU time to Xst completion: 0.06 secs
  
 --> 
 Parameter xsthdpdir set to xst
 
 
 Total REAL time to Xst completion: 0.00 secs
-Total CPU time to Xst completion: 0.08 secs
+Total CPU time to Xst completion: 0.06 secs
  
 --> 
 Reading design: cbmia_top.prj
@@ -108,59 +108,41 @@ Slice Utilization Ratio Delta      : 5
 *                          HDL Compilation                              *
 =========================================================================
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mem_interface_pkg.vhd" in Library work.
-Package <mem_interface_pkg> compiled.
-Package body <mem_interface_pkg> compiled.
+Architecture mem_interface_pkg of Entity mem_interface_pkg is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/cbmia_pkg.vhd" in Library work.
-Package <cbmia_pkg> compiled.
-Package body <cbmia_pkg> compiled.
+Architecture cbmia_pkg of Entity cbmia_pkg is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/decr_cnt.vhd" in Library work.
-Entity <decr_cnt> compiled.
-Entity <decr_cnt> (Architecture <rtl>) compiled.
+Architecture rtl of Entity decr_cnt is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/incr_cnt.vhd" in Library work.
-Entity <incr_cnt> compiled.
-Entity <incr_cnt> (Architecture <rtl>) compiled.
+Architecture rtl of Entity incr_cnt is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx_clk.vhd" in Library work.
-Entity <mil1553_rx_clk> compiled.
-Entity <mil1553_rx_clk> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_rx_clk is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx_deglitcher.vhd" in Library work.
-Entity <mil1553_rx_deglitcher> compiled.
-Entity <mil1553_rx_deglitcher> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_rx_deglitcher is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx_deserialiser.vhd" in Library work.
-Entity <mil1553_rx_deserialiser> compiled.
-Entity <mil1553_rx_deserialiser> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_rx_deserialiser is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_tx_clk.vhd" in Library work.
-Entity <mil1553_tx_clk> compiled.
-Entity <mil1553_tx_clk> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_tx_clk is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_tx_serialiser.vhd" in Library work.
-Entity <mil1553_tx_serialiser> compiled.
-Entity <mil1553_tx_serialiser> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_tx_serialiser is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mem_interface_mux.vhd" in Library work.
-Entity <mem_interface_mux> compiled.
-Entity <mem_interface_mux> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mem_interface_mux is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mem_interface.vhd" in Library work.
-Entity <mem_interface> compiled.
-Entity <mem_interface> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mem_interface is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/irq_regs.vhd" in Library work.
-Entity <irq_regs> compiled.
-Entity <irq_regs> (Architecture <rtl>) compiled.
+Architecture rtl of Entity irq_regs is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/one_wire_ds1822.vhd" in Library work.
-Entity <one_wire_ds1822> compiled.
-Entity <one_wire_ds1822> (Architecture <rtl>) compiled.
+Architecture rtl of Entity one_wire_ds1822 is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_tx.vhd" in Library work.
-Entity <mil1553_tx> compiled.
-Entity <mil1553_tx> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_tx is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_rx.vhd" in Library work.
-Entity <mil1553_rx> compiled.
-Entity <mil1553_rx> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_rx is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/monostable.vhd" in Library work.
-Entity <monostable> compiled.
-Entity <monostable> (Architecture <rtl>) compiled.
+Architecture rtl of Entity monostable is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/plx_to_mem_interface.vhd" in Library work.
-Entity <plx_to_mem_interface> compiled.
-Entity <plx_to_mem_interface> (Architecture <rtl>) compiled.
+Architecture rtl of Entity plx_to_mem_interface is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" in Library work.
-Entity <mil1553_core> compiled.
-Entity <mil1553_core> (Architecture <rtl>) compiled.
+Architecture rtl of Entity mil1553_core is up to date.
 Compiling vhdl file "/home/mcattin/projects/cbmia/hdl/rtl/cbmia_top.vhd" in Library work.
 Entity <cbmia_top> compiled.
 Entity <cbmia_top> (Architecture <rtl>) compiled.
@@ -169,14 +151,14 @@ Entity <cbmia_top> (Architecture <rtl>) compiled.
 *                     Design Hierarchy Analysis                         *
 =========================================================================
 Analyzing hierarchy for entity <cbmia_top> in library <work> (architecture <rtl>) with generics.
-	g_HW_VERSION = "0000001000010010"
+	g_HW_VERSION = "0000001000010011"
 
 Analyzing hierarchy for entity <plx_to_mem_interface> in library <work> (architecture <rtl>) with generics.
 	LALEFT = 2
 	LARIGHT = 23
 
 Analyzing hierarchy for entity <mil1553_core> in library <work> (architecture <rtl>) with generics.
-	g_HW_VERSION = "0000001000010010"
+	g_HW_VERSION = "0000001000010011"
 
 Analyzing hierarchy for entity <monostable> in library <work> (architecture <rtl>) with generics.
 	g_INPUT_POLARITY = '0'
@@ -231,7 +213,7 @@ Analyzing hierarchy for entity <decr_cnt> in library <work> (architecture <rtl>)
 *                            HDL Analysis                               *
 =========================================================================
 Analyzing generic Entity <cbmia_top> in library <work> (Architecture <rtl>).
-	g_HW_VERSION = "0000001000010010"
+	g_HW_VERSION = "0000001000010011"
 Entity <cbmia_top> analyzed. Unit <cbmia_top> generated.
 
 Analyzing generic Entity <plx_to_mem_interface> in library <work> (Architecture <rtl>).
@@ -241,7 +223,7 @@ INFO:Xst:2679 - Register <iLReadyN> in unit <plx_to_mem_interface> has a constan
 Entity <plx_to_mem_interface> analyzed. Unit <plx_to_mem_interface> generated.
 
 Analyzing generic Entity <mil1553_core> in library <work> (Architecture <rtl>).
-	g_HW_VERSION = "0000001000010010"
+	g_HW_VERSION = "0000001000010011"
 WARNING:Xst:753 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 246: Unconnected output port 'IdOk' of component 'one_wire_ds1822'.
 INFO:Xst:1561 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 963: Mux is complete : default of case is discarded
 WARNING:Xst:819 - "/home/mcattin/projects/cbmia/hdl/rtl/mil1553_core.vhd" line 945: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
@@ -948,10 +930,9 @@ WARNING:Xst:2565 - Inout <ram_data_b<25>> is never assigned.
 WARNING:Xst:2565 - Inout <ram_data_b<31>> is never assigned.
 WARNING:Xst:2565 - Inout <ram_data_b<26>> is never assigned.
 WARNING:Xst:2565 - Inout <ram_data_b<27>> is never assigned.
-WARNING:Xst:647 - Input <l_reset_n_i> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
 WARNING:Xst:2565 - Inout <ram_data_b<28>> is never assigned.
 WARNING:Xst:2565 - Inout <ram_data_b<29>> is never assigned.
-    Found 2-bit register for signal <pwr_rst_sync_n>.
+    Found 2-bit register for signal <rst_sync_n>.
     Summary:
 	inferred   2 D-type flip-flop(s).
 Unit <cbmia_top> synthesized.
@@ -1616,32 +1597,26 @@ FlipFlop cmp_mil1553_core/cmp_mil1553_tx/cmp_mil1553_serialiser/word_cnt_0 has b
 FlipFlop cmp_plx_to_mem_interface/LAReg_0 has been replicated 4 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_1 has been replicated 5 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_10 has been replicated 2 time(s)
-FlipFlop cmp_plx_to_mem_interface/LAReg_11 has been replicated 3 time(s)
+FlipFlop cmp_plx_to_mem_interface/LAReg_11 has been replicated 4 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_12 has been replicated 4 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_13 has been replicated 7 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_2 has been replicated 5 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_3 has been replicated 4 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_4 has been replicated 6 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_5 has been replicated 6 time(s)
-FlipFlop cmp_plx_to_mem_interface/LAReg_6 has been replicated 5 time(s)
+FlipFlop cmp_plx_to_mem_interface/LAReg_6 has been replicated 6 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_7 has been replicated 6 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_8 has been replicated 5 time(s)
 FlipFlop cmp_plx_to_mem_interface/LAReg_9 has been replicated 5 time(s)
 
 Final Macro Processing ...
 
-Processing Unit <cbmia_top> :
-	Found 2-bit shift register for signal <pwr_rst_sync_n_1>.
-Unit <cbmia_top> processed.
-
 =========================================================================
 Final Register Report
 
 Macro Statistics
-# Registers                                            : 4138
- Flip-Flops                                            : 4138
-# Shift Registers                                      : 1
- 2-bit shift register                                  : 1
+# Registers                                            : 4142
+ Flip-Flops                                            : 4142
 
 =========================================================================
 
@@ -1670,19 +1645,19 @@ Design Statistics
 # IOs                              : 169
 
 Cell Usage :
-# BELS                             : 7435
+# BELS                             : 7437
 #      GND                         : 1
 #      INV                         : 846
 #      LUT1                        : 389
-#      LUT2                        : 251
-#      LUT2_D                      : 40
+#      LUT2                        : 253
+#      LUT2_D                      : 39
 #      LUT2_L                      : 26
 #      LUT3                        : 1105
 #      LUT3_D                      : 29
 #      LUT3_L                      : 113
-#      LUT4                        : 1845
+#      LUT4                        : 1848
 #      LUT4_D                      : 125
-#      LUT4_L                      : 420
+#      LUT4_L                      : 418
 #      MUXCY                       : 1081
 #      MUXF5                       : 437
 #      MUXF6                       : 144
@@ -1690,21 +1665,19 @@ Cell Usage :
 #      MUXF8                       : 34
 #      VCC                         : 1
 #      XORCY                       : 476
-# FlipFlops/Latches                : 4139
-#      FD                          : 3
+# FlipFlops/Latches                : 4142
+#      FD                          : 4
 #      FDE                         : 64
 #      FDR                         : 207
-#      FDRE                        : 3621
+#      FDRE                        : 3623
 #      FDRS                        : 91
 #      FDRSE                       : 113
 #      FDS                         : 6
 #      FDSE                        : 34
-# Shift Registers                  : 1
-#      SRL16                       : 1
 # Clock Buffers                    : 1
 #      BUFG                        : 1
-# IO Buffers                       : 111
-#      IBUF                        : 18
+# IO Buffers                       : 112
+#      IBUF                        : 19
 #      IBUFG                       : 1
 #      IOBUF                       : 33
 #      OBUF                        : 59
@@ -1715,13 +1688,11 @@ Device utilization summary:
 
 Selected Device : 3s1500fg456-4 
 
- Number of Slices:                     3970  out of  13312    29%  
- Number of Slice Flip Flops:           4139  out of  26624    15%  
- Number of 4 input LUTs:               5190  out of  26624    19%  
-    Number used as logic:              5189
-    Number used as Shift registers:       1
+ Number of Slices:                     3971  out of  13312    29%  
+ Number of Slice Flip Flops:           4142  out of  26624    15%  
+ Number of 4 input LUTs:               5191  out of  26624    19%  
  Number of IOs:                         169
- Number of bonded IOBs:                 111  out of    333    33%  
+ Number of bonded IOBs:                 112  out of    333    33%  
  Number of GCLKs:                         1  out of      8    12%  
 
 ---------------------------
@@ -1745,7 +1716,7 @@ Clock Information:
 -----------------------------------+------------------------+-------+
 Clock Signal                       | Clock buffer(FF name)  | Load  |
 -----------------------------------+------------------------+-------+
-clk_i                              | IBUFG+BUFG             | 4140  |
+clk_i                              | IBUFG+BUFG             | 4142  |
 -----------------------------------+------------------------+-------+
 
 Asynchronous Control Signals Information:
@@ -1768,7 +1739,7 @@ All values displayed in nanoseconds (ns)
 =========================================================================
 Timing constraint: Default period analysis for Clock 'clk_i'
   Clock period: 15.693ns (frequency: 63.723MHz)
-  Total number of paths / destination ports: 318594 / 12159
+  Total number of paths / destination ports: 318626 / 12165
 -------------------------------------------------------------------------
 Delay:               15.693ns (Levels of Logic = 13)
   Source:            cmp_plx_to_mem_interface/LAReg_1_3 (FF)
@@ -1801,7 +1772,7 @@ Delay:               15.693ns (Levels of Logic = 13)
 
 =========================================================================
 Timing constraint: Default OFFSET IN BEFORE for Clock 'clk_i'
-  Total number of paths / destination ports: 51 / 51
+  Total number of paths / destination ports: 52 / 51
 -------------------------------------------------------------------------
 Offset:              2.883ns (Levels of Logic = 1)
   Source:            l_wr_rd_n_i (PAD)
@@ -1870,15 +1841,15 @@ Delay:               9.850ns (Levels of Logic = 6)
 =========================================================================
 
 
-Total REAL time to Xst completion: 87.00 secs
-Total CPU time to Xst completion: 86.37 secs
+Total REAL time to Xst completion: 86.00 secs
+Total CPU time to Xst completion: 84.39 secs
  
 --> 
 
 
-Total memory usage is 253944 kilobytes
+Total memory usage is 253952 kilobytes
 
 Number of errors   :    0 (   0 filtered)
-Number of warnings :  530 (   0 filtered)
+Number of warnings :  529 (   0 filtered)
 Number of infos    :   54 (   0 filtered)
 

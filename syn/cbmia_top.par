@@ -1,7 +1,7 @@
 Release 13.3 par O.76xd (lin)
 Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
 
-pcbe15575::  Tue Jun 25 15:07:28 2013
+pcbe15575::  Mon Aug 26 14:39:39 2013
 
 par -w -intstyle ise -ol high -t 1 cbmia_top_map.ncd cbmia_top.ncd
 cbmia_top.pcf 
@@ -24,8 +24,8 @@ Device Utilization Summary:
    Number of External IOBs                 169 out of 333    50%
       Number of LOCed IOBs                 169 out of 169   100%
 
-   Number of Slices                       4768 out of 13312  35%
-      Number of SLICEMs                    145 out of 6656    2%
+   Number of Slices                       4771 out of 13312  35%
+      Number of SLICEMs                    144 out of 6656    2%
 
 
 
@@ -34,8 +34,8 @@ Placer effort level (-pl):    High
 Placer cost table entry (-t): 1
 Router effort level (-rl):    High 
 
-Starting initial Timing Analysis.  REAL time: 7 secs 
-Finished initial Timing Analysis.  REAL time: 8 secs 
+Starting initial Timing Analysis.  REAL time: 14 secs 
+Finished initial Timing Analysis.  REAL time: 15 secs 
 
 WARNING:Par:288 - The signal mil1553_md_fault_i_IBUF has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal l_blast_n_i_IBUF has no load.  PAR will not attempt to route this signal.
@@ -82,7 +82,6 @@ WARNING:Par:288 - The signal ram_data_b<19>_IBUF has no load.  PAR will not atte
 WARNING:Par:288 - The signal ram_data_b<28>_IBUF has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal ram_data_b<29>_IBUF has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal l_ale_i_IBUF has no load.  PAR will not attempt to route this signal.
-WARNING:Par:288 - The signal l_reset_n_i_IBUF has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal ram_data_b<0>_IBUF has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal ram_data_b<1>_IBUF has no load.  PAR will not attempt to route this signal.
 WARNING:Par:288 - The signal ram_data_b<2>_IBUF has no load.  PAR will not attempt to route this signal.
@@ -97,42 +96,42 @@ WARNING:Par:288 - The signal l_rd_n_i_IBUF has no load.  PAR will not attempt to
 WARNING:Par:288 - The signal l_wr_n_i_IBUF has no load.  PAR will not attempt to route this signal.
 
 Starting Placer
-Total REAL time at the beginning of Placer: 8 secs 
+Total REAL time at the beginning of Placer: 15 secs 
 Total CPU  time at the beginning of Placer: 4 secs 
 
 Phase 1.1  Initial Placement Analysis
-Phase 1.1  Initial Placement Analysis (Checksum:c68f9d0e) REAL time: 9 secs 
+Phase 1.1  Initial Placement Analysis (Checksum:68d9b5e0) REAL time: 16 secs 
 
 Phase 2.7  Design Feasibility Check
-Phase 2.7  Design Feasibility Check (Checksum:c68f9d0e) REAL time: 9 secs 
+Phase 2.7  Design Feasibility Check (Checksum:68d9b5e0) REAL time: 16 secs 
 
 Phase 3.31  Local Placement Optimization
-Phase 3.31  Local Placement Optimization (Checksum:c68f9d0e) REAL time: 9 secs 
+Phase 3.31  Local Placement Optimization (Checksum:68d9b5e0) REAL time: 16 secs 
 
 Phase 4.2  Initial Clock and IO Placement
 
-Phase 4.2  Initial Clock and IO Placement (Checksum:d8866b12) REAL time: 9 secs 
+Phase 4.2  Initial Clock and IO Placement (Checksum:7ad083e4) REAL time: 16 secs 
 
 Phase 5.36  Local Placement Optimization
-Phase 5.36  Local Placement Optimization (Checksum:d8866b12) REAL time: 9 secs 
+Phase 5.36  Local Placement Optimization (Checksum:7ad083e4) REAL time: 16 secs 
 
 Phase 6.8  Global Placement
-..............................................................
-........
-.....
-Phase 6.8  Global Placement (Checksum:1c4f49fa) REAL time: 15 secs 
+...................................................................
+.........
+.......
+Phase 6.8  Global Placement (Checksum:9c65ac2b) REAL time: 22 secs 
 
 Phase 7.5  Local Placement Optimization
-Phase 7.5  Local Placement Optimization (Checksum:1c4f49fa) REAL time: 15 secs 
+Phase 7.5  Local Placement Optimization (Checksum:9c65ac2b) REAL time: 22 secs 
 
 Phase 8.18  Placement Optimization
-Phase 8.18  Placement Optimization (Checksum:52d13b43) REAL time: 26 secs 
+Phase 8.18  Placement Optimization (Checksum:fef2a4cc) REAL time: 32 secs 
 
 Phase 9.5  Local Placement Optimization
-Phase 9.5  Local Placement Optimization (Checksum:52d13b43) REAL time: 26 secs 
+Phase 9.5  Local Placement Optimization (Checksum:fef2a4cc) REAL time: 32 secs 
 
-Total REAL time to Placer completion: 27 secs 
-Total CPU  time to Placer completion: 23 secs 
+Total REAL time to Placer completion: 33 secs 
+Total CPU  time to Placer completion: 22 secs 
 Writing design to file cbmia_top.ncd
 
 
@@ -140,26 +139,26 @@ Writing design to file cbmia_top.ncd
 Starting Router
 
 
-Phase  1  : 27828 unrouted;      REAL time: 29 secs 
+Phase  1  : 27837 unrouted;      REAL time: 35 secs 
 
-Phase  2  : 24800 unrouted;      REAL time: 32 secs 
+Phase  2  : 24811 unrouted;      REAL time: 37 secs 
 
-Phase  3  : 5980 unrouted;      REAL time: 35 secs 
+Phase  3  : 5891 unrouted;      REAL time: 41 secs 
 
-Phase  4  : 5980 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 37 secs 
+Phase  4  : 5891 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 42 secs 
 
-Phase  5  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 46 secs 
+Phase  5  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 54 secs 
 
 Updating file: cbmia_top.ncd with current fully routed design.
 
-Phase  6  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
+Phase  6  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 57 secs 
 
-Phase  7  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 50 secs 
+Phase  7  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 57 secs 
 
-Phase  8  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 51 secs 
+Phase  8  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 59 secs 
 
-Total REAL time to Router completion: 51 secs 
-Total CPU time to Router completion: 47 secs 
+Total REAL time to Router completion: 59 secs 
+Total CPU time to Router completion: 48 secs 
 
 Partition Implementation Status
 -------------------------------
@@ -177,7 +176,7 @@ Generating Clock Report
 +---------------------+--------------+------+------+------------+-------------+
 |        Clock Net    |   Resource   |Locked|Fanout|Net Skew(ns)|Max Delay(ns)|
 +---------------------+--------------+------+------+------------+-------------+
-|             sys_clk |      BUFGMUX7| No   | 2833 |  0.571     |  1.307      |
+|             sys_clk |      BUFGMUX7| No   | 2835 |  0.531     |  1.268      |
 +---------------------+--------------+------+------+------------+-------------+
 
 * Net Skew is the difference between the minimum and maximum routing
@@ -197,8 +196,8 @@ Asterisk (*) preceding a constraint indicates it was not met.
   Constraint                                |    Check    | Worst Case |  Best Case | Timing |   Timing   
                                             |             |    Slack   | Achievable | Errors |    Score   
 ----------------------------------------------------------------------------------------------------------
-  TS_clk_i = PERIOD TIMEGRP "clk_i" 25 ns H | SETUP       |     3.721ns|    21.279ns|       0|           0
-  IGH 50%                                   | HOLD        |     0.715ns|            |       0|           0
+  TS_clk_i = PERIOD TIMEGRP "clk_i" 25 ns H | SETUP       |     4.095ns|    20.905ns|       0|           0
+  IGH 50%                                   | HOLD        |     0.688ns|            |       0|           0
 ----------------------------------------------------------------------------------------------------------
 
 
@@ -209,10 +208,10 @@ Generating Pad Report.
 
 All signals are completely routed.
 
-WARNING:Par:283 - There are 58 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
+WARNING:Par:283 - There are 57 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
 
-Total REAL time to PAR completion: 53 secs 
-Total CPU time to PAR completion: 49 secs 
+Total REAL time to PAR completion: 1 mins 1 secs 
+Total CPU time to PAR completion: 50 secs 
 
 Peak Memory Usage:  232 MB
 
@@ -221,7 +220,7 @@ Routing: Completed - No errors found.
 Timing: Completed - No errors found.
 
 Number of error messages: 0
-Number of warning messages: 60
+Number of warning messages: 59
 Number of info messages: 0
 
 Writing design to file cbmia_top.ncd

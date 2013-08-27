@@ -7,7 +7,7 @@
 -- Author     : Matthieu Cattin
 -- Company    : CERN (BE-CO-HT)
 -- Created    : 2012-02-29
--- Last update: 2013-06-25
+-- Last update: 2013-08-26
 -- Platform   : FPGA-generic
 -- Standard   : VHDL '87
 -------------------------------------------------------------------------------
@@ -71,6 +71,8 @@
 --                                      in the test points muxes.
 -- 2013-06-25  2.12     mcattin         Add a register to save the unique id read
 --                                      from the DS1822 chip.
+-- 2013-08-26  2.13     mcattin         Connects PLX reset output line (l_reset_n_i)
+--                                      to FPGA logic.
 -------------------------------------------------------------------------------
 -- TODO: - 
 --       - 
@@ -87,7 +89,7 @@ use UNISIM.VComponents.all;
 
 entity cbmia_top is
   generic(
-    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0212"
+    g_HW_VERSION : std_logic_vector(15 downto 0) := X"0213"
     );
   port (
     -- description -> net name in schematics
@@ -200,8 +202,9 @@ architecture rtl of cbmia_top is
   ----------------------------------------------------------------------------
   -- Signals declaration
   ----------------------------------------------------------------------------
-  signal pwr_rst_sync_n : std_logic_vector(1 downto 0);
-  signal pwr_rst_n      : std_logic;
+  signal rst_inputs : std_logic;
+  signal rst_sync_n : std_logic_vector(1 downto 0);
+  signal rst_n      : std_logic;
 
   signal sys_clk : std_logic;
 
@@ -231,15 +234,17 @@ begin
       );
 
   ----------------------------------------------------------------------------
-  -- Synchronises power-on reset with system clock
+  -- Synchronises power-on and PLX9030 reset inputs with system clock
   ----------------------------------------------------------------------------
+  rst_inputs <= pwr_reset_n_i and l_reset_n_i;
+
   p_rst : process (sys_clk)
   begin
     if rising_edge(sys_clk) then
-      pwr_rst_sync_n <= pwr_rst_sync_n(0) & pwr_reset_n_i;
+      rst_sync_n <= rst_sync_n(0) & rst_inputs;
     end if;
   end process p_rst;
-  pwr_rst_n <= pwr_rst_sync_n(1);
+  rst_n <= rst_sync_n(1);
 
   ----------------------------------------------------------------------------
   -- PLX to memory interface
@@ -251,7 +256,7 @@ begin
       )
     port map(
       LClk        => sys_clk,
-      RstN        => pwr_rst_n,
+      RstN        => rst_n,
       LAdSN       => l_ads_n_i,
       LA          => l_address_i,
       LData       => l_data_b,
@@ -275,7 +280,7 @@ begin
       g_HW_VERSION => g_HW_VERSION
       )
     port map(
-      pwr_reset_n_i     => pwr_rst_n,
+      pwr_reset_n_i     => rst_n,
       sys_clk_i         => sys_clk,
       mil1553_rxd_a_i   => mil1553_rxd_a_i,
       mil1553_tx_rx_n_o => mil1553_tx_rx_n_o,
@@ -309,7 +314,7 @@ begin
       g_OUTPUT_LENGTH   => c_LED_MONOSTABLE_LENGTH
       )
     port map(
-      rst_n_i   => pwr_rst_n,
+      rst_n_i   => rst_n,
       clk_i     => sys_clk,
       trigger_i => l_ready_n,
       pulse_o   => led_o(6)
