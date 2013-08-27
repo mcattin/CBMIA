@@ -11,3 +11,7 @@ svn+ssh://svn.cern.ch/reps/acc-fpga/trunk/fpga/cbmia/
 CBMIA firmware version older than 2.00 can be found in:
 svn+ssh://svn.cern.ch/reps/acc-fpga/trunk/fpga/m1553nbci/
 
+--------------------------------------------------------------------------------
+To push commits to svn repo (index needs to be clean):
+
+git svn dcommit
