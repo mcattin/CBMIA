@@ -45,7 +45,6 @@ sim/*/work/
 *.tcl
 *.cmd
 *.ngc
-
 *.cfi
 *.mcs
 *.prm
