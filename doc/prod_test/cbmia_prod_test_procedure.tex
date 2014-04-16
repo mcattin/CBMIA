@@ -1,0 +1,138 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ae,aecompl}
+\usepackage{parskip} % no paragraph indentation
+\usepackage[pdftex]{color,graphicx}
+
+% Uncomment the following two lines to check syntax only (no .dvi output produced, so it's faster!)
+%\usepackage{syntonly}
+%\syntaxonly
+
+%\pagestyle{headings}
+
+
+% Define the title
+\title{CBMIA (EDA-01705) Production Test Procedure}
+\author{Matthieu Cattin}
+
+\begin{document}
+
+%.jpg can only be seen in pdf file (not in dvi)!
+\begin{figure}[t]
+	\includegraphics[scale=0.5]{../figures/cern_logo.pdf}
+	\label{fig:cern_logo}
+\end{figure}
+%Generate the title
+\maketitle
+
+% Insert a table of content
+%\tableofcontents
+
+\begin{abstract}
+This document describes the CBMIA board (MIL1553 bus controller in PCI form-factor) production test procedure. It explain how to program and test a board received from production.
+
+Note: As the program to load FPGA bitstream from PCI bus is not ready yet, it has to be loaded with a Xilinx Platform Cable (USB or parallel).
+\end{abstract}
+
+\newpage 
+
+\section{Required material}
+
+\begin{itemize}
+	\item PC front-end with PCI slots running SLC 5 (Kontron 4U).
+	\item MIL1553 loop (mil1553 DB9 cables, distribution boxes, VH4 cable, 95ohm termination, length??).
+	\item MIL1553 RTI (G64 crate, RTI card).
+	\item Linux desktop computer or Windows computer with putty (to make an ssh connection to the front-end).
+	\item Timing display unit (RS232 LCD display).
+	\item 10 ways ribbon cable (for the "`Timing display"').
+	\item Anti-static bracelet.
+	\item Xilinx Platform Cable (USB or parallel).
+	\item Special JTAG cable for CBMIA.
+\end{itemize}
+
+
+\section{Before testing}
+Before being able to use the following test procedure, a few points must be checked.
+
+\begin{enumerate}
+	\item FEC's OS must be SLC5.
+	\item A MIL1553 loop must be installed (check that there is no other master on the loop).
+	\item Xilinx ISE software must be installed on the Linux or Windows desktop computer.
+\end{enumerate}
+
+% - board declaration in DB for automatic driver installation (this should work first)
+
+\section{Test procedure}
+
+\textcolor{red}{\textbf{If something goes wrong during this procedure, please call: \newline Matthieu (162064)!}}
+
+\begin{enumerate}
+	\item Put serial number and bar code stickers on the cards.
+				\newline Serial number and bar code number MUST be the same!
+	\item On CBMIA cards, set switches SW1 to SW4 in JTAG position.
+	\item Switch OFF the FEC.
+	\item Plug in the CBMIA cards (max. 6 cards in a Kontron 4U FEC). 
+				\newline \textbf{Don't forget the anti-static bracelet!}
+	\item Switch ON the FEC.
+	\item Connect Xilinx Platform Cable to the desktop computer (Install driver, if needed).
+	\item Connect Xilinx Platform Cable to the first CBMIA via the special JTAG cable (10 pins connector on the top edge of the CBMIA card). Don't forget to connect the red wire (Vref) to P3V3 pin (Xilinx Platform Cable LED must be green).
+	\item Open Xilinx iMPACT. Click "No" in the pop-up windows (Automatic Project File Load and Automatically create and save a project).
+	\item Select "create a new project (.ipf)". Click "OK".
+	\item Select "Configure devices using Boundary-scan (JTAG)". Click "OK".
+	\item Click "Yes" in "Auto Assign Configuration Files Query Dialog".
+	\item Go to G:\textbackslash Users\textbackslash m\textbackslash mcattin\textbackslash Public\textbackslash firmware\textbackslash 
+				\newline (where G:\textbackslash must be mapped to cern.ch\textbackslash dfs) and select cbmia-v1.63.mcs then click "Open".
+	\item Click "Bypass" in the next pop-up windows.
+	\item In "Device Programming properties" select "Device 1" and tick "Verify" and "Load FPGA". Then click "OK".
+	\item Right click on "xcf08p" device and click "Program".
+	\item Now CBMIA LEDs on the front panel should be OFF, except LED 0, 2, 5 and 6.
+	\item Connect the "Timing Display" to the CBMIA (10 pins connector on the front panel). If the FPGA is programmed properly, the "Timing display" should show the VHDL version (1.63 in this case).
+	\item Connect Xilinx Platform Cable to the next CBMIA via the special JTAG cable. Don't forget to connect the red wire.
+				\newline Right click on "xcf08p" device and click "Program".
+				\newline Do this for all CBMIA card in the FEC.
+	\item Close iMPACT.
+	\item From the desktop computer, make an ssh connection to the FEC (use putty if your computer is running Windows). Login as root!
+	\item Go to the driver directory 
+				\begin{verbatim} cd /acc/src/dsc/drivers/pcidrivers/mil1553/object_mil1553/ \end{verbatim}
+	\item Run driver installation script \begin{verbatim}./installdrvr\end{verbatim}
+	\item Open test program \begin{verbatim}./testprog\end{verbatim}
+	\item Select the first module \begin{verbatim}mo 1\end{verbatim}
+	\item	Program the PLX serial eprom.
+				\begin{verbatim}eprf\end{verbatim}
+				Default eprom file:\newline
+				/acc/src/dsc/drivers/pcidrivers/mil1553/object\_mil1553/mil1553.eprom
+	\item When prompt to overwrite eprom, type Y (Capital)
+				\newline Note: Y is not printed out!
+	\item Select next module \begin{verbatim}mo 2\end{verbatim}
+				Program the PLX eprom (see previous step). 
+				\newline Do the same for all modules.
+	\item Quit test program.
+				\begin{verbatim}q\end{verbatim}
+	\item Reboot the FEC
+				\begin{verbatim}/etc/reboot\end{verbatim}
+	\item Check that all CBMIA eproms are correctly programmed.
+				\begin{verbatim}lspci | grep CERN\end{verbatim}
+				The following message should be printed as many times as there are cards:
+				\begin{verbatim}Class 8000: CERN/ECP/EDU Unknown device 0301\end{verbatim}
+	\item Connect the first CBMIA to the MIL1553 loop with a DB9 cable (ATTENTION, this is not the same as the timing cable!).
+				\newline Note: There must be no others master on the bus!
+	\item Go to the driver directory 
+				\begin{verbatim} cd /acc/src/dsc/drivers/pcidrivers/mil1553/object_mil1553/ \end{verbatim}
+	\item Run driver installation script \begin{verbatim}./installdrvr\end{verbatim}
+	\item Go to the mil1553 test program directory 
+				\begin{verbatim} cd /acc/src/dsc/drivers/pcidrivers/mil1553/test/mg64tst/ \end{verbatim}
+	\item Run the mil1553 test program.
+	      \begin{verbatim}mg64t.L865\end{verbatim}
+	\item Look at the connected RTI list by typing "1".
+	\item Connect the next CBMIA to the MIL1553 loop with a DB9 cable.
+				\newline Look at the connected RTI list by typing "1".
+				\newline Do this for all cards in the FEC.
+	\item Switch OFF the FEC.
+	\item Unplug the cards.
+	\item On CBMIA cards, set switches SW1 to SW4 in PCI position.
+	\item Go to point 1 and start with the next batch of cards.
+\end{enumerate}
+
+
+\end{document}
