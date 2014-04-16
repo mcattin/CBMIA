@@ -13,7 +13,7 @@ all: $(PDFD) $(PDFT)
 %.pdf : %.tex
 	pdflatex $<
 	pdflatex $<
-	evince $@
+	evince $@ &
 
 clean:
 	rm -f $(PDFD) $(PDFT)
